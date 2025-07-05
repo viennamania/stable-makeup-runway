@@ -315,7 +315,7 @@ export async function POST(request: NextRequest) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            center: "place69_bot",
+            center: "sex_yong_bot",
             userid: userid,
             storecode: storecode,
     
