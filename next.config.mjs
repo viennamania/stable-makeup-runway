@@ -19,6 +19,7 @@ const nextConfig = {
       "cryptoss-runway.vercel.app",
       "t0gqytzvlsa2lapo.public.blob.vercel-storage.com",
       "stable.makeup",
+      "goodpay.stable.makeup",
     ],
   },
 

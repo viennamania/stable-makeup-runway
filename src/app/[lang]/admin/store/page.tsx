@@ -2502,47 +2502,10 @@ export default function Index({ params }: any) {
                               flex flex-col items-between justify-between gap-2">
 
                               <div className="flex flex-col items-center gap-2">
-                                {/*
-                                <button
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(
-                                      'https://stable.makeup/' + params.lang + '/' + item.storecode
-                                    );
-                                    toast.success('복사되었습니다');
-                                  }
-                                }
-                                className="text-sm text-blue-500 hover:underline"
-                                >
-                                  회원 복사
-                                </button>
-                                */}
+
                                 <a
                                   href={
-                                    'https://stable.makeup/' + params.lang + '/' + item.storecode + '/paymaster'
-                                  }
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-sm text-blue-500 hover:underline"
-                                >
-                                  회원
-                                </a>
-                                {/*
-                                <button
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(
-                                      'https://stable.makeup/' + params.lang + '/' + item.storecode + '/center'
-                                    );
-                                    toast.success('복사되었습니다');
-                                  }
-                                }
-                                className="text-sm text-blue-500 hover:underline"
-                                >
-                                  관리자 복사
-                                </button>
-                                */}
-                                <a
-                                  href={
-                                    'https://stable.makeup/' + params.lang + '/' + item.storecode + '/center'
+                                    '/' + params.lang + '/' + item.storecode + '/center'
                                   }
                                   target="_blank"
                                   rel="noopener noreferrer"
