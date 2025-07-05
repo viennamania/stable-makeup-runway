@@ -49,6 +49,7 @@ import { transfer } from "thirdweb/extensions/erc20";
 import Image from 'next/image';
 
 const contractAddress = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"; // USDT on Polygon
+const contractAddressArbitrum = "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"; // USDT on Arbitrum
 
 
 // get a contract
