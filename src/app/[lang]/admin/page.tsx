@@ -876,7 +876,7 @@ export default function Index({ params }: any) {
             
           <div className="w-full flex flex-row items-center justify-start gap-2">
             <Image
-              src="/logo-oneclick.png"
+              src="/logo-goodpay.jpeg"
               alt="logo"
               width={100}
               height={100}

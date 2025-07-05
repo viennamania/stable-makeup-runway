@@ -1576,7 +1576,7 @@ export default function Index({ params }: any) {
 
              >
                <Image
-                 src="/logo-oneclick.png"
+                 src="/logo-goodpay.jpeg"
                  alt="logo"
                  width={100}
                  height={100}
