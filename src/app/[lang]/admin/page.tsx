@@ -1848,7 +1848,7 @@ export default function Index({ params }: any) {
                       가스비용
                     </span>
                     <div className="text-xl font-semibold text-zinc-800">
-                      {Number(nativeBalance).toFixed(2)}
+                      {Number(nativeBalance).toFixed(8)}
                     </div>
                     <p className="text-sm text-zinc-800">ETH</p>
                   </div>
