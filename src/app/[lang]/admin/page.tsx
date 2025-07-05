@@ -866,7 +866,8 @@ export default function Index({ params }: any) {
 
 
     <main className="p-4 min-h-[100vh] flex items-start justify-center container max-w-screen-2xl mx-auto
-    bg-[#E7EDF1]">
+    bg-green-50
+    ">
 
 
       <div className="py-0 w-full">
