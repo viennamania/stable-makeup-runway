@@ -737,7 +737,7 @@ export default function SettingsPage({ params }: any) {
                             wallets={wallets}
 
                             accountAbstraction={{   
-                                arbitrum,
+                                chain: arbitrum,
                                 //
                                 //chain: arbitrum,
 
