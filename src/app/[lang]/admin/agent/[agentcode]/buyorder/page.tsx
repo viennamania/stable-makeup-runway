@@ -1328,7 +1328,7 @@ export default function Index({ params }: any) {
         /*
         const transactionResult = await waitForReceipt({
           client,
-          chain: params.center === "arbitrum" ? arbitrum : polygon,
+          arbitrum,
           maxBlocksWaitTime: 1,
           transactionHash: transactionHash,
         });
