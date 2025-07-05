@@ -182,7 +182,7 @@ export default function SettingsPage({ params }: any) {
     const { connect, isConnecting } = useConnectModal();
     const handleConnect = async () => {
       await connect({
-        arbitrum,
+        chain: arbitrum,
         client,
         wallets,
         size: 'compact',
