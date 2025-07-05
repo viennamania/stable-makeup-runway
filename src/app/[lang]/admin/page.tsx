@@ -1016,7 +1016,7 @@ export default function Index({ params }: any) {
 
 
             className="p-2 text-sm bg-transparent text-zinc-800 rounded"
-
+            value={params.lang}
             onChange={(e) => {
               const lang = e.target.value;
               router.push(
@@ -1024,28 +1024,16 @@ export default function Index({ params }: any) {
               );
             }}
           >
-            <option
-              value="en"
-              selected={params.lang === "en"}
-            >
+            <option value="en">
               English(US)
             </option>
-            <option
-              value="ko"
-              selected={params.lang === "ko"}
-            >
+            <option value="ko">
               한국어(KR)
             </option>
-            <option
-              value="zh"
-              selected={params.lang === "zh"}
-            >
+            <option value="zh">
               中文(ZH)
             </option>
-            <option
-              value="ja"
-              selected={params.lang === "ja"}
-            >
+            <option value="ja">
               日本語(JP)
             </option>
           </select>

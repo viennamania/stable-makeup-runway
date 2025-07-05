@@ -61,7 +61,7 @@ export default function RootLayout({
 
   return (
 
-    <html lang="kr" className={`${pretendard.variable}`}>
+    <html lang="ko" className={`${pretendard.variable}`}>
 
     {/*
     <html lang="en">
