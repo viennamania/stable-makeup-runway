@@ -16,7 +16,7 @@ const nextConfig = {
     domains: [
       "cryptologos.cc", 
       "vzrcy5vcsuuocnf3.public.blob.vercel-storage.com",
-      "cryptoss.beauty",
+      "cryptoss-runway.vercel.app",
       "t0gqytzvlsa2lapo.public.blob.vercel-storage.com",
       "stable.makeup",
     ],

@@ -1385,14 +1385,14 @@ export default function Index({ params }: any) {
                 </div>
 
                 {/* link new window */}
-                {/* https://cryptoss.beauty/ko/[storecode] */}
+                {/* https://cryptoss-runway.vercel.app/ko/[storecode] */}
                 <button
                   onClick={() => {
-                    window.open(`https://cryptoss.beauty/ko/${store?.storecode}`, '_blank');
+                    window.open(`https://cryptoss-runway.vercel.app/ko/${store?.storecode}`, '_blank');
                   }}
                   className="text-sm text-zinc-500 underline"
                 >
-                  가맹점 링크: https://cryptoss.beauty/ko/{store?.storecode}
+                  가맹점 링크: https://cryptoss-runway.vercel.app/ko/{store?.storecode}
                 </button>
 
             </div>
@@ -1759,7 +1759,7 @@ export default function Index({ params }: any) {
 
                             <a
                               href={
-                                'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
+                                'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
                                 + 'storeUser=' + item.nickname + '&depositBankName=' + item?.buyer?.depositBankName + '&depositName=' + item?.buyer?.depositName
                               }
                               target="_blank"

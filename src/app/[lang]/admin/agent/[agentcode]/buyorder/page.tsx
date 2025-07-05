@@ -4072,9 +4072,9 @@ const fetchBuyOrders = async () => {
                                   {Completed}
                                 </button>
                                 {/* new window */}
-                                {/* https://www.cryptoss.beauty/ */}
+                                {/* https://www.cryptoss-runway.vercel.app/ */}
                                 <a
-                                  href={`https://www.cryptoss.beauty/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
+                                  href={`https://www.cryptoss-runway.vercel.app/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-sm text-blue-600 font-semibold hover:underline"
@@ -6268,7 +6268,7 @@ const UserPaymentPage = (
       
       {/* iframe */}
       <iframe
-        src={`https://cryptoss.beauty/kr/${selectedItem?.storecode}/pay-usdt-reverse/${selectedItem?._id}`}
+        src={`https://cryptoss-runway.vercel.app/kr/${selectedItem?.storecode}/pay-usdt-reverse/${selectedItem?._id}`}
 
         
           

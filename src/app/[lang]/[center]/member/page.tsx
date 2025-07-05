@@ -2361,17 +2361,17 @@ export default function Index({ params }: any) {
                 <div className="flex flex-row items-center justify-start gap-2">
                   <button
                     onClick={() => {
-                      window.open(`https://cryptoss.beauty/ko/${store?.storecode}/paymaster`, '_blank');
+                      window.open(`https://cryptoss-runway.vercel.app/ko/${store?.storecode}/paymaster`, '_blank');
                     }}
                     className="text-sm text-zinc-500 underline"
                   >
-                    https://cryptoss.beauty/ko/{store?.storecode}/paymaster
+                    https://cryptoss-runway.vercel.app/ko/{store?.storecode}/paymaster
                   </button>
 
                   {/* 복사 버튼 */}
                   <button
                     onClick={() => {
-                      navigator.clipboard.writeText(`https://cryptoss.beauty/ko/${store?.storecode}/center`);
+                      navigator.clipboard.writeText(`https://cryptoss-runway.vercel.app/ko/${store?.storecode}/center`);
                       toast.success('가맹점 홈페이지 링크가 복사되었습니다.');
                     } }
                     className="bg-[#3167b4] text-sm text-[#f3f4f6] px-2 py-1 rounded-lg hover:bg-[#3167b4]/80"
@@ -2784,7 +2784,7 @@ export default function Index({ params }: any) {
                               <button
                                 onClick={() => {
                                   window.open(
-                                    'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
+                                    'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
                                     + 'storeUser=' + item.nickname + '&depositBankName=' + item?.buyer?.depositBankName + '&depositName=' + item?.buyer?.depositName,
                                     '_blank'
                                   );
@@ -2818,7 +2818,7 @@ export default function Index({ params }: any) {
                               <button
                                 onClick={() => {
                                   navigator.clipboard.writeText(
-                                    'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
+                                    'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
                                     + 'storeUser=' + item.nickname
                                     + '&depositBankName='+ item?.buyer?.depositBankName
                                     + '&depositBankAccountNumber=' + item?.buyer?.depositBankAccountNumber
@@ -2835,12 +2835,12 @@ export default function Index({ params }: any) {
 
                               {/* copy javascript code */}
                               {/*
-                                <a href={`https://cryptoss.beauty/${params.lang}/${item.storecode}/payment?storeUser=${item.nickname}&depositBankName=${item?.buyer?.depositBankName}&depositBankAccountNumber=${item?.buyer?.depositBankAccountNumber}&depositName=${item?.buyer?.depositName}&depositAmountKrw=${depositAmountKrw[index]}`} target="_blank" rel="noopener noreferrer">스크립트 복사</a>
+                                <a href={`https://cryptoss-runway.vercel.app/${params.lang}/${item.storecode}/payment?storeUser=${item.nickname}&depositBankName=${item?.buyer?.depositBankName}&depositBankAccountNumber=${item?.buyer?.depositBankAccountNumber}&depositName=${item?.buyer?.depositName}&depositAmountKrw=${depositAmountKrw[index]}`} target="_blank" rel="noopener noreferrer">스크립트 복사</a>
                               */}
                               <button
                                 onClick={() => {
                                   navigator.clipboard.writeText(
-                                    `<script src="https://cryptoss.beauty/${params.lang}/${item.storecode}/payment?storeUser=${item.nickname}&depositBankName=${item?.buyer?.depositBankName}&depositBankAccountNumber=${item?.buyer?.depositBankAccountNumber}&depositName=${item?.buyer?.depositName}&depositAmountKrw=${depositAmountKrw[index]}">결제하기</script>`
+                                    `<script src="https://cryptoss-runway.vercel.app/${params.lang}/${item.storecode}/payment?storeUser=${item.nickname}&depositBankName=${item?.buyer?.depositBankName}&depositBankAccountNumber=${item?.buyer?.depositBankAccountNumber}&depositName=${item?.buyer?.depositName}&depositAmountKrw=${depositAmountKrw[index]}">결제하기</script>`
                                   );
                                   toast.success('회원 결제페이지 스크립트가 복사되었습니다.');
                                 }}
@@ -2856,7 +2856,7 @@ export default function Index({ params }: any) {
                               <button
                                 onClick={() => {
                                   window.open(
-                                    'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
+                                    'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
                                     + 'storeUser=' + item.nickname
                                     + '&depositBankName=' + item?.buyer?.depositBankName
                                     + '&depositBankAccountNumber=' + item?.buyer?.depositBankAccountNumber
@@ -3074,11 +3074,11 @@ export default function Index({ params }: any) {
 /*
 selectedItem?.buyer?.depositBankName
 selectedItem?.buyer?.depositName
-'https://cryptoss.beauty/' + params.lang + '/' + selectedItem.storecode + '/payment?'
+'https://cryptoss-runway.vercel.app/' + params.lang + '/' + selectedItem.storecode + '/payment?'
 'storeUser=' + selectedItem.nickname + '&depositBankName=' + selectedItem?.buyer?.depositBankName + '&depositName=' + selectedItem?.buyer?.depositName
 
 
-'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
+'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
                                     + 'storeUser=' + item.nickname + '&depositBankName=' + item?.buyer?.depositBankName + '&depositName=' + item?.buyer?.depositName
 */
 
@@ -3099,7 +3099,7 @@ const UserHomePage = (
       
       {/* iframe */}
       <iframe
-        src={`https://cryptoss.beauty/kr/${selectedItem?.storecode}/payment?`
+        src={`https://cryptoss-runway.vercel.app/kr/${selectedItem?.storecode}/payment?`
           + 'storeUser=' + selectedItem?.nickname
           + '&depositBankName=' + selectedItem?.buyer?.depositBankName
           + '&depositBankAccountNumber=' + selectedItem?.buyer?.depositBankAccountNumber

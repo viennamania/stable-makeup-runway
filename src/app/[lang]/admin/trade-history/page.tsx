@@ -3572,7 +3572,7 @@ const fetchBuyOrders = async () => {
                                       "
                                       onClick={() => {
                                         // new window to complete trade
-                                        // {`https://www.cryptoss.beauty/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
+                                        // {`https://www.cryptoss-runway.vercel.app/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
 
                                         window.open(
                                           `/${params.lang}/${item?.storecode}/pay-usdt-reverse/${item?._id}`,
