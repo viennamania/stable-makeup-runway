@@ -209,7 +209,7 @@ export default function Index({ params }: any) {
     // the chain the contract is deployed on
     
     
-    chain: polygon,
+    chain: arbitrum,
   
   
   
@@ -1714,7 +1714,7 @@ export default function Index({ params }: any) {
     
     // if escrowNativeBalance is less than 0.1, then return
     if (escrowNativeBalance < 0.1) {
-      toast.error('POL balance is less than 0.1');
+      toast.error('ETH balance is less than 0.1');
       return;
     }
       */
@@ -1981,7 +1981,7 @@ export default function Index({ params }: any) {
 
     // if escrowNativeBalance is less than 0.1, then return
     if (escrowNativeBalance < 0.1) {
-      toast.error('POL balance is less than 0.1');
+      toast.error('ETH balance is less than 0.1');
       return;
     }
       */
@@ -2793,7 +2793,7 @@ export default function Index({ params }: any) {
 
                   /*
                   accountAbstraction={{
-                    chain: polygon,
+                    chain: arbitrum,
                     sponsorGas: true
                   }}
                   */
@@ -3081,7 +3081,7 @@ export default function Index({ params }: any) {
 
                       /*
                       accountAbstraction={{
-                        chain: polygon,
+                        chain: arbitrum,
                         sponsorGas: true
                       }}
                       */
@@ -5651,14 +5651,14 @@ export default function Index({ params }: any) {
                               "
                               onClick={() => {
                                 window.open(
-                                  `https://polygonscan.com/tx/${item.transactionHash}`,
+                                  `https://arbiscan.io/tx/${item.transactionHash}`,
                                   '_blank'
                                 );
                               }}
                             >
                               <div className="flex flex-row gap-2 items-center justify-center">
                                 <Image
-                                  src="/logo-polygon.png"
+                                  src="/logo-arbitrum.png"
                                   alt="Polygon"
                                   width={20}
                                   height={20}
@@ -5680,7 +5680,7 @@ export default function Index({ params }: any) {
                         </td>
 
 
-                        {/* `https://polygonscan.com/tx/${item.settlement.txid}` */}
+                        {/* `https://arbiscan.io/tx/${item.settlement.txid}` */}
 
                         <td className="p-2">
                           <div className="w-full flex flex-col gap-2 items-center justify-center">
@@ -5791,7 +5791,7 @@ export default function Index({ params }: any) {
 
                                   onClick={() => {
                                     window.open(
-                                      `https://polygonscan.com/tx/${item.settlement.txid}`,
+                                      `https://arbiscan.io/tx/${item.settlement.txid}`,
                                       '_blank'
                                     );
                                   }}
@@ -5934,7 +5934,7 @@ export default function Index({ params }: any) {
                               className="text-sm bg-zinc-500 text-white px-2 py-1 rounded-md hover:bg-zinc-600"
                               onClick={() => {
                                 window.open(
-                                  `https://polygonscan.com/tx/${item.settlement.txid}`,
+                                  `https://arbiscan.io/tx/${item.settlement.txid}`,
                                   '_blank'
                                 );
                               }}
@@ -6666,14 +6666,14 @@ export default function Index({ params }: any) {
                                     className="bg-white text-black px-2 py-2 rounded-md"
                                     onClick={() => {
                           
-                                        window.open(`https://polygonscan.com/tx/${item.escrowTransactionHash}`);
+                                        window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`);
                                         
 
 
                                     }}
                                   >
                                     <Image
-                                      src='/logo-polygon.png'
+                                      src='/logo-arbitrum.png'
                                       alt="Chain"
                                       width={20}
                                       height={20}

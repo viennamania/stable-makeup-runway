@@ -409,11 +409,11 @@ export default function Index({ params }: any) {
       const result = await getWalletBalance({
         address: address,
         client: client,
-        chain: polygon,
+        chain: arbitrum,
       });
       //console.log("getWalletBalance", result);
       /*
-      {value: 193243898588330546n, decimals: 18, displayValue: '0.193243898588330546', symbol: 'POL', name: 'POL'}
+      {value: 193243898588330546n, decimals: 18, displayValue: '0.193243898588330546', symbol: 'ETH', name: 'ETH'}
       */
       if (result) {
         setNativeBalance(Number(result.value) / 10 ** result.decimals);
@@ -902,7 +902,7 @@ export default function Index({ params }: any) {
                   />
 
                   <Image
-                    src={params.center === 'arbitrum' ? '/logo-arbitrum.png' : '/logo-polygon.png'}
+                    src={params.center === 'arbitrum' ? '/logo-arbitrum.png' : '/logo-arbitrum.png'}
                     alt="Chain"
                     width={32}
                     height={32}
@@ -939,7 +939,7 @@ export default function Index({ params }: any) {
                         accountAbstraction={{   
                           chain: params.center === "arbitrum" ? arbitrum : polygon,
                           //
-                          //chain: polygon,
+                          //chain: arbitrum,
 
                           //chain: arbitrum,
                           factoryAddress: "0x655934C0B4bD79f52A2f7e6E60714175D5dd319b", // polygon, arbitrum
@@ -1027,7 +1027,7 @@ export default function Index({ params }: any) {
 
                         {/*
                         <div className="flex flex-row items-center gap-2 text-xs ">
-                          {nativeBalance && Number(nativeBalance).toFixed(4)}{' '}POL
+                          {nativeBalance && Number(nativeBalance).toFixed(4)}{' '}ETH
                         </div>
                         */}
                       
@@ -2066,14 +2066,14 @@ export default function Index({ params }: any) {
                                         className="bg-white text-black px-2 py-2 rounded-md"
                                         onClick={() => {
                               
-                                            params.center === 'arbitrum' ? window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`) : window.open(`https://polygonscan.com/tx/${item.escrowTransactionHash}`);
+                                            params.center === 'arbitrum' ? window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`) : window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`);
                                             
 
 
                                         }}
                                       >
                                         <Image
-                                          src={params.center === 'arbitrum' ? '/logo-arbitrum.png' : '/logo-polygon.png'}
+                                          src={params.center === 'arbitrum' ? '/logo-arbitrum.png' : '/logo-arbitrum.png'}
                                           alt="Chain"
                                           width={20}
                                           height={20}

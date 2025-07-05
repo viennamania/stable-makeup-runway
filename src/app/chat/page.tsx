@@ -259,7 +259,7 @@ function ChatPageContent() {
 
                   /*
                   accountAbstraction={{
-                    chain: polygon,
+                    chain: arbitrum,
                     sponsorGas: true
                   }}
                   */

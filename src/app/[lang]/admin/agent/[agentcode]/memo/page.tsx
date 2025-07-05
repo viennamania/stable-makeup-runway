@@ -120,7 +120,7 @@ export default function SettingsPage({ params }: any) {
         client,
         // the chain the contract is deployed on 
         
-        chain: polygon,
+        chain: arbitrum,
 
         address: contractAddress,
     

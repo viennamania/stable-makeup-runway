@@ -177,7 +177,7 @@ export default function Index({ params }: any) {
     // the chain the contract is deployed on
     
     
-    chain: polygon,
+    chain: arbitrum,
   
   
   
@@ -518,11 +518,11 @@ export default function Index({ params }: any) {
       const result = await getWalletBalance({
         address: address,
         client: client,
-        chain: polygon,
+        chain: arbitrum,
       });
       //console.log("getWalletBalance", result);
       /*
-      {value: 193243898588330546n, decimals: 18, displayValue: '0.193243898588330546', symbol: 'POL', name: 'POL'}
+      {value: 193243898588330546n, decimals: 18, displayValue: '0.193243898588330546', symbol: 'ETH', name: 'ETH'}
       */
       if (result) {
         setNativeBalance(Number(result.value) / 10 ** result.decimals);
@@ -1295,7 +1295,7 @@ export default function Index({ params }: any) {
 
                 /*
                 accountAbstraction={{
-                  chain: polygon,
+                  chain: arbitrum,
                   sponsorGas: true
                 }}
                 */
@@ -1551,7 +1551,7 @@ export default function Index({ params }: any) {
                       {/*
                       {activeWallet === inAppConnectWallet && (
                         <div className="flex flex-row items-center gap-2 text-xs ">
-                          {nativeBalance && Number(nativeBalance).toFixed(4)}{' '}POL
+                          {nativeBalance && Number(nativeBalance).toFixed(4)}{' '}ETH
                         </div>
                       )}
                       */}

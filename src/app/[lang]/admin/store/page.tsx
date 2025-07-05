@@ -199,7 +199,7 @@ export default function Index({ params }: any) {
     // the chain the contract is deployed on
     
     
-    chain: polygon,
+    chain: arbitrum,
   
   
   
@@ -1528,7 +1528,7 @@ export default function Index({ params }: any) {
     const result = await getWalletBalance({
       address: address,
       client: client,
-      chain: polygon,
+      chain: arbitrum,
     });
     */
 
@@ -1672,7 +1672,7 @@ export default function Index({ params }: any) {
 
               /*
               accountAbstraction={{
-                chain: polygon,
+                chain: arbitrum,
                 sponsorGas: true
               }}
               */
@@ -3147,7 +3147,7 @@ export default function Index({ params }: any) {
                                 <span className="text-lg text-green-600"
                                   style={{ fontFamily: 'monospace' }}
                                 >
-                                  {item?.nativeBalance ? item?.nativeBalance.toFixed(2).toLocaleString('us-US') : 0}{' '}POL
+                                  {item?.nativeBalance ? item?.nativeBalance.toFixed(2).toLocaleString('us-US') : 0}{' '}ETH
                                 </span>
                               
                               </div>

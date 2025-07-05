@@ -218,7 +218,7 @@ export async function POST(request: NextRequest) {
 
       const wallet = smartWallet({
 
-        chain: polygon,
+        chain: arbitrum,
 
         ///factoryAddress: "0x655934C0B4bD79f52A2f7e6E60714175D5dd319b", // your own deployed account factory address
         sponsorGas: true,
@@ -243,7 +243,7 @@ export async function POST(request: NextRequest) {
 
       const contract = getContract({
         client,
-        chain: polygon,
+        chain: arbitrum,
         address: tokenContractAddressUSDT, // erc20 contract from thirdweb.com/explore
       });
 

@@ -804,7 +804,7 @@ export default function SendUsdt({ params }: any) {
                       accountAbstraction={{   
                         chain: params.center === "arbitrum" ? arbitrum : polygon,
                         //
-                        //chain: polygon,
+                        //chain: arbitrum,
 
                         //chain: arbitrum,
                         factoryAddress: "0x655934C0B4bD79f52A2f7e6E60714175D5dd319b", // polygon, arbitrum
@@ -891,7 +891,7 @@ export default function SendUsdt({ params }: any) {
 
                       {/*}
                       <div className="flex flex-row items-center gap-2 text-xs ">
-                        {nativeBalance && Number(nativeBalance).toFixed(4)}{' '}POL
+                        {nativeBalance && Number(nativeBalance).toFixed(4)}{' '}ETH
                       </div>
                       */}
                     

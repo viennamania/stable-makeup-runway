@@ -1514,7 +1514,7 @@ export default function Index({ params }: any) {
                     className="rounded-lg"
                   />
                   <Image
-                    src={params.center === "arbitrum" ? "/logo-arbitrum.png" : "/logo-polygon.png"}
+                    src={params.center === "arbitrum" ? "/logo-arbitrum.png" : "/logo-arbitrum.png"}
                     alt="Chain"
                     width={32}
                     height={32}
@@ -1551,7 +1551,7 @@ export default function Index({ params }: any) {
                         accountAbstraction={{   
                           chain: params.center === "arbitrum" ? arbitrum : polygon,
                           //
-                          //chain: polygon,
+                          //chain: arbitrum,
 
                           //chain: arbitrum,
                           factoryAddress: "0x655934C0B4bD79f52A2f7e6E60714175D5dd319b", // polygon, arbitrum
@@ -1639,7 +1639,7 @@ export default function Index({ params }: any) {
 
                         {/*}
                         <div className="flex flex-row items-center gap-2 text-xs ">
-                          {nativeBalance && Number(nativeBalance).toFixed(4)}{' '}POL
+                          {nativeBalance && Number(nativeBalance).toFixed(4)}{' '}ETH
                         </div>
                         */}
                       
@@ -1761,7 +1761,7 @@ export default function Index({ params }: any) {
 
                        {/*
                         <div className="flex flex-row items-center gap-2 text-xs ">
-                          {escrowNativeBalance && Number(escrowNativeBalance).toFixed(4)}{' '}POL
+                          {escrowNativeBalance && Number(escrowNativeBalance).toFixed(4)}{' '}ETH
                         </div>
                         */}
                         
@@ -3439,12 +3439,12 @@ export default function Index({ params }: any) {
                                       className="bg-white text-black px-2 py-2 rounded-md"
                                       onClick={() => {
                                           // new window for smart contract
-                                          ///window.open(`https://polygonscan.com/tx/${item.escrowTransactionHash}`);
+                                          ///window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`);
 
 
                                           {
                                             params.center === 'polygon' ? (
-                                              window.open(`https://polygonscan.com/tx/${item.escrowTransactionHash}`)
+                                              window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`)
                                             ) : (
                                               window.open(`https://etherscan.io/tx/${item.escrowTransactionHash}`)
                                             )
@@ -3454,7 +3454,7 @@ export default function Index({ params }: any) {
                                       }}
                                     >
                                       <Image
-                                        src="/logo-polygon.png"
+                                        src="/logo-arbitrum.png"
                                         alt="Polygon"
                                         width={20}
                                         height={20}

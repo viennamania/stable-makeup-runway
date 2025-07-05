@@ -750,7 +750,7 @@ export default function SendUsdt({ params }: any) {
 
                 /*
                 accountAbstraction={{
-                    chain: polygon,
+                    chain: arbitrum,
                     sponsorGas: true
                 }}
                 */

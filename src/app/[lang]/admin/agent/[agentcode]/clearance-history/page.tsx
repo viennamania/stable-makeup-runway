@@ -167,7 +167,7 @@ export default function Index({ params }: any) {
     // the chain the contract is deployed on
     
     
-    chain: polygon,
+    chain: arbitrum,
   
   
   
@@ -578,11 +578,11 @@ export default function Index({ params }: any) {
         const result = await getWalletBalance({
           address: address,
           client: client,
-          chain: polygon,
+          chain: arbitrum,
         });
         //console.log("getWalletBalance", result);
         /*
-        {value: 193243898588330546n, decimals: 18, displayValue: '0.193243898588330546', symbol: 'POL', name: 'POL'}
+        {value: 193243898588330546n, decimals: 18, displayValue: '0.193243898588330546', symbol: 'ETH', name: 'ETH'}
         */
         if (result) {
           setNativeBalance(Number(result.value) / 10 ** result.decimals);
@@ -2495,12 +2495,12 @@ export default function Index({ params }: any) {
                                       className="bg-white text-black px-2 py-2 rounded-md"
                                       onClick={() => {
                                           // new window for smart contract
-                                          ///window.open(`https://polygonscan.com/tx/${item.escrowTransactionHash}`);
+                                          ///window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`);
 
 
                                           {
                                             params.storecode === 'polygon' ? (
-                                              window.open(`https://polygonscan.com/tx/${item.escrowTransactionHash}`)
+                                              window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`)
                                             ) : (
                                               window.open(`https://etherscan.io/tx/${item.escrowTransactionHash}`)
                                             )
@@ -2510,7 +2510,7 @@ export default function Index({ params }: any) {
                                       }}
                                     >
                                       <Image
-                                        src="/logo-polygon.png"
+                                        src="/logo-arbitrum.png"
                                         alt="Polygon"
                                         width={20}
                                         height={20}

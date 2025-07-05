@@ -191,7 +191,7 @@ export default function Index({ params }: any) {
     // the chain the contract is deployed on
     
     
-    chain: polygon,
+    chain: arbitrum,
   
   
   
@@ -1695,7 +1695,7 @@ export default function Index({ params }: any) {
     
     // if escrowNativeBalance is less than 0.1, then return
     if (escrowNativeBalance < 0.1) {
-      toast.error('POL balance is less than 0.1');
+      toast.error('ETH balance is less than 0.1');
       return;
     }
       */
@@ -1968,7 +1968,7 @@ export default function Index({ params }: any) {
 
     // if escrowNativeBalance is less than 0.1, then return
     if (escrowNativeBalance < 0.1) {
-      toast.error('POL balance is less than 0.1');
+      toast.error('ETH balance is less than 0.1');
       return;
     }
       */
@@ -2707,7 +2707,7 @@ const [tradeSummary, setTradeSummary] = useState({
 
               /*
               accountAbstraction={{
-                chain: polygon,
+                chain: arbitrum,
                 sponsorGas: true
               }}
               */
@@ -2991,7 +2991,7 @@ const [tradeSummary, setTradeSummary] = useState({
 
                       /*
                       accountAbstraction={{
-                        chain: polygon,
+                        chain: arbitrum,
                         sponsorGas: true
                       }}
                       */
@@ -3526,7 +3526,7 @@ const [tradeSummary, setTradeSummary] = useState({
                         {/*
                         {activeWallet === inAppConnectWallet && (
                           <div className="flex flex-row items-center gap-2 text-sm ">
-                            {nativeBalance && Number(nativeBalance).toFixed(4)}{' '}POL
+                            {nativeBalance && Number(nativeBalance).toFixed(4)}{' '}ETH
                           </div>
                         )}
                         */}
@@ -4241,7 +4241,7 @@ const [tradeSummary, setTradeSummary] = useState({
                                     {/* noew window open */}
                                     {/* polyscan explorer */}
                                     <a
-                                      href={`https://polygonscan.com/tx/${item.transactionHash}`}
+                                      href={`https://arbiscan.io/tx/${item.transactionHash}`}
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className="text-sm text-blue-500 underline"
@@ -5337,14 +5337,14 @@ const [tradeSummary, setTradeSummary] = useState({
                                         className="bg-white text-black px-2 py-2 rounded-md"
                                         onClick={() => {
                               
-                                            params.center === 'arbitrum' ? window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`) : window.open(`https://polygonscan.com/tx/${item.escrowTransactionHash}`);
+                                            params.center === 'arbitrum' ? window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`) : window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`);
                                             
 
 
                                         }}
                                       >
                                         <Image
-                                          src={params.center === 'arbitrum' ? '/logo-arbitrum.png' : '/logo-polygon.png'}
+                                          src={params.center === 'arbitrum' ? '/logo-arbitrum.png' : '/logo-arbitrum.png'}
                                           alt="Chain"
                                           width={20}
                                           height={20}

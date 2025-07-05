@@ -193,7 +193,7 @@ export default function Index({ params }: any) {
     // the chain the contract is deployed on
     
     
-    chain: polygon,
+    chain: arbitrum,
   
   
   
@@ -1251,7 +1251,7 @@ export default function Index({ params }: any) {
 
               /*
               accountAbstraction={{
-                chain: polygon,
+                chain: arbitrum,
                 sponsorGas: true
               }}
               */

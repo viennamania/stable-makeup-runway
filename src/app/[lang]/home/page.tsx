@@ -197,7 +197,7 @@ export default function Index({ params }: any) {
     // the chain the contract is deployed on
     
     
-    chain: polygon,
+    chain: arbitrum,
   
   
   
@@ -1672,7 +1672,7 @@ export default function Index({ params }: any) {
     
     // if escrowNativeBalance is less than 0.1, then return
     if (escrowNativeBalance < 0.1) {
-      toast.error('POL balance is less than 0.1');
+      toast.error('ETH balance is less than 0.1');
       return;
     }
       */
@@ -1971,7 +1971,7 @@ export default function Index({ params }: any) {
 
     // if escrowNativeBalance is less than 0.1, then return
     if (escrowNativeBalance < 0.1) {
-      toast.error('POL balance is less than 0.1');
+      toast.error('ETH balance is less than 0.1');
       return;
     }
       */
@@ -2652,7 +2652,7 @@ const fetchBuyOrders = async () => {
 
                 
                 accountAbstraction={{
-                  chain: polygon,
+                  chain: arbitrum,
                   sponsorGas: true
                 }}
                 
@@ -4814,7 +4814,7 @@ const fetchBuyOrders = async () => {
 
                                   onClick={() => {
                                     window.open(
-                                      `https://polygonscan.com/tx/${item.settlement.txid}`,
+                                      `https://arbiscan.io/tx/${item.settlement.txid}`,
                                       '_blank'
                                     );
                                   }}
@@ -4903,7 +4903,7 @@ const fetchBuyOrders = async () => {
                                   className="text-sm bg-zinc-500 text-white px-2 py-1 rounded-md hover:bg-zinc-600"
                                   onClick={() => {
                                     window.open(
-                                      `https://polygonscan.com/tx/${item.settlement.txid}`,
+                                      `https://arbiscan.io/tx/${item.settlement.txid}`,
                                       '_blank'
                                     );
                                   }}
@@ -5633,14 +5633,14 @@ const fetchBuyOrders = async () => {
                                         className="bg-white text-black px-2 py-2 rounded-md"
                                         onClick={() => {
                               
-                                            window.open(`https://polygonscan.com/tx/${item.escrowTransactionHash}`);
+                                            window.open(`https://arbiscan.io/tx/${item.escrowTransactionHash}`);
                                             
 
 
                                         }}
                                       >
                                         <Image
-                                          src='/logo-polygon.png'
+                                          src='/logo-arbitrum.png'
                                           alt="Chain"
                                           width={20}
                                           height={20}

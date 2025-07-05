@@ -56,7 +56,7 @@ const contract = getContract({
     // the client you have created via `createThirdwebClient()`
     client,
     // the chain the contract is deployed on
-    chain: polygon,
+    chain: arbitrum,
     // the contract's address
     address: contractAddress,
     // OPTIONAL: the contract's abi
@@ -253,7 +253,7 @@ export default function SendUsdt() {
                   height={35}
                 />
                 <Image
-                  src="/logo-polygon.png"
+                  src="/logo-arbitrum.png"
                   alt="Polygon"
                   width={32}
                   height={32}

@@ -261,7 +261,7 @@ export default function SendUsdt({ params }: any) {
 
       const contractUsdt = getContract({
         client,
-        chain: polygon,
+        chain: arbitrum,
         address: contractAddress,
       });
 
