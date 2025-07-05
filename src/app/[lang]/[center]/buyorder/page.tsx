@@ -214,9 +214,9 @@ export default function Index({ params }: any) {
   
   
     // the contract's address
-    ///address: contractAddress,
+    ///address: contractAddressArbitrum,
 
-    address: contractAddress,
+    address: contractAddressArbitrum,
 
 
     // OPTIONAL: the contract's abi

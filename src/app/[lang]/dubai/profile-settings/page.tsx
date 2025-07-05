@@ -123,7 +123,7 @@ export default function SettingsPage({ params }: any) {
         
         chain: arbitrum,
 
-        address: contractAddress,
+        address: contractAddressArbitrum,
     
     
         // OPTIONAL: the contract's abi

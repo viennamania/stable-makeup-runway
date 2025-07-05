@@ -103,7 +103,7 @@ export default function SettingsPage({ params }: any) {
       
       
         // the contract's address
-        ///address: contractAddress,
+        ///address: contractAddressArbitrum,
     
         address: params.center === "arbitrum" ? contractAddressArbitrum : contractAddress,
     

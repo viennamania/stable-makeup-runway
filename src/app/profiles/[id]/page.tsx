@@ -63,7 +63,7 @@ const contract = getContract({
     // the chain the contract is deployed on
     chain: arbitrum,
     // the contract's address
-    address: contractAddress,
+    address: contractAddressArbitrum,
     // OPTIONAL: the contract's abi
     //abi: [...],
 });
