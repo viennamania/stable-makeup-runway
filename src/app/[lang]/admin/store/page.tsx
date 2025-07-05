@@ -192,7 +192,6 @@ export default function Index({ params }: any) {
   const activeWallet = useActiveWallet();
   
 
-
   const contract = getContract({
     // the client you have created via `createThirdwebClient()`
     client,
