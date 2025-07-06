@@ -271,10 +271,7 @@ export async function POST(request: NextRequest) {
 
     console.log("Settlement updated successfully for orderId:", orderId);
     return NextResponse.json({
-      result: {
-        orderId: orderId,
-        settlement: settlement,
-      },
+      result: result,
     });
   
 }
