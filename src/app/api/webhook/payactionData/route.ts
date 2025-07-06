@@ -146,9 +146,9 @@ export async function POST(request: NextRequest) {
 
   //const storecode = "ixryqqtw"; // upbet
 
-  const storecode = "rwmgklii"; // 테더의신
+  ///const storecode = "rwmgklii"; // 테더의신
 
-
+  const storecode = "ejcpgqmw"; // 모두의 슬롯
 
   try {
 
@@ -313,7 +313,7 @@ export async function POST(request: NextRequest) {
         
 
 
-        const response = await fetch("https://dubai-telegram.vercel.app/api/telegram/sendMessageByUseridAndStorecode", {
+        const response = await fetch("https://dubai-telegram.vercel.app/api/telegram/sendMessageByUseridAndStorecodeGoodPay", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
