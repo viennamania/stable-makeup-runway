@@ -1277,6 +1277,9 @@ export default function SettingsPage({ params }: any) {
                                 <option value="농협" selected={bankName === "농협"}>
                                     농협
                                 </option>
+                                <option value="신협" selected={bankName === "신협"}>
+                                    신협
+                                </option>
                                 <option value="기업은행" selected={bankName === "기업은행"}>
                                     기업은행
                                 </option>
