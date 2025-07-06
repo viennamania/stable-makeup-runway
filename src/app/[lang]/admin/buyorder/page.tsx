@@ -2092,7 +2092,7 @@ export default function Index({ params }: any) {
 
     // api call to settlement
     try {
-      const response = await fetch('/api/order/buyOrderSettlement', {
+      const response = await fetch('/api/order/updateBuyOrderSettlement', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -5604,11 +5604,14 @@ const fetchBuyOrders = async () => {
                                              is last 1 hour, show button to settlement
                                           */}
 
+
+
+
+                                          {/*
                                           {item.transactionHash &&
                                             new Date().getTime() - new Date(item.paymentConfirmedAt).getTime() > 1000 * 5 * 60 && (
 
                                             <div className="flex flex-row gap-2 items-center justify-center">
-                                              {/* checkbox to confirm settlement */}
                                               <input
                                                 disabled={loadingSettlement[index]}
                                                 type="checkbox"
@@ -5670,6 +5673,7 @@ const fetchBuyOrders = async () => {
                                               </button>
                                             </div>
                                           )}
+                                          */}
 
 
 
