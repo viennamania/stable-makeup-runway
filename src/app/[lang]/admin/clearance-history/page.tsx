@@ -1020,7 +1020,7 @@ export default function Index({ params }: any) {
                     walletAddress: address,
                     searchMyOrders: searchMyOrders,
 
-                    searchOrderStatusCompleted: true,
+                    //searchOrderStatusCompleted: true,
 
                     searchBuyer: searchBuyer,
                     searchDepositName: searchDepositName,
@@ -1150,7 +1150,7 @@ export default function Index({ params }: any) {
               walletAddress: address,
               searchMyOrders: searchMyOrders,
 
-              searchOrderStatusCompleted: true,
+              //searchOrderStatusCompleted: true,
 
               searchBuyer: searchBuyer,
               searchDepositName: searchDepositName,
@@ -1416,7 +1416,7 @@ export default function Index({ params }: any) {
                   walletAddress: address,
                   searchMyOrders: searchMyOrders,
 
-                  searchOrderStatusCompleted: true,
+                  //searchOrderStatusCompleted: true,
 
                   searchBuyer: searchBuyer,
                   searchDepositName: searchDepositName,
@@ -1631,7 +1631,7 @@ export default function Index({ params }: any) {
               walletAddress: address,
               searchMyOrders: searchMyOrders,
 
-              searchOrderStatusCompleted: true,
+              //searchOrderStatusCompleted: true,
 
               searchBuyer: searchBuyer,
               searchDepositName: searchDepositName,
@@ -1799,7 +1799,7 @@ export default function Index({ params }: any) {
               walletAddress: address,
               searchMyOrders: searchMyOrders,
 
-              searchOrderStatusCompleted: true,
+              //searchOrderStatusCompleted: true,
 
               searchBuyer: searchBuyer,
               searchDepositName: searchDepositName,
@@ -1962,7 +1962,7 @@ export default function Index({ params }: any) {
               walletAddress: address,
               searchMyOrders: searchMyOrders,
 
-              searchOrderStatusCompleted: true,
+              //searchOrderStatusCompleted: true,
 
               searchBuyer: searchBuyer,
               searchDepositName: searchDepositName,
@@ -2102,7 +2102,7 @@ const fetchBuyOrders = async () => {
         walletAddress: address,
         searchMyOrders: searchMyOrders,
 
-        searchOrderStatusCompleted: true,
+        //searchOrderStatusCompleted: true,
 
         searchBuyer: searchBuyer,
         searchDepositName: searchDepositName,
@@ -2573,6 +2573,7 @@ const fetchBuyOrders = async () => {
 
 
 
+
             {/* trade summary */}
 
             <div className="flex flex-col xl:flex-row items-center justify-between gap-2
@@ -2598,9 +2599,20 @@ const fetchBuyOrders = async () => {
 
                 <div className="flex flex-col gap-2 items-center">
                   <div className="text-sm">총 거래량(USDT)</div>
-                  <div className="text-xl font-semibold text-zinc-500">
-                    {tradeSummary.totalUsdtAmount?.toLocaleString()} USDT
+                  
+                  <div className="flex flex-row items-center justify-center gap-1">
+                    <Image
+                      src="/icon-tether.png"
+                      alt="Tether"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5"
+                    />
+                    <div className="text-xl font-semibold text-zinc-500">
+                      {tradeSummary.totalUsdtAmount?.toLocaleString()}
+                    </div>
                   </div>
+
                 </div>
               </div>
 
@@ -2625,9 +2637,20 @@ const fetchBuyOrders = async () => {
                 </div>
                 <div className="flex flex-col gap-2 items-center">
                   <div className="text-sm">총 정산량(USDT)</div>
-                  <div className="text-xl font-semibold text-zinc-500">
-                    {tradeSummary.totalSettlementAmount?.toLocaleString()} USDT
+
+                  <div className="flex flex-row items-center justify-center gap-1">
+                    <Image
+                      src="/icon-tether.png"
+                      alt="Tether"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5"
+                    />
+                    <div className="text-xl font-semibold text-zinc-500">
+                      {tradeSummary.totalSettlementAmount?.toLocaleString()}
+                    </div>
                   </div>
+
                 </div>
 
                 <div className="flex flex-col gap-2 items-center">
@@ -2638,8 +2661,17 @@ const fetchBuyOrders = async () => {
                 </div>
                 <div className="flex flex-col gap-2 items-center">
                   <div className="text-sm">총 수수료수량(USDT)</div>
-                  <div className="text-xl font-semibold text-zinc-500">
-                    {tradeSummary.totalFeeAmount?.toLocaleString()} USDT
+                  <div className="flex flex-row items-center justify-center gap-1">
+                    <Image
+                      src="/icon-tether.png"
+                      alt="Tether"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5"
+                    />
+                    <div className="text-xl font-semibold text-zinc-500">
+                      {tradeSummary.totalFeeAmount?.toLocaleString()}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2665,8 +2697,17 @@ const fetchBuyOrders = async () => {
                 </div>
                 <div className="flex flex-col gap-2 items-center">
                   <div className="text-sm">총 청산수량(USDT)</div>
-                  <div className="text-xl font-semibold text-zinc-500">
-                    {tradeSummary.totalClearanceAmountUSDT?.toLocaleString()} USDT
+                  <div className="flex flex-row items-center justify-center gap-1">
+                    <Image
+                      src="/icon-tether.png"
+                      alt="Tether"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5"
+                    />
+                    <div className="text-xl font-semibold text-zinc-500">
+                      {tradeSummary.totalClearanceAmountUSDT?.toLocaleString()} USDT
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3120,32 +3161,6 @@ const fetchBuyOrders = async () => {
 
 
                             <td className="p-2">
-                              {/*
-                              <div className="flex flex-col gap-2 items-center justify-center">
-                                <div className="text-sm font-semibold text-zinc-500">
-                                  {item?.seller?.bankInfo?.bankName}
-                                </div>
-
-                                <button
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(item?.seller?.bankInfo?.accountNumber);
-                                    toast.success('입금통장번호가 복사되었습니다.');
-                                  }}
-                                  className="text-sm text-zinc-500 font-semibold
-                                    hover:text-blue-600 cursor-pointer
-                                    hover:underline"
-                                  title="입금통장번호 복사"
-                                >
-                                  {item?.seller?.bankInfo?.accountNumber}
-                                </button>
-
-                                <div className="text-sm font-semibold text-zinc-500">
-                                  {item?.seller?.bankInfo?.accountHolder}
-                                </div>
-                              </div>
-                              */}
-
-
 
                                 {item?.buyer?.nickname ? (
                                   <div className="flex flex-col items-start justify-center gap-1">
@@ -3189,10 +3204,6 @@ const fetchBuyOrders = async () => {
                                       </span>
                                   </div>
                                 )}
-
-
-
-
 
                             </td>
 

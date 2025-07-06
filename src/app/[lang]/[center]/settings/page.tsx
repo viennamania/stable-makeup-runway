@@ -1131,7 +1131,7 @@ export default function SettingsPage({ params }: any) {
                     <ConnectButton
                         client={client}
                         wallets={wallets}
-                        chain={polygon}
+                        chain={arbitrum}
                         theme={"light"}
 
                         // button color is dark skyblue convert (49, 103, 180) to hex

@@ -777,7 +777,7 @@ export default function SendUsdt({ params }: any) {
                 <ConnectButton
                   client={client}
                   wallets={wallets}
-                  chain={polygon}
+                  chain={arbitrum}
 
                 
                   theme={"light"}

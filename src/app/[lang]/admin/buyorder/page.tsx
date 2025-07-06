@@ -2804,7 +2804,7 @@ const fetchBuyOrders = async () => {
               <ConnectButton
                 client={client}
                 wallets={wallets}
-                chain={polygon}
+                chain={arbitrum}
 
                 /*
                 accountAbstraction={{

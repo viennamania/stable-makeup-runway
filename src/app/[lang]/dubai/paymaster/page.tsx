@@ -2252,7 +2252,7 @@ export default function Index({ params }: any) {
                         <ConnectButton
                           client={client}
                           wallets={wallets}
-                          chain={polygon}
+                          chain={arbitrum}
 
                           
                           accountAbstraction={{
