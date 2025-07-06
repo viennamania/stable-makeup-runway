@@ -2914,7 +2914,9 @@ export default function Index({ params }: any) {
                               <td className="p-2">
                                 <div className="flex flex-col gap-1">
                                   <span className="text-lg text-zinc-600">
-                                    {item.nickname || '익명'}
+                                    {item?.buyer?.nickname ?
+                                      item?.buyer?.nickname
+                                      : item?.nickname || '익명'}
                                   </span>
                                   <span className="text-lg text-zinc-400 font-semibold">
                                     {item.walletAddress.slice(0, 6) + '...' + item.walletAddress.slice(-4)}
@@ -2925,7 +2927,7 @@ export default function Index({ params }: any) {
 
 
                               <td>
-                                <div className="flex flex-col items-end justify-center gap-1 mr-5">
+                                <div className="flex flex-col items-end justify-center gap-1 mr-10">
                                   <span className="text-xl text-yellow-600 font-semibold"
                                     style={{
                                       fontFamily: 'monospace',
@@ -2963,44 +2965,45 @@ export default function Index({ params }: any) {
                                 {item?.buyer?.nickname ? (
                                   <div className="flex flex-col items-start justify-center gap-1">
 
-                                  {/* 
-                                    nickname
-                                    "matoto44"
-                                    depositBankName
-                                    "카카오뱅크"
-                                    depositBankAccountNumber
-                                    "3333338246503"
-                                    depositName
-                                    "허경수"
-                                    */}
-
-                                    <span className="text-sm text-zinc-400">
-                                      {item.buyer?.nickname}
-                                    </span>
-                                    <span className="text-sm text-zinc-400">
+                                    <span className="text-lg text-zinc-400 font-semibold">
                                       {item.buyer?.depositBankName}
                                     </span>
-                                    <span className="text-sm text-zinc-400">
+
+                                    <button
+                                      className="text-lg text-zinc-400 font-semibold hover:text-blue-500"
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(item.buyer?.depositBankAccountNumber);
+                                        alert('계좌번호가 클립보드에 복사되었습니다.');
+                                      }}
+                                    >
                                       {item.buyer?.depositBankAccountNumber}
-                                    </span>
-                                    <span className="text-sm text-zinc-400">
+                                    </button>
+
+
+                                    <span className="text-lg text-zinc-400 font-semibold">
                                       {item.buyer?.depositName}
                                     </span>
 
                                   </div>
                                 ) : (
-                                <div className="flex flex-col items-start justify-center gap-1">
-                                  <span className="text-sm text-zinc-400">
-                                    {item.seller?.bankInfo?.bankName}
-                                  </span>
-                                  <span className="text-sm text-zinc-400">
-                                    {item.seller?.bankInfo?.accountNumber}
+                                  <div className="flex flex-col items-start justify-center gap-1">
+                                    <span className="text-lg text-zinc-400 font-semibold">
+                                      {item.seller?.bankInfo?.bankName}
                                     </span>
-                                  <span className="text-sm text-zinc-400">
-                                    {item.seller?.bankInfo?.accountHolder}
-                                    </span>
-                                </div>
-                              )}
+                                    <button
+                                      className="text-lg text-zinc-400 font-semibold hover:text-blue-500"
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(item.seller?.bankInfo?.accountNumber);
+                                        alert('계좌번호가 클립보드에 복사되었습니다.');
+                                      }}
+                                    >
+                                      {item.seller?.bankInfo?.accountNumber}
+                                    </button>
+                                    <span className="text-lg text-zinc-400 font-semibold">
+                                      {item.seller?.bankInfo?.accountHolder}
+                                      </span>
+                                  </div>
+                                )}
 
 
                               </td>

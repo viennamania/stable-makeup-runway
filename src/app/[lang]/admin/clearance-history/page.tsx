@@ -3062,7 +3062,9 @@ const fetchBuyOrders = async () => {
                             <td className="p-2">
                               <div className="flex flex-col gap-1">
                                 <span className="text-lg text-zinc-600">
-                                  {item.nickname || '익명'}
+                                  {item?.buyer?.nickname ?
+                                    item?.buyer?.nickname
+                                    : item?.nickname || '익명'}
                                 </span>
                                 <span className="text-lg text-zinc-400 font-semibold">
                                   {item.walletAddress.slice(0, 6) + '...' + item.walletAddress.slice(-4)}
@@ -3118,12 +3120,12 @@ const fetchBuyOrders = async () => {
 
 
                             <td className="p-2">
+                              {/*
                               <div className="flex flex-col gap-2 items-center justify-center">
                                 <div className="text-sm font-semibold text-zinc-500">
                                   {item?.seller?.bankInfo?.bankName}
                                 </div>
 
-                                {/* copy account number to clipboard */}
                                 <button
                                   onClick={() => {
                                     navigator.clipboard.writeText(item?.seller?.bankInfo?.accountNumber);
@@ -3141,6 +3143,57 @@ const fetchBuyOrders = async () => {
                                   {item?.seller?.bankInfo?.accountHolder}
                                 </div>
                               </div>
+                              */}
+
+
+
+                                {item?.buyer?.nickname ? (
+                                  <div className="flex flex-col items-start justify-center gap-1">
+
+                                    <span className="text-lg text-zinc-400 font-semibold">
+                                      {item.buyer?.depositBankName}
+                                    </span>
+
+                                    <button
+                                      className="text-lg text-zinc-400 font-semibold hover:text-blue-500"
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(item.buyer?.depositBankAccountNumber);
+                                        alert('계좌번호가 클립보드에 복사되었습니다.');
+                                      }}
+                                    >
+                                      {item.buyer?.depositBankAccountNumber}
+                                    </button>
+
+
+                                    <span className="text-lg text-zinc-400 font-semibold">
+                                      {item.buyer?.depositName}
+                                    </span>
+
+                                  </div>
+                                ) : (
+                                  <div className="flex flex-col items-start justify-center gap-1">
+                                    <span className="text-lg text-zinc-400 font-semibold">
+                                      {item.seller?.bankInfo?.bankName}
+                                    </span>
+                                    <button
+                                      className="text-lg text-zinc-400 font-semibold hover:text-blue-500"
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(item.seller?.bankInfo?.accountNumber);
+                                        alert('계좌번호가 클립보드에 복사되었습니다.');
+                                      }}
+                                    >
+                                      {item.seller?.bankInfo?.accountNumber}
+                                    </button>
+                                    <span className="text-lg text-zinc-400 font-semibold">
+                                      {item.seller?.bankInfo?.accountHolder}
+                                      </span>
+                                  </div>
+                                )}
+
+
+
+
+
                             </td>
 
 
