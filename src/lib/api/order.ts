@@ -2270,8 +2270,14 @@ export async function getBuyOrders(
         // search deposit name
         "buyer.depositName": { $regex: searchDepositName, $options: 'i' },
 
+        
+        // if store.bankInfo.accountNumber field is not null, then search store bank account number
         // search store bank account number
-        'store.bankInfo.accountNumber': { $regex: searchStoreBankAccountNumber, $options: 'i' },
+        //'store.bankInfo.accountNumber': { $regex: searchStoreBankAccountNumber, $options: 'i' },
+
+        
+        
+
 
         // filter by fromDate and toDate
         /*
