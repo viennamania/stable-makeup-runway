@@ -1805,7 +1805,13 @@ export default function Index({ params }: any) {
 
         
         //const sellerWalletAddress = buyOrders[index].store.sellerWalletAddress;
-        const sellerWalletAddress = "0x3f1e7D26A2704BE994aF84cEbf19BA9683E23666"; // for test
+        //const sellerWalletAddress = "0x3f1e7D26A2704BE994aF84cEbf19BA9683E23666"; // for test
+
+        const sellerWalletAddress = buyOrders[index].store.sellerWalletAddress;
+
+
+        //alert('sellerWalletAddress: ' + sellerWalletAddress);
+
 
         console.log('sellerWalletAddress', sellerWalletAddress);
 
@@ -4827,7 +4833,7 @@ const [tradeSummary, setTradeSummary] = useState({
                                       rel="noopener noreferrer"
                                       className="text-sm text-blue-500 underline"
                                     >
-                                      폴리스캔에서 거래내역 보기
+                                      스캔에서 거래내역 보기
                                     </a>
                                       
 

@@ -730,7 +730,7 @@ export default function Index({ params }: any) {
 
     return () => clearInterval(interval);
 
-  } , [address, escrowWalletAddress, contract, "admin"]);
+  } , [address, escrowWalletAddress, contract,]);
   
 
   //console.log('escrowBalance', escrowBalance);
