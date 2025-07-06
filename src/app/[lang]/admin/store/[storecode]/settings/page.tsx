@@ -1223,12 +1223,12 @@ export default function SettingsPage({ params }: any) {
             return;
         }
 
-        if (!agentFeePercent) {
+        if (agentFeePercent === '') {
             toast.error("가맹점 에이전트 수수료율을 입력하세요");
             return;
         }
-        if (agentFeePercent < 0.01 || agentFeePercent > 5.00) {
-            toast.error("가맹점 에이전트 수수료율은 0.01 ~ 5.00%로 설정하세요");
+        if (agentFeePercent < 0 || agentFeePercent > 5.00) {
+            toast.error("가맹점 에이전트 수수료율은 0 ~ 5.00%로 설정하세요");
             return;
         }
         if (agentFeePercent === store?.agentFeePercent) {
@@ -2155,17 +2155,17 @@ export default function SettingsPage({ params }: any) {
                                         placeholder="에이전트 수수료율을 입력하세요 (0.01 ~ 5.00)"
                                         value={agentFeePercent}
                                         type='number'
-                                        min={0.01}
-                                        max={5.00}
+                                        min={0.0}
+                                        max={5.0}
                                         step={0.01}
                                         onChange={(e) => {
                                             setAgentFeePercent(parseFloat(e.target.value));
                                         } }
                                     />
                                     <button
-                                        disabled={!address || !agentFeePercent || updatingAgentFeePercent}
+                                        disabled={!address || agentFeePercent === '' || updatingAgentFeePercent}
                                         className={`bg-[#3167b4] text-zinc-100 rounded-lg p-2
-                                            ${!agentFeePercent || updatingAgentFeePercent ? "opacity-50" : ""}`}
+                                            ${!address || agentFeePercent === '' || updatingAgentFeePercent ? "opacity-50" : ""}`}
                                         onClick={() => {
                                             confirm(
                                                 `정말 ${agentFeePercent}으로 에이전트 수수료율을 변경하시겠습니까?`
