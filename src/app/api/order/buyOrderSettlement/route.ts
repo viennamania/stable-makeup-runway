@@ -14,7 +14,8 @@ export async function POST(request: NextRequest) {
 
   const {
     orderId,
-    transactionHash,
+    //transactionHash,
+    settlement,
   } = body;
 
 
@@ -161,7 +162,8 @@ export async function POST(request: NextRequest) {
     */
 
 
- 
+  
+    
     // getOneBuyOrder
     const buyOrderResult = await getOneBuyOrder({
       orderId: orderId,
@@ -176,12 +178,7 @@ export async function POST(request: NextRequest) {
         result: null,
       });
     }
-    /*
-      return {
-          totalCount: results.length,
-          orders: results,
-        };
-    */
+
 
     const buyOrder = buyOrderResult.orders[0] as any;
     if (!buyOrder) {
@@ -194,7 +191,7 @@ export async function POST(request: NextRequest) {
 
 
 
-
+    /*
     let txid = "0x";
 
     if (transactionHash) {
@@ -251,32 +248,33 @@ export async function POST(request: NextRequest) {
         status: "paymentSettled",
         createdAt: new Date().toISOString(),
     };
+    */
 
 
 
 
     // updateBuyOrderSettlement
-  const result = await updateBuyOrderSettlement({
-    orderId: orderId,
-    settlement: settlement,
-    storecode: buyOrder.store.storecode, // Assuming storecode is available in the buyOrder
-  });
-
-
-  if (!result) {
-    console.log("Error updating buy order settlement for orderId:", orderId);
-    return NextResponse.json({
-      result: null,
-    });
-  }
-
-
-  console.log("Settlement updated successfully for orderId:", orderId);
-  return NextResponse.json({
-    result: {
+    const result = await updateBuyOrderSettlement({
       orderId: orderId,
       settlement: settlement,
-    },
-  });
+      storecode: buyOrder.store.storecode, // Assuming storecode is available in the buyOrder
+    });
+
+
+    if (!result) {
+      console.log("Error updating buy order settlement for orderId:", orderId);
+      return NextResponse.json({
+        result: null,
+      });
+    }
+
+
+    console.log("Settlement updated successfully for orderId:", orderId);
+    return NextResponse.json({
+      result: {
+        orderId: orderId,
+        settlement: settlement,
+      },
+    });
   
 }
