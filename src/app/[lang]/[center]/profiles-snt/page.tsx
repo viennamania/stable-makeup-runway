@@ -1214,6 +1214,9 @@ export default function SettingsPage({ params }: any) {
                                                     <option value="011" selected={buyer?.bankInfo?.bankName === "011"}>
                                                         농협
                                                     </option>
+                                                    <option value="048" selected={buyer?.bankInfo?.bankName === "048"}>
+                                                        농협
+                                                    </option>
                                                     <option value="003" selected={buyer?.bankInfo?.bankName === "003"}>
                                                         기업은행
                                                     </option>
