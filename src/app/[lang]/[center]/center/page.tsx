@@ -2157,18 +2157,18 @@ export default function Index({ params }: any) {
                 </span>
                 <button
                   onClick={() => {
-                    window.open(`https://cryptoss-runway.vercel.app/ko/${store?.storecode}/paymaster`, '_blank');
+                    window.open(`https://cryptoss.beauty/ko/${store?.storecode}/paymaster`, '_blank');
                   }}
                   className="text-sm text-zinc-500 underline"
                 >
-                  https://cryptoss-runway.vercel.app/ko/{store?.storecode}/paymaster
+                  https://cryptoss.beauty/ko/{store?.storecode}/paymaster
                 </button>
               
               
                 {/* 복사 버튼 */}
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText(`https://cryptoss-runway.vercel.app/ko/${store?.storecode}/paymaster`);
+                    navigator.clipboard.writeText(`https://cryptoss.beauty/ko/${store?.storecode}/paymaster`);
                     toast.success('가맹점 홈페이지 링크가 복사되었습니다.');
                   } }
                   className="bg-[#3167b4] text-sm text-[#f3f4f6] px-2 py-1 rounded-lg hover:bg-[#3167b4]/80"
@@ -2865,24 +2865,30 @@ export default function Index({ params }: any) {
 
                       <div className="mt-5 flex flex-row gap-2 justify-center items-center">
                         <span className="text-sm text-zinc-600">
-                          {My_Balance}
+                          {My_Balance}(USDT)
                         </span>
+                        <Image
+                          src="/icon-tether.png"
+                          alt="Tether"
+                          width={35}
+                          height={35}
+                          className="rounded-lg w-6 h-6"
+                        />
                         <div className="text-4xl font-semibold text-green-600">
                           {Number(balance).toFixed(2)}
                         </div>
-                        <p className="text-sm text-zinc-800">USDT</p>
                       </div>
 
                       <div className="flex flex-row gap-2 justify-center items-center">
                         <div className="text-xl font-semibold text-zinc-800">
-                          {Number(nativeBalance).toFixed(2)}
+                          {Number(nativeBalance).toFixed(8)}
                         </div>
                         <p className="text-sm text-zinc-800">ETH</p>
                       </div>
 
                       <div className="flex flex-row gap-2 justify-center items-center">
                         {/* if pol balance is 0, comment out the text */}
-                        {nativeBalance < 0.0001 && (
+                        {nativeBalance < 0.000001 && (
                           <p className="text-sm text-red-500">
                             가스비용이 부족합니다.<br/>가스비용이 부족하면 입금은 가능하지만 출금은 불가능합니다.
                           </p>
@@ -3287,11 +3293,11 @@ export default function Index({ params }: any) {
 /*
 selectedItem?.buyer?.depositBankName
 selectedItem?.buyer?.depositName
-'https://cryptoss-runway.vercel.app/' + params.lang + '/' + selectedItem.storecode + '/payment?'
+'https://cryptoss.beauty/' + params.lang + '/' + selectedItem.storecode + '/payment?'
 'storeUser=' + selectedItem.nickname + '&depositBankName=' + selectedItem?.buyer?.depositBankName + '&depositName=' + selectedItem?.buyer?.depositName
 
 
-'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
+'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
                                     + 'storeUser=' + item.nickname + '&depositBankName=' + item?.buyer?.depositBankName + '&depositName=' + item?.buyer?.depositName
 */
 
@@ -3310,7 +3316,7 @@ const UserHomePage = (
       
       {/* iframe */}
       <iframe
-        src={`https://cryptoss-runway.vercel.app/kr/${selectedItem?.storecode}/payment?`
+        src={`https://cryptoss.beauty/kr/${selectedItem?.storecode}/payment?`
           + 'storeUser=' + selectedItem?.nickname
           + '&depositBankName=' + selectedItem?.buyer?.depositBankName
           + '&depositBankAccountNumber=' + selectedItem?.buyer?.depositBankAccountNumber
