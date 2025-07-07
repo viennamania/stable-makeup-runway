@@ -730,7 +730,7 @@ export default function Index({ params }: any) {
 
     return () => clearInterval(interval);
 
-  } , [address, escrowWalletAddress, contract,]);
+  } , [address, escrowWalletAddress, contract, "admin"]);
   
 
   //console.log('escrowBalance', escrowBalance);
@@ -1374,7 +1374,7 @@ export default function Index({ params }: any) {
         /*
         const transactionResult = await waitForReceipt({
           client,
-          arbitrum,
+          chain: arbitrum ,
           maxBlocksWaitTime: 1,
           transactionHash: transactionHash,
         });
@@ -2722,7 +2722,7 @@ const fetchBuyOrders = async () => {
 
              >
                <Image
-                 src="/logo-goodpay.jpeg"
+                 src="/logo-oneclick.png"
                  alt="logo"
                  width={100}
                  height={100}
@@ -3647,7 +3647,7 @@ const fetchBuyOrders = async () => {
                         <div className="flex flex-col items-center justify-center gap-2">
                           <div className="flex flex-row items-center justify-center gap-2">
                             <span>
-                              자동결제 및 정산
+                              자동결제 및 정산(USDT)
                             </span>
                             <Image
                               src="/icon-settlement.png"
@@ -4351,9 +4351,9 @@ const fetchBuyOrders = async () => {
                                   {Completed}
                                 </button>
                                 {/* new window */}
-                                {/* https://www.cryptoss-runway.vercel.app/ */}
+                                {/* https://www.cryptoss.beauty/ */}
                                 <a
-                                  href={`https://www.cryptoss-runway.vercel.app/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
+                                  href={`https://www.cryptoss.beauty/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-sm text-blue-600 font-semibold underline"
@@ -5604,14 +5604,11 @@ const fetchBuyOrders = async () => {
                                              is last 1 hour, show button to settlement
                                           */}
 
-
-
-
-                                          {/*
                                           {item.transactionHash &&
                                             new Date().getTime() - new Date(item.paymentConfirmedAt).getTime() > 1000 * 5 * 60 && (
 
                                             <div className="flex flex-row gap-2 items-center justify-center">
+                                              {/* checkbox to confirm settlement */}
                                               <input
                                                 disabled={loadingSettlement[index]}
                                                 type="checkbox"
@@ -5673,8 +5670,6 @@ const fetchBuyOrders = async () => {
                                               </button>
                                             </div>
                                           )}
-                                          */}
-                                          
 
 
 
@@ -6820,7 +6815,7 @@ const UserPaymentPage = (
       
       {/* iframe */}
       <iframe
-        src={`https://cryptoss-runway.vercel.app/kr/${selectedItem?.storecode}/pay-usdt-reverse/${selectedItem?._id}`}
+        src={`https://cryptoss.beauty/kr/${selectedItem?.storecode}/pay-usdt-reverse/${selectedItem?._id}`}
 
         
           

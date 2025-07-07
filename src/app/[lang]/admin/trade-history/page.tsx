@@ -1343,7 +1343,7 @@ export default function Index({ params }: any) {
         /*
         const transactionResult = await waitForReceipt({
           client,
-          arbitrum,
+          chain: arbitrum ,
           maxBlocksWaitTime: 1,
           transactionHash: transactionHash,
         });
@@ -2335,7 +2335,7 @@ const fetchBuyOrders = async () => {
 
              >
                <Image
-                 src="/logo-goodpay.jpeg"
+                 src="/logo-oneclick.png"
                  alt="logo"
                  width={100}
                  height={100}
@@ -3072,7 +3072,7 @@ const fetchBuyOrders = async () => {
                       <th className="p-2">자동입금처리</th>
                       <th className="p-2">거래상태</th>
 
-                      <th className="p-2">자동결제 및 정산</th>
+                      <th className="p-2">자동결제 및 정산(USDT)</th>
 
                     </tr>
                   </thead>
@@ -3572,7 +3572,7 @@ const fetchBuyOrders = async () => {
                                       "
                                       onClick={() => {
                                         // new window to complete trade
-                                        // {`https://www.cryptoss-runway.vercel.app/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
+                                        // {`https://www.cryptoss.beauty/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
 
                                         window.open(
                                           `/${params.lang}/${item?.storecode}/pay-usdt-reverse/${item?._id}`,
@@ -3998,21 +3998,29 @@ const fetchBuyOrders = async () => {
 
                                   
                                   <span>
-                                    {item?.settlement?.settlementAmount?.toLocaleString() + ' USDT'}
+                                    {
+                                    item?.settlement?.settlementAmount &&
+                                    item?.settlement?.settlementAmount?.toLocaleString()
+                                    }
                                     {' '}
                                     {
                                       item?.settlement?.settlementWalletAddress &&
                                     item?.settlement?.settlementWalletAddress?.slice(0, 5) + '...'}
                                   </span>
                                   <span>
-                                    {item?.settlement?.agentFeeAmount?.toLocaleString() + ' USDT'}
+                                    {
+                                      item?.settlement?.agentFeeAmount &&
+                                    item?.settlement?.agentFeeAmount?.toLocaleString()
+                                    }
                                     {' '}
                                     {
                                       item?.settlement?.agentFeeWalletAddress &&
                                     item?.settlement?.agentFeeWalletAddress?.slice(0, 5) + '...'}
                                   </span>
                                   <span>
-                                    {item?.settlement?.feeAmount?.toLocaleString() + ' USDT'}
+                                    {
+                                      item?.settlement?.feeAmount &&
+                                    item?.settlement?.feeAmount?.toLocaleString()}
                                     {' '}
                                     {
                                       item?.settlement?.feeWalletAddress &&
