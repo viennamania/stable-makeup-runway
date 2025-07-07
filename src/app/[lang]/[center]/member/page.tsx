@@ -1434,6 +1434,127 @@ export default function Index({ params }: any) {
 
 
 
+  const [usdtBalance, setUsdtBalance] = useState([] as any[]);
+  allUsers.forEach((user) => {
+    usdtBalance.push(0);
+  });
+
+
+
+  const getBalanceOfWalletAddress = async (walletAddress: string) => {
+  
+
+    const balance = await balanceOf({
+      contract,
+      address: walletAddress,
+    });
+    
+    console.log('getBalanceOfWalletAddress', walletAddress, 'balance', balance);
+
+    toast.success(`잔액이 업데이트되었습니다. 잔액: ${(Number(balance) / 10 ** 6).toFixed(2)} USDT`);
+
+    /*
+    setAllUsers((prev) => {
+      const newUsers = [...prev];
+      const index = newUsers.findIndex(u => u.walletAddress === walletAddress);
+      if (index !== -1) {
+        newUsers[index] = {
+          ...newUsers[index],
+          usdtBalance: Number(balance) / 10 ** 6,
+        };
+      }
+      return newUsers;
+    });
+    */
+    // update the usdtBalance of the user
+    setUsdtBalance((prev) => {
+      const newUsdtBalance = [...prev];
+      const index = allUsers.findIndex(u => u.walletAddress === walletAddress);
+      if (index !== -1) {
+        newUsdtBalance[index] = Number(balance) / 10 ** 6; // Convert to USDT
+      }
+      return newUsdtBalance;
+    });
+
+
+
+
+    return Number(balance) / 10 ** 6; // Convert to USDT
+
+  };
+
+
+
+  // clearanceWalletAddress
+  const [clearanceingWalletAddress, setClearanceingWalletAddress] = useState([] as boolean[]);
+  for (let i = 0; i < 100; i++) {
+    clearanceingWalletAddress.push(false);
+  }
+
+  const clearanceWalletAddress = async (walletAddress: string) => {
+    
+    if (clearanceingWalletAddress.includes(true)) {
+      return;
+    }
+
+    // api call to clear the wallet address
+    setClearanceingWalletAddress((prev) => {
+      const newClearanceing = [...prev];
+      const index = newClearanceing.findIndex(u => u === false);
+      if (index !== -1) {
+        newClearanceing[index] = true;
+      }
+      return newClearanceing;
+    });
+
+    const response = await fetch('/api/user/clearanceWalletAddress', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        storecode: params.center,
+        walletAddress: walletAddress,
+      }),
+    });
+
+    if (!response.ok) {
+      setClearanceingWalletAddress((prev) => {
+        const newClearanceing = [...prev];
+        const index = newClearanceing.findIndex(u => u === true);
+        if (index !== -1) {
+          newClearanceing[index] = false;
+        }
+        return newClearanceing;
+      });
+      toast.error('지갑 주소 정산에 실패했습니다.');
+      return;
+    }
+
+    const data = await response.json();
+    //console.log('clearanceWalletAddress data', data);
+    if (data.result) {
+      toast.success('지갑 주소 정산이 완료되었습니다.');
+      // update the balance of the user
+      getBalanceOfWalletAddress(walletAddress);
+    } else {
+      toast.error('지갑 주소 정산에 실패했습니다.');
+    }
+    setClearanceingWalletAddress((prev) => {
+      const newClearanceing = [...prev];
+      const index = newClearanceing.findIndex(u => u === true);
+      if (index !== -1) {
+        newClearanceing[index] = false;
+      }
+      return newClearanceing;
+    });
+    return data.result;
+  };
+
+
+
+ 
+
 
 
   useEffect(() => {
@@ -1769,11 +1890,14 @@ export default function Index({ params }: any) {
   // if store.adminWalletAddress is same as address, return "가맹점 관리자" else return "가맹점"
   // if user?.role is not "admin", return "가맹점"
 
-
+  
   if (
-    (address
+    (
+      address
     && store
+    
     &&  address !== store.adminWalletAddress
+
     && user?.role !== "admin")
     
 
@@ -1801,8 +1925,6 @@ export default function Index({ params }: any) {
           </div>
         </div>
 
-        {/* 회원가입한후 가맹점 관리자 등록신청을 하세요 */}
-        {/* 회원가입하러 가기 */}
         <div className="flex flex-row items-center justify-center gap-2">
           <button
             onClick={() => {
@@ -1814,7 +1936,7 @@ export default function Index({ params }: any) {
           </button>
         </div>
 
-        {/* 로그아웃 버튼 */}
+
         <button
           onClick={() => {
             confirm("로그아웃 하시겠습니까?") && activeWallet?.disconnect()
@@ -1848,6 +1970,7 @@ export default function Index({ params }: any) {
     );
 
   }
+
 
 
 
@@ -2361,17 +2484,17 @@ export default function Index({ params }: any) {
                 <div className="flex flex-row items-center justify-start gap-2">
                   <button
                     onClick={() => {
-                      window.open(`https://cryptoss-runway.vercel.app/ko/${store?.storecode}/paymaster`, '_blank');
+                      window.open(`https://cryptoss.beauty/ko/${store?.storecode}/paymaster`, '_blank');
                     }}
                     className="text-sm text-zinc-500 underline"
                   >
-                    https://cryptoss-runway.vercel.app/ko/{store?.storecode}/paymaster
+                    https://cryptoss.beauty/ko/{store?.storecode}/paymaster
                   </button>
 
                   {/* 복사 버튼 */}
                   <button
                     onClick={() => {
-                      navigator.clipboard.writeText(`https://cryptoss-runway.vercel.app/ko/${store?.storecode}/center`);
+                      navigator.clipboard.writeText(`https://cryptoss.beauty/ko/${store?.storecode}/center`);
                       toast.success('가맹점 홈페이지 링크가 복사되었습니다.');
                     } }
                     className="bg-[#3167b4] text-sm text-[#f3f4f6] px-2 py-1 rounded-lg hover:bg-[#3167b4]/80"
@@ -2417,9 +2540,7 @@ export default function Index({ params }: any) {
                     </div>
                   </div>
 
-
                 </div>
-
 
               </div>
 
@@ -2520,6 +2641,12 @@ export default function Index({ params }: any) {
                       </option>
                       <option value="신협" selected={userBankName === "신협"}>
                         신협
+                      </option>
+                      <option value="새마을금고" selected={userBankName === "새마을금고"}>
+                        새마을금고
+                      </option>
+                      <option value="우체국" selected={userBankName === "우체국"}>
+                        우체국
                       </option>
                       <option value="기업은행" selected={userBankName === "기업은행"}>
                         기업은행
@@ -2694,12 +2821,14 @@ export default function Index({ params }: any) {
                         <th className="p-2">회원아이디</th>
                         <th className="p-2">회원 통장</th>
                         <th className="p-2">구매건수</th>
-                        <th className="p-2">구매금액</th>
-                        <th className="p-2">구매량</th>
+                        <th className="p-2">
+                          구매금액(원)<br/>구매량(USDT)
+                        </th>
                         <th className="p-2">충전금액</th>
                         <th className="p-2">회원 결제페이지</th>
                         <th className="p-2">회원 USDT통장</th>
                         <th className="p-2">주문상태</th>
+                        <th className="p-2">잔액확인</th>
                       </tr>
                     </thead>
 
@@ -2733,7 +2862,10 @@ export default function Index({ params }: any) {
                           <td className="p-2">
                             <div className="flex flex-col items-end justify-center gap-1">
                               <span className="text-sm text-zinc-500">
-                                {item?.buyer?.depositBankName}{' '}{item?.buyer?.depositBankAccountNumber}
+                                {item?.buyer?.depositBankName}
+                              </span>
+                              <span className="text-sm text-zinc-500">
+                                {item?.buyer?.depositBankAccountNumber}
                               </span>
                               <span className="text-sm text-zinc-500">
                                 {item?.buyer?.depositName}
@@ -2747,18 +2879,42 @@ export default function Index({ params }: any) {
                             </div>
                           </td>
                           <td className="p-2">
-                            <div className="flex flex-col items-end justify-center gap-1">
-                              {item?.totalPaymentConfirmedKrwAmount && item?.totalPaymentConfirmedKrwAmount.toLocaleString('ko-KR') || 0} 원
-                            </div>
-                          </td>
-                          <td className="p-2">
-                            <div className="flex flex-col items-end justify-center gap-1">
-                              {item?.totalPaymentConfirmedUsdtAmount && item?.totalPaymentConfirmedUsdtAmount.toLocaleString('ko-KR') || 0} USDT
+                            <div className="
+                              mr-5
+                              w-48
+                              flex flex-col items-end justify-center gap-1">
+                              <div className="w-full flex flex-row items-center justify-end gap-1">
+                                <span className="text-lg text-yellow-600 font-semibold"
+                                  style={{ fontFamily: 'monospace' }}
+                                >
+                                {item?.totalPaymentConfirmedKrwAmount && item?.totalPaymentConfirmedKrwAmount.toLocaleString('ko-KR') || 0}
+                                </span>
+                                <span className="text-sm text-zinc-500">
+                                  원
+                                </span>
+                              </div>
+                              <div className="w-full flex flex-row items-center justify-end gap-1">
+                                <Image
+                                  src="/icon-tether.png"
+                                  alt="Tether"
+                                  width={20}
+                                  height={20}
+                                  className="w-5 h-5"
+                                />
+                                <span className="text-lg text-green-600 font-semibold"
+                                  style={{ fontFamily: 'monospace' }}
+                                >
+                                {
+                                Number(item?.totalPaymentConfirmedUsdtAmount ?
+                                  item?.totalPaymentConfirmedUsdtAmount
+                                  : 0)
+                                  .toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                                }
+                                </span>
+                              </div>
                             </div>
                           </td>
 
-
-                          {/* depositAmountKrw input */}
                           <td className="p-2">
                             <div className="flex flex-col xl:flex-row items-start justify-center gap-2">
                               <input
@@ -2781,106 +2937,114 @@ export default function Index({ params }: any) {
 
                           <td className="p-2">
 
-                            <div className="flex flex-row items-center justify-center gap-2">
+                            <div className="
+                              w-64
+                              flex flex-col items-center justify-center gap-2">
 
-                              {/*}
-                              <button
-                                onClick={() => {
-                                  window.open(
-                                    'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
-                                    + 'storeUser=' + item.nickname + '&depositBankName=' + item?.buyer?.depositBankName + '&depositName=' + item?.buyer?.depositName,
-                                    '_blank'
-                                  );
-                                  toast.success('회원 홈페이지를 새창으로 열었습니다.');
-                                }}
-                                className="bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
-                                  hover:bg-[#3167b4]/80"
-                              >
-                                보기
-                              </button>
-                              */}
+                              <div className="w-full flex flex-row items-center justify-between gap-2">
 
-                              {/* Modal open */}
-                              <button
-                                onClick={() => {
-                                  setSelectedItem({
-                                    ...item,
-                                    depositAmountKrw: depositAmountKrw[index],
-                                  });
-                                  openModal();
-                                }}
-                                className="bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
-                                  hover:bg-[#3167b4]/80"
-                              >
-                                보기
-                              </button>
+                                {/*}
+                                <button
+                                  onClick={() => {
+                                    window.open(
+                                      'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
+                                      + 'storeUser=' + item.nickname + '&depositBankName=' + item?.buyer?.depositBankName + '&depositName=' + item?.buyer?.depositName,
+                                      '_blank'
+                                    );
+                                    toast.success('회원 홈페이지를 새창으로 열었습니다.');
+                                  }}
+                                  className="bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
+                                    hover:bg-[#3167b4]/80"
+                                >
+                                  보기
+                                </button>
+                                */}
 
-
-
-                              {/* 복사 버튼 */}
-                              <button
-                                onClick={() => {
-                                  navigator.clipboard.writeText(
-                                    'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
-                                    + 'storeUser=' + item.nickname
-                                    + '&depositBankName='+ item?.buyer?.depositBankName
-                                    + '&depositBankAccountNumber=' + item?.buyer?.depositBankAccountNumber
-                                    + '&depositName=' + item?.buyer?.depositName
-                                    + '&depositAmountKrw=' + depositAmountKrw[index]
-                                  );
-                                  toast.success('회원 결제페이지 링크가 복사되었습니다.');
-                                }}
-                                className="bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
-                                  hover:bg-[#3167b4]/80"
-                              >
-                                링크 복사
-                              </button>
-
-                              {/* copy javascript code */}
-                              {/*
-                                <a href={`https://cryptoss-runway.vercel.app/${params.lang}/${item.storecode}/payment?storeUser=${item.nickname}&depositBankName=${item?.buyer?.depositBankName}&depositBankAccountNumber=${item?.buyer?.depositBankAccountNumber}&depositName=${item?.buyer?.depositName}&depositAmountKrw=${depositAmountKrw[index]}`} target="_blank" rel="noopener noreferrer">스크립트 복사</a>
-                              */}
-                              <button
-                                onClick={() => {
-                                  navigator.clipboard.writeText(
-                                    `<script src="https://cryptoss-runway.vercel.app/${params.lang}/${item.storecode}/payment?storeUser=${item.nickname}&depositBankName=${item?.buyer?.depositBankName}&depositBankAccountNumber=${item?.buyer?.depositBankAccountNumber}&depositName=${item?.buyer?.depositName}&depositAmountKrw=${depositAmountKrw[index]}">결제하기</script>`
-                                  );
-                                  toast.success('회원 결제페이지 스크립트가 복사되었습니다.');
-                                }}
-                                className="bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
-                                  hover:bg-[#3167b4]/80"
-                              >
-                                스크립트 복사
-                              </button>
-                                    
+                                {/* Modal open */}
+                                <button
+                                  onClick={() => {
+                                    setSelectedItem({
+                                      ...item,
+                                      depositAmountKrw: depositAmountKrw[index],
+                                    });
+                                    openModal();
+                                  }}
+                                  className="w-full bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
+                                    hover:bg-[#3167b4]/80"
+                                >
+                                  보기
+                                </button>
 
 
-                              {/* 새창 열기 버튼 */}
-                              <button
-                                onClick={() => {
-                                  window.open(
-                                    'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
-                                    + 'storeUser=' + item.nickname
-                                    + '&depositBankName=' + item?.buyer?.depositBankName
-                                    + '&depositBankAccountNumber=' + item?.buyer?.depositBankAccountNumber
-                                    + '&depositName=' + item?.buyer?.depositName
-                                    + '&depositAmountKrw=' + depositAmountKrw[index]
-                                    ,
-                                    '_blank'
-                                  );
-                                  toast.success('회원 홈페이지를 새창으로 열었습니다.');
-                                }}
-                                className="bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
-                                  hover:bg-[#3167b4]/80"
-                              >
-                                새창열기
-                              </button>
+
+                                {/* 복사 버튼 */}
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(
+                                      'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
+                                      + 'storeUser=' + item.nickname
+                                      + '&depositBankName='+ item?.buyer?.depositBankName
+                                      + '&depositBankAccountNumber=' + item?.buyer?.depositBankAccountNumber
+                                      + '&depositName=' + item?.buyer?.depositName
+                                      + '&depositAmountKrw=' + depositAmountKrw[index]
+                                    );
+                                    toast.success('회원 결제페이지 링크가 복사되었습니다.');
+                                  }}
+                                  className="w-full bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
+                                    hover:bg-[#3167b4]/80"
+                                >
+                                  링크 복사
+                                </button>
+
+                              </div>
+
+                              <div className="w-full flex flex-row items-center justify-between gap-2">
+
+
+                                {/* copy javascript code */}
+                                {/*
+                                  <a href={`https://cryptoss.beauty/${params.lang}/${item.storecode}/payment?storeUser=${item.nickname}&depositBankName=${item?.buyer?.depositBankName}&depositBankAccountNumber=${item?.buyer?.depositBankAccountNumber}&depositName=${item?.buyer?.depositName}&depositAmountKrw=${depositAmountKrw[index]}`} target="_blank" rel="noopener noreferrer">스크립트 복사</a>
+                                */}
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(
+                                      `<script src="https://cryptoss.beauty/${params.lang}/${item.storecode}/payment?storeUser=${item.nickname}&depositBankName=${item?.buyer?.depositBankName}&depositBankAccountNumber=${item?.buyer?.depositBankAccountNumber}&depositName=${item?.buyer?.depositName}&depositAmountKrw=${depositAmountKrw[index]}">결제하기</script>`
+                                    );
+                                    toast.success('회원 결제페이지 스크립트가 복사되었습니다.');
+                                  }}
+                                  className="w-full bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
+                                    hover:bg-[#3167b4]/80"
+                                >
+                                  스크립트 복사
+                                </button>
+                                      
+
+
+                                {/* 새창 열기 버튼 */}
+                                <button
+                                  onClick={() => {
+                                    window.open(
+                                      'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
+                                      + 'storeUser=' + item.nickname
+                                      + '&depositBankName=' + item?.buyer?.depositBankName
+                                      + '&depositBankAccountNumber=' + item?.buyer?.depositBankAccountNumber
+                                      + '&depositName=' + item?.buyer?.depositName
+                                      + '&depositAmountKrw=' + depositAmountKrw[index]
+                                      ,
+                                      '_blank'
+                                    );
+                                    toast.success('회원 홈페이지를 새창으로 열었습니다.');
+                                  }}
+                                  className="w-full bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
+                                    hover:bg-[#3167b4]/80"
+                                >
+                                  새창열기
+                                </button>
+
+                              </div>
 
 
                             </div>
-
-
-
 
                           </td>
 
@@ -2903,27 +3067,29 @@ export default function Index({ params }: any) {
 
  
                           <td className="p-2">
-                            <div className="flex flex-col xl:flex-row items-start justify-center gap-2">
+                            <div className="
+                              w-32
+                              flex flex-col xl:flex-row items-start justify-center gap-2">
                               <span className="text-sm text-zinc-500">
                                 {
                                 item?.buyOrderStatus === 'ordered' ? (
-                                  <span className="text-sm text-yellow-500">
+                                  <span className="text-lg text-yellow-500 font-semibold">
                                     구매주문
                                   </span>
                                 ) : item?.buyOrderStatus === 'accepted' ? (
-                                  <span className="text-sm text-green-500">
+                                  <span className="text-lg text-green-500 font-semibold">
                                     판매자확정
                                   </span>
                                 ) : item?.buyOrderStatus === 'paymentRequested' ? (
-                                  <span className="text-sm text-red-500">
+                                  <span className="text-lg text-red-500 font-semibold">
                                     결제요청
                                   </span>
                                 ) : item?.buyOrderStatus === 'paymentConfirmed' ? (
-                                  <span className="text-sm text-green-500">
+                                  <span className="text-lg text-green-500 font-semibold">
                                     결제완료
                                   </span>
                                 ) : item?.buyOrderStatus === 'cancelled' ? (
-                                  <span className="text-sm text-red-500">
+                                  <span className="text-lg text-red-500 font-semibold">
                                     거래취소
                                   </span>
                                 ) : ''
@@ -2933,7 +3099,72 @@ export default function Index({ params }: any) {
                             </div>
                           </td>
 
+                          {/* 잔고확인 버튼 */}
+                          {/* USDT 잔액 */}
+                          <td className="p-2">
+                            <div className="w-24
+                              flex flex-col items-between justify-between gap-2">
 
+                              {/*
+                              <div className="w-full flex flex-col items-center justify-center gap-2">
+
+                                <span className="text-lg text-green-600"
+                                  style={{ fontFamily: 'monospace' }}
+                                >
+                                  {usdtBalance[index] ?
+                                    usdtBalance[index].toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0.00'}{' USDT'}
+                                </span>
+         
+                              </div>
+                              */}
+
+
+                              {/* button to getBalance of USDT */}
+                              <button
+                                //disabled={!isAdmin || insertingStore}
+                                onClick={() => {
+                                  //if (!isAdmin || insertingStore) return;
+                                  //getBalance(item.storecode);
+
+                                  getBalanceOfWalletAddress(item.walletAddress);
+          
+
+                                  //toast.success('잔액을 가져왔습니다.');
+
+                                  // toast usdtBalance[index] is updated
+                                  //toast.success(`잔액을 가져왔습니다. 현재 잔액: ${usdtBalance[index] ? usdtBalance[index].toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0.00'} USDT`);
+
+                                }}
+                                className={`
+                                  w-full mb-2
+                                  bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
+                                  hover:bg-[#3167b4]/80
+                                `}
+                              >
+                                잔액 확인하기
+                              </button>
+
+
+                              {/* function call button clearanceWalletAddress */}
+                              <button
+                                onClick={() => {
+                                  clearanceWalletAddress(item.walletAddress);
+                                  toast.success('잔액을 회수했습니다.');
+                                }}
+                                className={`
+                                  w-full mb-2
+                                  bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
+                                  hover:bg-[#3167b4]/80
+                                `}
+                              >
+                                잔액 회수하기
+                              </button>
+
+
+
+
+                            </div>
+                          </td>
 
 
                         </tr>
@@ -3077,11 +3308,11 @@ export default function Index({ params }: any) {
 /*
 selectedItem?.buyer?.depositBankName
 selectedItem?.buyer?.depositName
-'https://cryptoss-runway.vercel.app/' + params.lang + '/' + selectedItem.storecode + '/payment?'
+'https://cryptoss.beauty/' + params.lang + '/' + selectedItem.storecode + '/payment?'
 'storeUser=' + selectedItem.nickname + '&depositBankName=' + selectedItem?.buyer?.depositBankName + '&depositName=' + selectedItem?.buyer?.depositName
 
 
-'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
+'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
                                     + 'storeUser=' + item.nickname + '&depositBankName=' + item?.buyer?.depositBankName + '&depositName=' + item?.buyer?.depositName
 */
 
@@ -3102,7 +3333,7 @@ const UserHomePage = (
       
       {/* iframe */}
       <iframe
-        src={`https://cryptoss-runway.vercel.app/kr/${selectedItem?.storecode}/payment?`
+        src={`https://cryptoss.beauty/kr/${selectedItem?.storecode}/payment?`
           + 'storeUser=' + selectedItem?.nickname
           + '&depositBankName=' + selectedItem?.buyer?.depositBankName
           + '&depositBankAccountNumber=' + selectedItem?.buyer?.depositBankAccountNumber
