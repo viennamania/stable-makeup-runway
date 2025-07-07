@@ -1371,7 +1371,7 @@ export default function Index({ params }: any) {
         /*
         const transactionResult = await waitForReceipt({
           client,
-          arbitrum,
+          chain: arbitrum ,
           maxBlocksWaitTime: 1,
           transactionHash: transactionHash,
         });
@@ -2517,19 +2517,22 @@ export default function Index({ params }: any) {
 
 
    const [tradeSummary, setTradeSummary] = useState({
-       totalCount: 0,
-       totalKrwAmount: 0,
-       totalUsdtAmount: 0,
-       totalSettlementCount: 0,
-       totalSettlementAmount: 0,
-       totalSettlementAmountKRW: 0,
-       totalFeeAmount: 0,
-       totalFeeAmountKRW: 0,
-       orders: [] as BuyOrder[],
- 
-       totalClearanceCount: 0,
-       totalClearanceAmount: 0,
-       totalClearanceAmountUSDT: 0,
+      totalCount: 0,
+      totalKrwAmount: 0,
+      totalUsdtAmount: 0,
+      totalSettlementCount: 0,
+      totalSettlementAmount: 0,
+      totalSettlementAmountKRW: 0,
+      totalFeeAmount: 0,
+      totalFeeAmountKRW: 0,
+      totalAgentFeeAmount: 0,
+      totalAgentFeeAmountKRW: 0,
+
+      orders: [] as BuyOrder[],
+
+      totalClearanceCount: 0,
+      totalClearanceAmount: 0,
+      totalClearanceAmountUSDT: 0,
      });
      const [loadingTradeSummary, setLoadingTradeSummary] = useState(false);
  
@@ -3769,7 +3772,9 @@ export default function Index({ params }: any) {
                 <div className="flex flex-col gap-2 items-center">
                   <div className="text-sm">총 거래금액(원)</div>
                   <div className="flex flex-row items-center gap-1">
-                    <span className="text-xl font-semibold text-yellow-600">
+                    <span className="text-xl font-semibold text-yellow-600"
+                      style={{ fontFamily: 'monospace' }}
+                    >
                       {tradeSummary.totalKrwAmount?.toLocaleString()}
                     </span>
                     <span className="text-sm text-zinc-500">원</span>
@@ -3786,7 +3791,9 @@ export default function Index({ params }: any) {
                       height={20}
                       className="w-5 h-5"
                     />
-                    <span className="text-xl font-semibold text-green-600">
+                    <span className="text-xl font-semibold text-green-600"
+                      style={{ fontFamily: 'monospace' }}
+                    >
                       {tradeSummary.totalUsdtAmount
                       && tradeSummary.totalUsdtAmount.toFixed(2)
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -3811,7 +3818,9 @@ export default function Index({ params }: any) {
                 <div className="flex flex-col gap-2 items-center">
                   <div className="text-sm">총 정산금액(원)</div>
                   <div className="flex flex-row items-center gap-1"> 
-                    <span className="text-xl font-semibold text-yellow-600">
+                    <span className="text-xl font-semibold text-yellow-600"
+                      style={{ fontFamily: 'monospace' }}
+                    >
                       {tradeSummary.totalSettlementAmountKRW?.toLocaleString()}
                     </span>
                     <span className="text-sm text-zinc-500">원</span>
@@ -3827,7 +3836,9 @@ export default function Index({ params }: any) {
                       height={20}
                       className="w-5 h-5"
                     />
-                    <span className="text-xl font-semibold text-green-600">
+                    <span className="text-xl font-semibold text-green-600"
+                      style={{ fontFamily: 'monospace' }}
+                    >
                       {tradeSummary.totalSettlementAmount
                       && tradeSummary.totalSettlementAmount.toFixed(2)
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -3838,8 +3849,13 @@ export default function Index({ params }: any) {
                 <div className="flex flex-col gap-2 items-center">
                   <div className="text-sm">총 수수료금액(원)</div>
                   <div className="flex flex-row items-center gap-1">
-                    <span className="text-xl font-semibold text-yellow-600">
-                      {tradeSummary.totalFeeAmountKRW?.toLocaleString()}
+                    <span className="text-xl font-semibold text-yellow-600"
+                      style={{ fontFamily: 'monospace' }}
+                    >
+                      {
+                        (tradeSummary.totalFeeAmountKRW + tradeSummary.totalAgentFeeAmountKRW)
+                        .toLocaleString()
+                      }
                     </span>
                     <span className="text-sm text-zinc-500">원</span>
                   </div>
@@ -3854,8 +3870,14 @@ export default function Index({ params }: any) {
                       height={20}
                       className="w-5 h-5"
                     />
-                    <span className="text-xl font-semibold text-green-600">
-                      {tradeSummary.totalFeeAmount?.toLocaleString()}
+                    <span className="text-xl font-semibold text-green-600"
+                      style={{ fontFamily: 'monospace' }}
+                    >
+                      {
+                        (tradeSummary.totalFeeAmount + tradeSummary.totalAgentFeeAmount)
+                        .toFixed(2)
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      }
                     </span>
                   </div>
                 </div>
@@ -4780,9 +4802,9 @@ export default function Index({ params }: any) {
                                   {Completed}
                                 </button>
                                 {/* new window */}
-                                {/* https://www.cryptoss-runway.vercel.app/ */}
+                                {/* https://www.cryptoss.beauty/ */}
                                 <a
-                                  href={`https://www.cryptoss-runway.vercel.app/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
+                                  href={`https://www.cryptoss.beauty/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-sm text-blue-600 font-semibold hover:underline"
@@ -7058,7 +7080,7 @@ const UserPaymentPage = (
       
       {/* iframe */}
       <iframe
-        src={`https://cryptoss-runway.vercel.app/kr/${selectedItem?.storecode}/pay-usdt-reverse/${selectedItem?._id}`}
+        src={`https://cryptoss.beauty/kr/${selectedItem?.storecode}/pay-usdt-reverse/${selectedItem?._id}`}
 
         
           
