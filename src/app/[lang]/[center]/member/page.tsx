@@ -3160,9 +3160,6 @@ export default function Index({ params }: any) {
                                 잔액 회수하기
                               </button>
 
-
-
-
                             </div>
                           </td>
 
