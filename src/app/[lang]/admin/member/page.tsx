@@ -2541,7 +2541,7 @@ export default function Index({ params }: any) {
 
                           <td className="p-2">
 
-                            <div className="flex flex-col xl:flex-row items-start justify-center gap-2">
+                            <div className="flex flex-col items-start justify-center gap-2">
 
                               {/*}
                               <button
@@ -2571,7 +2571,7 @@ export default function Index({ params }: any) {
                                   openModal();
 
                                 }}
-                                className="bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
+                                className="w-full bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
                                   hover:bg-[#3167b4]/80"
                               >
                                 보기
@@ -2593,7 +2593,7 @@ export default function Index({ params }: any) {
                                   );
                                   toast.success('회원 홈페이지 링크가 복사되었습니다.');
                                 }}
-                                className="bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
+                                className="w-full bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
                                   hover:bg-[#3167b4]/80"
                               >
                                 복사
@@ -2614,7 +2614,7 @@ export default function Index({ params }: any) {
                                   );
                                   toast.success('회원 홈페이지를 새창으로 열었습니다.');
                                 }}
-                                className="bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
+                                className="w-full bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
                                   hover:bg-[#3167b4]/80"
                               >
                                 새창열기
