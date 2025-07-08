@@ -784,6 +784,11 @@ export default function Index({ params }: any) {
 
     totalNumberOfBuyOrders: number;
     latestBuyOrders: any[];
+
+    totalNumberOfSellOrders?: number;
+    latestSellOrders?: any[];
+
+
   }>({
     totalNumberOfStores: 0,
     latestStores: [],
@@ -801,6 +806,9 @@ export default function Index({ params }: any) {
 
     totalNumberOfBuyOrders: 0,
     latestBuyOrders: [],
+
+    totalNumberOfSellOrders: 0,
+    latestSellOrders: [],
   });
 
   const [loadingSummary, setLoadingSummary] = useState(true);
@@ -854,7 +862,13 @@ export default function Index({ params }: any) {
 
 
 
-
+  // if totalNumberOfBuyOrders > 0, then play audio notification(notification.wave)
+  useEffect(() => {
+    if (totalSummary.totalNumberOfBuyOrders > 0 && loadingSummary === false) {
+      const audio = new Audio('/notification.wav');
+      audio.play();
+    }
+  }, [totalSummary.totalNumberOfBuyOrders, loadingSummary]);
 
 
 
@@ -1085,6 +1099,344 @@ export default function Index({ params }: any) {
 
 
        
+            {/* total number of trades, total buy amount krw, total usdt amount */}
+            <div className="w-full flex flex-col items-start justify-start gap-2  bg-white shadow-md rounded-lg p-4">
+
+              <div className="w-full flex flex-col xl:flex-row items-center justify-start gap-2">
+
+                <div className="w-full flex flex-row items-center justify-start gap-2">                
+                  <Image
+                    src="/icon-buyorder.png"
+                    alt="Buy Order"
+                    width={35}
+                    height={35}
+                    className="w-6 h-6"
+                  />
+                  <h2 className="text-lg font-semibold">구매주문</h2>
+                  <p className="text-lg text-red-500 font-semibold">
+                    {totalSummary.totalNumberOfBuyOrders} 건
+                  </p>
+                  {totalSummary.totalNumberOfBuyOrders > 0 && (
+                    <Image
+                      src="/icon-notification.gif"
+                      alt="Notification"
+                      width={50}
+                      height={50}
+                      className="w-15 h-15 object-cover"
+                      
+                    />
+                  )}
+                  {loadingSummary && (
+                    <Image
+                      src="/loading.png"
+                      alt="Loading"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5 animate-spin"
+                    />
+                  )}
+                </div>
+
+                <div className="w-full flex flex-row items-center justify-end gap-2">
+                  <button
+                    onClick={() => {
+                      router.push('/' + params.lang + '/admin/buyorder');
+                    }}
+                    className="bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
+                  >
+                    구매주문관리
+                  </button>
+                </div>
+
+              </div>
+
+
+
+              <div className="w-full flex flex-row items-center justify-end gap-2">
+
+                <div className="w-full mt-4">
+                  <div className="flex flex-row items-center justify-start gap-2">
+                    {/* dot */}
+                    <div className="w-2 h-2 bg-[#3167b4] rounded-full"></div>
+                    <h2 className="text-lg font-semibold">최근 구매주문</h2>
+                  </div>
+
+                  <table className="min-w-full
+                    border-collapse
+                    border border-gray-300
+                    rounded-lg
+                    overflow-hidden
+                    shadow-md
+                  ">
+                    <thead
+                      className="bg-gray-100
+                        text-gray-600
+                        text-sm
+                        font-semibold
+                        uppercase
+                        border-b
+                      "
+                    >
+                      <tr>
+                        
+                        <th className="px-4 py-2 text-left">거래번호<br/>거래시간</th>
+                        <th className="px-4 py-2 text-left">
+                          가맹점<br/>구매자
+                        </th>
+                        <th className="px-4 py-2 text-left">구매금액(원)<br/>구매량(USDT)</th>
+                        <th className="px-4 py-2 text-left">상태</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {totalSummary.latestBuyOrders.map((trade, index) => (
+                        <tr key={index} className="border-b">
+                          <td className="px-4 py-2">
+                            #{trade.tradeId.slice(0, 3) + "..."}
+                            <br/>
+                            {
+                              new Date().getTime() - new Date(trade.createdAt).getTime() < 1000 * 60 ? (
+                                ' ' + Math.floor((new Date().getTime() - new Date(trade.createdAt).getTime()) / 1000) + ' 초 전'
+                              ) :
+                              new Date().getTime() - new Date(trade.createdAt).getTime() < 1000 * 60 * 60 ? (
+                                ' ' + Math.floor((new Date().getTime() - new Date(trade.createdAt).getTime()) / 1000 / 60) + ' 분 전'
+                              ) : (
+                                ' ' + Math.floor((new Date().getTime() - new Date(trade.createdAt).getTime()) / 1000 / 60 / 60) + ' 시간 전'
+                              )
+                            }
+                          </td>
+
+                          <td className="px-4 py-2">
+                            {trade?.store?.storeName}
+                            <br/>
+                            {trade?.buyer?.depositName}
+                          </td>
+                          <td className="px-4 py-2">
+                            {Number(trade.krwAmount)?.toLocaleString()} 원
+                            <br/>
+                            {Number(trade.usdtAmount)?.toLocaleString()} USDT
+                          </td>
+
+                          <td className="px-4 py-2">
+                            {/* "orderded", "accepted", "paymentRequested" */}
+
+                            <button
+                              onClick={() => {
+                                //router.push('/' + params.lang + '/' + trade.storecode + '/pay-usdt-reverse/' + trade.tradeId);
+                                // new window open
+                                window.open(
+                                  '/' + params.lang + '/' + trade.storecode + '/pay-usdt-reverse/' + trade._id,
+                                  '_blank'
+                                );
+                              }}
+                              className={`
+                                text-sm font-semibold
+                                bg-[#3167b4] text-white
+                                px-2 py-1 rounded-lg
+                                hover:bg-[#3167b4]/80
+                                ${trade.status === "ordered" ? "bg-red-500" : ""}
+                                ${trade.status === "accepted" ? "bg-green-500" : ""}
+                                ${trade.status === "paymentRequested" ? "bg-yellow-500" : ""}
+                              `}
+                            >
+
+                              {trade.status === "ordered" ? (
+                                <span className="text-white font-semibold">
+                                  구매주문
+                                </span>
+                              ) : trade.status === "accepted" ? (
+                                <span className="text-white font-semibold">
+                                  거래시작
+                                </span>
+                              ) : trade.status === "paymentRequested" ? (
+                                <span className="text-white font-semibold">
+                                  결제요청
+                                </span>
+                              ) : (
+                                <span className="text-white font-semibold">
+                                  {trade.status}
+                                </span>
+                              )}
+
+                            </button>
+                          </td>
+
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div className="w-full flex flex-col items-start justify-start gap-2  bg-white shadow-md rounded-lg p-4">
+
+              <div className="w-full flex flex-col xl:flex-row items-center justify-start gap-2">
+
+                <div className="w-full flex flex-row items-center justify-start gap-2">                
+                  <Image
+                    src="/icon-buyorder.png"
+                    alt="Buy Order"
+                    width={35}
+                    height={35}
+                    className="w-6 h-6"
+                  />
+                  <h2 className="text-lg font-semibold">청산주문</h2>
+                  <p className="text-lg text-zinc-500">
+                    {totalSummary.totalNumberOfSellOrders} 건
+                  </p>
+                  {loadingSummary && (
+                    <Image
+                      src="/loading.png"
+                      alt="Loading"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5 animate-spin"
+                    />
+                  )}
+                </div>
+
+                <div className="w-full flex flex-row items-center justify-end gap-2">
+                  <button
+                    onClick={() => {
+                      router.push('/' + params.lang + '/admin/clearance-history');
+                    }}
+                    className="bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
+                  >
+                    청산관리
+                  </button>
+                </div>
+
+              </div>
+
+
+
+              <div className="w-full flex flex-row items-center justify-end gap-2">
+
+                <div className="w-full mt-4">
+                  <div className="flex flex-row items-center justify-start gap-2">
+                    {/* dot */}
+                    <div className="w-2 h-2 bg-[#3167b4] rounded-full"></div>
+                    <h2 className="text-lg font-semibold">최근 청산주문</h2>
+                  </div>
+
+                  <table className="min-w-full
+                    border-collapse
+                    border border-gray-300
+                    rounded-lg
+                    overflow-hidden
+                    shadow-md
+                  ">
+                    <thead
+                      className="bg-gray-100
+                        text-gray-600
+                        text-sm
+                        font-semibold
+                        uppercase
+                        border-b
+                      "
+                    >
+                      <tr>
+                        
+                        <th className="px-4 py-2 text-left">거래번호<br/>거래시간</th>
+                        <th className="px-4 py-2 text-left">
+                          가맹점<br/>청산자
+                        </th>
+                        <th className="px-4 py-2 text-left">청산금액(원)<br/>청산량(USDT)</th>
+                        <th className="px-4 py-2 text-left">상태</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {totalSummary.latestSellOrders?.map((trade, index) => (
+                        <tr key={index} className="border-b">
+                          <td className="px-4 py-2">
+                            #{trade.tradeId.slice(0, 3) + "..."}
+                            <br/>
+                            {
+                              new Date().getTime() - new Date(trade.createdAt).getTime() < 1000 * 60 ? (
+                                ' ' + Math.floor((new Date().getTime() - new Date(trade.createdAt).getTime()) / 1000) + ' 초 전'
+                              ) :
+                              new Date().getTime() - new Date(trade.createdAt).getTime() < 1000 * 60 * 60 ? (
+                                ' ' + Math.floor((new Date().getTime() - new Date(trade.createdAt).getTime()) / 1000 / 60) + ' 분 전'
+                              ) : (
+                                ' ' + Math.floor((new Date().getTime() - new Date(trade.createdAt).getTime()) / 1000 / 60 / 60) + ' 시간 전'
+                              )
+                            }
+                          </td>
+
+                          <td className="px-4 py-2">
+                            {trade?.store?.storeName}
+                            <br/>
+                            {trade?.buyer?.depositName}
+                          </td>
+                          <td className="px-4 py-2">
+                            {Number(trade.krwAmount)?.toLocaleString()} 원
+                            <br/>
+                            {Number(trade.usdtAmount)?.toLocaleString()} USDT
+                          </td>
+
+                          <td className="px-4 py-2">
+                            {/* "orderded", "accepted", "paymentRequested" */}
+
+                            <button
+                              onClick={() => {
+                                //router.push('/' + params.lang + '/' + trade.storecode + '/pay-usdt-reverse/' + trade.tradeId);
+                                // new window open
+                                window.open(
+                                  '/' + params.lang + '/' + trade.storecode + '/pay-usdt-reverse/' + trade._id,
+                                  '_blank'
+                                );
+                              }}
+                              className={`
+                                text-sm font-semibold
+                                bg-[#3167b4] text-white
+                                px-2 py-1 rounded-lg
+                                hover:bg-[#3167b4]/80
+                                ${trade.status === "ordered" ? "bg-red-500" : ""}
+                                ${trade.status === "accepted" ? "bg-green-500" : ""}
+                                ${trade.status === "paymentRequested" ? "bg-yellow-500" : ""}
+                              `}
+                            >
+
+                              {trade.status === "ordered" ? (
+                                <span className="text-white font-semibold">
+                                  구매주문
+                                </span>
+                              ) : trade.status === "accepted" ? (
+                                <span className="text-white font-semibold">
+                                  거래시작
+                                </span>
+                              ) : trade.status === "paymentRequested" ? (
+                                <span className="text-white font-semibold">
+                                  결제요청
+                                </span>
+                              ) : (
+                                <span className="text-white font-semibold">
+                                  {trade.status}
+                                </span>
+                              )}
+
+
+                            </button>
+                          </td>
+
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+
+
             
             {/* store */}
             <div className="w-full flex flex-col items-start justify-start gap-2  bg-white shadow-md rounded-lg p-4">
@@ -1555,213 +1907,6 @@ export default function Index({ params }: any) {
               */}
 
             </div>
-
-
-
-            {/* total number of trades, total buy amount krw, total usdt amount */}
-            <div className="w-full flex flex-col items-start justify-start gap-2  bg-white shadow-md rounded-lg p-4">
-
-              <div className="w-full flex flex-col xl:flex-row items-center justify-start gap-2">
-
-                <div className="w-full flex flex-row items-center justify-start gap-2">                
-                  <Image
-                    src="/icon-buyorder.png"
-                    alt="Buy Order"
-                    width={35}
-                    height={35}
-                    className="w-6 h-6"
-                  />
-                  <h2 className="text-lg font-semibold">총 구매주문수</h2>
-                  <p className="text-lg text-zinc-500">
-                    {totalSummary.totalNumberOfBuyOrders} 건
-                  </p>
-                  {loadingSummary && (
-                    <Image
-                      src="/loading.png"
-                      alt="Loading"
-                      width={20}
-                      height={20}
-                      className="w-5 h-5 animate-spin"
-                    />
-                  )}
-                </div>
-
-                <div className="w-full flex flex-row items-center justify-end gap-2">
-                  <button
-                    onClick={() => {
-                      router.push('/' + params.lang + '/admin/buyorder');
-                    }}
-                    className="bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
-                  >
-                    구매주문관리
-                  </button>
-                </div>
-
-              </div>
-
-
-
-              <div className="w-full flex flex-row items-center justify-end gap-2">
-
-                <div className="w-full mt-4">
-                  <div className="flex flex-row items-center justify-start gap-2">
-                    {/* dot */}
-                    <div className="w-2 h-2 bg-[#3167b4] rounded-full"></div>
-                    <h2 className="text-lg font-semibold">최근 구매주문</h2>
-                  </div>
-
-                  <table className="min-w-full
-                    border-collapse
-                    border border-gray-300
-                    rounded-lg
-                    overflow-hidden
-                    shadow-md
-                  ">
-                    <thead
-                      className="bg-gray-100
-                        text-gray-600
-                        text-sm
-                        font-semibold
-                        uppercase
-                        border-b
-                      "
-                    >
-                      <tr>
-                        
-                        <th className="px-4 py-2 text-left">거래번호<br/>거래시간</th>
-                        <th className="px-4 py-2 text-left">
-                          가맹점<br/>구매자
-                        </th>
-                        <th className="px-4 py-2 text-left">구매금액(원)<br/>구매량(USDT)</th>
-                        <th className="px-4 py-2 text-left">상태</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {totalSummary.latestBuyOrders.map((trade, index) => (
-                        <tr key={index} className="border-b">
-                          <td className="px-4 py-2">
-                            #{trade.tradeId.slice(0, 3) + "..."}
-                            <br/>
-                            {
-                              new Date().getTime() - new Date(trade.createdAt).getTime() < 1000 * 60 ? (
-                                ' ' + Math.floor((new Date().getTime() - new Date(trade.createdAt).getTime()) / 1000) + ' 초 전'
-                              ) :
-                              new Date().getTime() - new Date(trade.createdAt).getTime() < 1000 * 60 * 60 ? (
-                                ' ' + Math.floor((new Date().getTime() - new Date(trade.createdAt).getTime()) / 1000 / 60) + ' 분 전'
-                              ) : (
-                                ' ' + Math.floor((new Date().getTime() - new Date(trade.createdAt).getTime()) / 1000 / 60 / 60) + ' 시간 전'
-                              )
-                            }
-                          </td>
-
-                          <td className="px-4 py-2">
-                            {trade?.store?.storeName}
-                            <br/>
-                            {trade?.buyer?.depositName}
-                          </td>
-                          <td className="px-4 py-2">
-                            {Number(trade.krwAmount)?.toLocaleString()} 원
-                            <br/>
-                            {Number(trade.usdtAmount)?.toLocaleString()} USDT
-                          </td>
-
-                          <td className="px-4 py-2">
-                            {/* "orderded", "accepted", "paymentRequested" */}
-
-                            <button
-                              onClick={() => {
-                                //router.push('/' + params.lang + '/' + trade.storecode + '/pay-usdt-reverse/' + trade.tradeId);
-                                // new window open
-                                window.open(
-                                  '/' + params.lang + '/' + trade.storecode + '/pay-usdt-reverse/' + trade._id,
-                                  '_blank'
-                                );
-                              }}
-                              className={`
-                                text-sm font-semibold
-                                bg-[#3167b4] text-white
-                                px-2 py-1 rounded-lg
-                                hover:bg-[#3167b4]/80
-                                ${trade.status === "ordered" ? "bg-red-500" : ""}
-                                ${trade.status === "accepted" ? "bg-green-500" : ""}
-                                ${trade.status === "paymentRequested" ? "bg-yellow-500" : ""}
-                              `}
-                            >
-
-                              {trade.status === "ordered" ? (
-                                <span className="text-white font-semibold">
-                                  구매주문
-                                </span>
-                              ) : trade.status === "accepted" ? (
-                                <span className="text-white font-semibold">
-                                  거래시작
-                                </span>
-                              ) : trade.status === "paymentRequested" ? (
-                                <span className="text-white font-semibold">
-                                  결제요청
-                                </span>
-                              ) : (
-                                <span className="text-white font-semibold">
-                                  {trade.status}
-                                </span>
-                              )}
-
-
-                              
-                                {/*
-                              {trade.status === "ordered" ? (
-                                <span className="text-red-500 font-semibold
-                                  bg-red-100/50
-                                  px-2 py-1 rounded-lg
-                                ">
-                                  구매주문
-                                </span>
-                              ) : trade.status === "accepted" ? (
-                              <span className="text-green-500 font-semibold
-                                bg-green-100/50
-                                px-2 py-1 rounded-lg
-                              ">
-                                  거래시작
-                                </span>
-                              ) : trade.status === "paymentRequested" ? (
-                                <span className="text-yellow-500 font-semibold
-                                  bg-yellow-100/50
-                                  px-2 py-1 rounded-lg
-                                ">
-                                  결제요청
-                                </span>
-                              ) : ""
-                              }
-                              */}
-
-                            </button>
-                          </td>
-
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-
-                </div>
-
-              </div>
-              {/*
-              <div className="w-full flex flex-row items-center justify-end gap-2">
-
-                <button
-                  onClick={() => {
-                    router.push('/' + params.lang + '/admin/trade-history');
-                  }}
-                  className="bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
-                >
-                  거래내역
-                </button>
-              </div>
-              */}
-
-            </div>
-
-
 
 
 
