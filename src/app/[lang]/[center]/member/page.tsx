@@ -1497,6 +1497,7 @@ export default function Index({ params }: any) {
       return;
     }
 
+
     // api call to clear the wallet address
     setClearanceingWalletAddress((prev) => {
       const newClearanceing = [...prev];

@@ -78,6 +78,7 @@ import { get } from "http";
 
 
 import { useSearchParams } from 'next/navigation';
+import { clear } from "console";
 
 
 
@@ -1638,6 +1639,17 @@ export default function Index({ params }: any) {
     walletAddress: string,
     storecode: string,
   ) => {
+
+    if (walletAddress === '') {
+      toast.error('지갑 주소를 입력해주세요.');
+      return;
+    }
+
+    if (storecode === '') {
+      toast.error('가맹점 코드가 필요합니다.');
+      return;
+    }
+
     
     if (clearanceingWalletAddress.includes(true)) {
       return;
@@ -2696,6 +2708,9 @@ export default function Index({ params }: any) {
 
                               {/* function call button clearanceWalletAddress */}
                               <button
+                                disabled={
+                                  !item.walletAddress || !item.storecode || clearanceingWalletAddress.includes(true)
+                                }
                                 onClick={() => {
                                   clearanceWalletAddress(
                                     item.walletAddress,
@@ -2706,8 +2721,12 @@ export default function Index({ params }: any) {
                                 className={`
                                   w-full mb-2
                                   bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
-                                  hover:bg-[#3167b4]/80
+                                  ${!item.walletAddress || !item.storecode || clearanceingWalletAddress.includes(true)
+                                    ? 'opacity-50 cursor-not-allowed'
+                                    : 'hover:bg-[#3167b4]/80'
+                                  }
                                 `}
+                                  
                               >
                                 잔액 회수하기
                               </button>
