@@ -1020,7 +1020,7 @@ export default function Index({ params }: any) {
                     walletAddress: address,
                     searchMyOrders: searchMyOrders,
 
-                    //searchOrderStatusCompleted: true,
+                    searchOrderStatusCompleted: true,
 
                     searchBuyer: searchBuyer,
                     searchDepositName: searchDepositName,
@@ -1150,7 +1150,7 @@ export default function Index({ params }: any) {
               walletAddress: address,
               searchMyOrders: searchMyOrders,
 
-              //searchOrderStatusCompleted: true,
+              searchOrderStatusCompleted: true,
 
               searchBuyer: searchBuyer,
               searchDepositName: searchDepositName,
@@ -1334,7 +1334,7 @@ export default function Index({ params }: any) {
         /*
         const transactionResult = await waitForReceipt({
           client,
-          arbitrum,
+          chain: arbitrum ,
           maxBlocksWaitTime: 1,
           transactionHash: transactionHash,
         });
@@ -1962,7 +1962,7 @@ export default function Index({ params }: any) {
               walletAddress: address,
               searchMyOrders: searchMyOrders,
 
-              //searchOrderStatusCompleted: true,
+              //earchOrderStatusCompleted: true,
 
               searchBuyer: searchBuyer,
               searchDepositName: searchDepositName,
@@ -2558,19 +2558,18 @@ const fetchBuyOrders = async () => {
 
             <div className='flex flex-row items-center space-x-4'>
                 <Image
-                  src="/icon-trade.png"
-                  alt="Trade"
+                  src="/icon-clearance.png"
+                  alt="Clearance"
                   width={35}
                   height={35}
                   className="w-6 h-6"
                 />
 
                 <div className="text-xl font-semibold">
-                  거래내역
+                  청산내역
                 </div>
 
             </div>
-
 
 
 
@@ -2582,7 +2581,7 @@ const fetchBuyOrders = async () => {
               p-4 rounded-lg shadow-md
               ">
 
-              <div className="w-1/4 flex flex-row items-center justify-center gap-2">
+              <div className="w-full flex flex-row items-center justify-center gap-2">
                 <div className="flex flex-col gap-2 items-center">
                   <div className="text-sm">총 거래수(건)</div>
                   <div className="text-xl font-semibold text-zinc-500">
@@ -2620,60 +2619,68 @@ const fetchBuyOrders = async () => {
               <div className="hidden xl:block w-0.5 h-10 bg-zinc-300"></div>
               <div className="xl:hidden w-full h-0.5 bg-zinc-300"></div>
 
-              <div className="w-1/2
+              <div className="w-full
                 flex flex-row items-center justify-center gap-2">
-                <div className="flex flex-col gap-2 items-center">
+
+                <div className="w-32 flex flex-col gap-2 items-center">
                   <div className="text-sm">총 정산수(건)</div>
                   <div className="text-xl font-semibold text-zinc-500">
                     {tradeSummary.totalSettlementCount?.toLocaleString()} 건
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2 items-center">
-                  <div className="text-sm">총 정산금액(원)</div>
-                  <div className="text-xl font-semibold text-zinc-500">
-                    {tradeSummary.totalSettlementAmountKRW?.toLocaleString()} 원
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2 items-center">
-                  <div className="text-sm">총 정산량(USDT)</div>
+                <div className="w-full flex flex-col gap-5 items-between justify-center">
 
-                  <div className="flex flex-row items-center justify-center gap-1">
-                    <Image
-                      src="/icon-tether.png"
-                      alt="Tether"
-                      width={20}
-                      height={20}
-                      className="w-5 h-5"
-                    />
-                    <div className="text-xl font-semibold text-zinc-500">
-                      {tradeSummary.totalSettlementAmount?.toLocaleString()}
+                  <div className="w-full flex flex-row items-end justify-center gap-2">
+                    <div className="w-full flex flex-col gap-2 items-end justify-center">
+                      <div className="text-sm">총 정산금액(원)</div>
+                      <div className="text-xl font-semibold text-zinc-500">
+                        {tradeSummary.totalSettlementAmountKRW?.toLocaleString()} 원
+                      </div>
+                    </div>
+                    <div className="w-full flex flex-col gap-2 items-end justify-center">
+                      <div className="text-sm">총 정산량(USDT)</div>
+                      <div className="flex flex-row items-center justify-center gap-1">
+                        <Image
+                          src="/icon-tether.png"
+                          alt="Tether"
+                          width={20}
+                          height={20}
+                          className="w-5 h-5"
+                        />
+                        <div className="text-xl font-semibold text-zinc-500">
+                          {tradeSummary.totalSettlementAmount?.toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="w-full flex flex-row items-end justify-center gap-2">
+                    <div className="w-full flex flex-col gap-2 items-end justify-center">
+                      <div className="text-sm">총 수수료금액(원)</div>
+                      <div className="text-xl font-semibold text-zinc-500">
+                        {tradeSummary.totalFeeAmountKRW?.toLocaleString()} 원
+                      </div>
+                    </div>
+                    <div className="w-full flex flex-col gap-2 items-end justify-center">
+                      <div className="text-sm">총 수수료수량(USDT)</div>
+                      <div className="flex flex-row items-center justify-center gap-1">
+                        <Image
+                          src="/icon-tether.png"
+                          alt="Tether"
+                          width={20}
+                          height={20}
+                          className="w-5 h-5"
+                        />
+                        <div className="text-xl font-semibold text-zinc-500">
+                          {tradeSummary.totalFeeAmount?.toLocaleString()}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
                 </div>
 
-                <div className="flex flex-col gap-2 items-center">
-                  <div className="text-sm">총 수수료금액(원)</div>
-                  <div className="text-xl font-semibold text-zinc-500">
-                    {tradeSummary.totalFeeAmountKRW?.toLocaleString()} 원
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2 items-center">
-                  <div className="text-sm">총 수수료수량(USDT)</div>
-                  <div className="flex flex-row items-center justify-center gap-1">
-                    <Image
-                      src="/icon-tether.png"
-                      alt="Tether"
-                      width={20}
-                      height={20}
-                      className="w-5 h-5"
-                    />
-                    <div className="text-xl font-semibold text-zinc-500">
-                      {tradeSummary.totalFeeAmount?.toLocaleString()}
-                    </div>
-                  </div>
-                </div>
               </div>
 
 
@@ -2681,7 +2688,7 @@ const fetchBuyOrders = async () => {
               <div className="hidden xl:block w-0.5 h-10 bg-zinc-300"></div>
               <div className="xl:hidden w-full h-0.5 bg-zinc-300"></div>
 
-              <div className="w-1/4 flex flex-row items-center justify-center gap-2">
+              <div className="w-full flex flex-row items-center justify-center gap-2">
                 <div className="flex flex-col gap-2 items-center">
                   <div className="text-sm">총 청산수(건)</div>
                   <div className="text-xl font-semibold text-zinc-500">
@@ -3160,7 +3167,7 @@ const fetchBuyOrders = async () => {
                             </td>
 
 
-                            <td className="p-2">
+                           <td className="p-2">
 
                                 {item?.buyer?.nickname ? (
                                   <div className="flex flex-col items-start justify-center gap-1">
