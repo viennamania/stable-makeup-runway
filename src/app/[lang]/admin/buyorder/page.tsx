@@ -4464,9 +4464,8 @@ const fetchBuyOrders = async () => {
                                 {Completed}
                               </button>
                               {/* new window */}
-                              {/* https://www.cryptoss.beauty/ */}
                               <a
-                                href={`https://www.cryptoss.beauty/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
+                                href={`https://cryptoss-runway.vercel.app/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-sm text-blue-600 font-semibold underline"
