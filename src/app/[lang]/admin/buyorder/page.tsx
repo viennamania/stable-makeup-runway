@@ -2324,7 +2324,7 @@ export default function Index({ params }: any) {
 
 
       //console.log('buyOrders[0]', buyOrders?.[0]);
-
+      /*
       if (data.result.orders?.[0]?._id !== latestBuyOrder?._id) {
 
         setLatestBuyOrder(data.result.orders?.[0] || null);
@@ -2350,6 +2350,7 @@ export default function Index({ params }: any) {
 
 
       }
+      */
 
       setBuyOrders(data.result.orders);
 
