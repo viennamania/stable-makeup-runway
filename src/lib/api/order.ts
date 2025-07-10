@@ -6586,7 +6586,7 @@ export async function updateBuyOrderSettlement(
 // getTotalNumberOfBuyOrders
 export async function getTotalNumberOfBuyOrders(): Promise<{ totalCount: number }> {
   const client = await clientPromise;
-  const collection = client.db('ultraman').collection('buyorders');
+  const collection = client.db('runway').collection('buyorders');
   // get total number of buy orders
   const totalCount = await collection.countDocuments(
     {
