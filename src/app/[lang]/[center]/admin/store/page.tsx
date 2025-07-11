@@ -73,6 +73,7 @@ import useSound from 'use-sound';
 
 import { useSearchParams } from 'next/navigation';
 
+import { paymentUrl } from "@/app/config/payment";
 
 
 interface BuyOrder {
@@ -1385,14 +1386,13 @@ export default function Index({ params }: any) {
                 </div>
 
                 {/* link new window */}
-                {/* https://cryptoss-runway.vercel.app/ko/[storecode] */}
                 <button
                   onClick={() => {
-                    window.open(`https://cryptoss-runway.vercel.app/ko/${store?.storecode}`, '_blank');
+                    window.open(`${paymentUrl}/ko/${store?.storecode}`, '_blank');
                   }}
                   className="text-sm text-zinc-500 underline"
                 >
-                  가맹점 링크: https://cryptoss-runway.vercel.app/ko/{store?.storecode}
+                  가맹점 링크
                 </button>
 
             </div>

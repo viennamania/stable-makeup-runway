@@ -80,7 +80,7 @@ import { useSearchParams } from 'next/navigation';
 
 import { getAllUsersForSettlementOfStore } from "@/lib/api/user";
 
-
+import { paymentUrl } from "@/app/config/payment";
 
 
 interface BuyOrder {
@@ -4465,7 +4465,7 @@ const fetchBuyOrders = async () => {
                               </button>
                               {/* new window */}
                               <a
-                                href={`https://cryptoss-runway.vercel.app/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
+                                href={`${paymentUrl}/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-sm text-blue-600 font-semibold underline"

@@ -1995,22 +1995,6 @@ export default function Index({ params }: any) {
 
                             <div className="flex flex-row items-center justify-start gap-2">
 
-                              {/*}
-                              <button
-                                onClick={() => {
-                                  window.open(
-                                    'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
-                                    + 'storeUser=' + item.nickname + '&depositBankName=' + item?.buyer?.depositBankName + '&depositName=' + item?.buyer?.depositName,
-                                    '_blank'
-                                  );
-                                  toast.success('회원 홈페이지를 새창으로 열었습니다.');
-                                }}
-                                className="bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
-                                  hover:bg-[#3167b4]/80"
-                              >
-                                보기
-                              </button>
-                              */}
 
                               {/* Modal open */}
                               <button
