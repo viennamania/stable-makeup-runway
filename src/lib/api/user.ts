@@ -875,7 +875,7 @@ export async function getAllBuyers(
 ): Promise<any> {
 
   const client = await clientPromise;
-  const collection = client.db('ultraman').collection('users');
+  const collection = client.db('runway').collection('users');
   // walletAddress is not empty and not null
   // order by nickname asc
   // if storecode is empty, return all users
@@ -918,6 +918,8 @@ export async function getAllBuyers(
     .limit(limit)
     .skip((page - 1) * limit)
     .toArray();
+
+
 
   const totalCount = await collection.countDocuments(
     {
@@ -1021,12 +1023,11 @@ export async function getAllBuyersForAgent(
       $limit: limit
     }
   ]).toArray();
-      
-
-
 
 
   console.log('getAllBuyersForAgent users: ' + users.length);
+
+
   const totalCount = users.length;
 
   return {
