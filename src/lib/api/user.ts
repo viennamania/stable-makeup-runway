@@ -854,8 +854,6 @@ export async function getAllUsers(
 
 
 
-
-
 // getAllBuyers
 // search by storecode
 export async function getAllBuyers(
@@ -874,21 +872,13 @@ export async function getAllBuyers(
     limit: number;
     page: number;
   }
-): Promise<ResultProps> {
+): Promise<any> {
+
   const client = await clientPromise;
-  const collection = client.db('runway').collection('users');
+  const collection = client.db('ultraman').collection('users');
   // walletAddress is not empty and not null
   // order by nickname asc
   // if storecode is empty, return all users
-
-
-  // join with stores collection by storecode
-
-
-
-
-
-
 
   
   const users = await collection
@@ -904,27 +894,30 @@ export async function getAllBuyers(
 
         
         ],
-
-        
-
       },
+
       {
-        limit: limit,
-        skip: (page - 1) * limit,
-      },
+        projection:
+        {
+          id: 1,
+          createdAt: 1,
+          nickname: 1,
+          walletAddress: 1,
+          storecode: 1,
+          store: 1,
+          buyer: 1,
+          buyOrderStatus: 1,
+          totalPaymentConfirmedCount: 1,
+          totalPaymentConfirmedKrwAmount: 1,
+          totalPaymentConfirmedUsdtAmount: 1,
+
+        }
+      }
     )
     .sort({ createdAt: -1 })
+    .limit(limit)
+    .skip((page - 1) * limit)
     .toArray();
-  
-
-
-
-  /*
-  const totalCount = await collection.countDocuments(
-    {
-    }
-  );
-  */
 
   const totalCount = await collection.countDocuments(
     {
@@ -942,12 +935,15 @@ export async function getAllBuyers(
     }
   );
 
+
+
   return {
     totalCount: totalCount,
     totalResult: totalCount,
     users,
   };
 }
+
 
 
 
