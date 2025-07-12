@@ -80,7 +80,7 @@ import { useSearchParams } from 'next/navigation';
 
 import { getAllUsersForSettlementOfStore } from "@/lib/api/user";
 
-import { paymentUrl } from "@/app/config/payment";
+
 
 
 interface BuyOrder {
@@ -2324,6 +2324,7 @@ export default function Index({ params }: any) {
 
 
       //console.log('buyOrders[0]', buyOrders?.[0]);
+
       /*
       if (data.result.orders?.[0]?._id !== latestBuyOrder?._id) {
 
@@ -2749,7 +2750,6 @@ const fetchBuyOrders = async () => {
       audio.play();
     }
   }, [totalNumberOfBuyOrders, loadingTotalNumberOfBuyOrders]);
-
 
 
 
@@ -4464,8 +4464,9 @@ const fetchBuyOrders = async () => {
                                 {Completed}
                               </button>
                               {/* new window */}
+                              {/* https://www.cryptoss.beauty/ */}
                               <a
-                                href={`${paymentUrl}/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
+                                href={`https://www.cryptoss.beauty/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-sm text-blue-600 font-semibold underline"
@@ -4513,18 +4514,38 @@ const fetchBuyOrders = async () => {
                           <div className="
                             w-32
                             flex flex-col gap-2 items-center justify-center">
-                            <div className="flex flex-row gap-2 items-center justify-center">
-                              <Image
-                                src="/icon-payaction.png"
-                                alt="Bank Check"
-                                width={20}
-                                height={20}
-                                className="w-5 h-5 rounded-full"
-                              />
-                              <span className="text-sm font-semibold text-zinc-500">
-                                입금완료
-                              </span>
-                            </div>
+                            
+                            {item?.autoConfirmPayment === true ? (
+                            
+                              <div className="flex flex-row gap-2 items-center justify-center">
+                                <Image
+                                  src="/icon-payaction.png"
+                                  alt="Bank Check"
+                                  width={20}
+                                  height={20}
+                                  className="w-5 h-5 rounded-full"
+                                />
+                                <span className="text-sm font-semibold text-zinc-500">
+                                  자동입금확인
+                                </span>
+                              </div>
+
+                            ) : (
+
+                              <div className="flex flex-row gap-2 items-center justify-center">
+                                <Image
+                                  src="/icon-bank-check.png"
+                                  alt="Bank Check"
+                                  width={20}
+                                  height={20}
+                                  className="w-5 h-5 rounded-full"
+                                />
+                                <span className="text-sm font-semibold text-zinc-500">
+                                  수동입금확인
+                                </span>
+                              </div>
+
+                            )}
 
                             {/* seller bank info */}
                             <div className="flex flex-row gap-2 items-center justify-center">
@@ -6927,7 +6948,7 @@ const UserPaymentPage = (
       
       {/* iframe */}
       <iframe
-        src={`https://cryptoss-runway.vercel.app//kr/${selectedItem?.storecode}/pay-usdt-reverse/${selectedItem?._id}`}
+        src={`https://cryptoss.beauty/kr/${selectedItem?.storecode}/pay-usdt-reverse/${selectedItem?._id}`}
 
         
           
