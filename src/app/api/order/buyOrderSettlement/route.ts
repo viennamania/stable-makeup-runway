@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import {
   getOneBuyOrder,
   updateBuyOrderSettlement,
+  buyOrderWebhook,
 } from '@lib/api/order';
 
 
@@ -267,6 +268,121 @@ export async function POST(request: NextRequest) {
         result: null,
       });
     }
+
+
+
+
+
+
+
+  // order storecode가 오징어의 storecode인 경우에만 webhook을 보냄
+  if (buyOrder.store.storecode === "fixfstfh") { // 가맹점 이름 오징어
+
+
+  
+    const userid = buyOrder.nickname; // 매니의 userid는 orderNickname
+    const amount = buyOrder.paymentAmount;
+
+
+    // https://gogo.casinoapis.xyz/WalletApi/api_callback?userid=test1234&amount=10000
+
+    const webhookUrl = "https://gogo.casinoapis.xyz/WalletApi/api_callback"; // 오징어 웹훅 URL
+
+    const fetchUrl = `${webhookUrl}/?userid=${userid}&amount=${amount}`;
+
+    try {
+
+      
+      //const response = await fetch(fetchUrl, {
+      //  method: "GET",
+      //  headers: {
+      //    "Content-Type": "application/json",
+      //  },
+      //});
+
+      // GET 요청
+      const response = await fetch(fetchUrl);
+
+      console.log("fetchUrl", fetchUrl);
+      console.log("response", response);
+
+
+
+      if (!response.ok) {
+        console.error("Failed to send webhook for user:", userid, "with status:", response.status);
+      } else {
+
+
+        
+        //성공: {result: success}, 실패: {result: fail}
+        
+
+        try {
+          
+          const data = await response.json();
+          console.log("Webhook sent for user:", userid, "with response:", data);
+
+          await buyOrderWebhook({
+            orderId: orderId,
+            webhookData: {
+              createdAt: new Date().toISOString(),
+              url: webhookUrl,
+              userid: userid,
+              amount: amount,
+              response: data,
+            }
+          });
+
+
+        } catch (jsonError) {
+
+
+          await buyOrderWebhook({
+            orderId: orderId,
+            webhookData: {
+              createdAt: new Date().toISOString(),
+              url: webhookUrl,
+              userid: userid,
+              amount: amount,
+              response: response.text(), // response를 JSON으로 파싱하지 못한 경우
+            }
+          });
+
+        }
+        
+
+
+
+
+      }
+
+    } catch (error) {
+      console.error("Error sending webhook:", error);
+    }
+
+  }
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     console.log("Settlement updated successfully for orderId:", orderId);
