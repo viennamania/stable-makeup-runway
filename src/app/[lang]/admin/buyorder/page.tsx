@@ -1842,6 +1842,7 @@ export default function Index({ params }: any) {
 
             //console.log('data', data);
 
+
             await fetch('/api/order/getAllBuyOrders', {
               method: 'POST',
               headers: {
@@ -5127,13 +5128,33 @@ const fetchBuyOrders = async () => {
                                         hover:shadow-lg
                                         hover:shadow-green-500/50
                                       "
+
+                                      /*
+                                        confirmPayment(
+                                            index,
+                                            item._id,
+                                            
+                                            //paymentAmounts[index],
+                                            item.krwAmount,
+
+                                            //paymentAmountsUsdt[index],
+                                            item.usdtAmount,
+
+
+                                            item.walletAddress,
+                                          );
+                                          */
+
                                       
                                       onClick={() => {
                                         confirmPayment(
                                           index,
                                           item._id,
-                                          paymentAmounts[index],
-                                          paymentAmountsUsdt[index],
+                                          //paymentAmounts[index],
+                                          //paymentAmountsUsdt[index],
+
+                                          item.krwAmount,
+                                          item.usdtAmount,
                                           
                                           item.walletAddress,
                                         );

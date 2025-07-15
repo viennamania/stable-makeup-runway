@@ -80,6 +80,9 @@ export async function POST(request: NextRequest) {
     const sellerWalletAddress = seller.walletAddress;
 
     if (!sellerWalletAddress) {
+
+      console.log("sellerWalletAddress not found for orderId", orderId);
+
       return NextResponse.json({
         result: null,
       });
@@ -93,6 +96,9 @@ export async function POST(request: NextRequest) {
     ///console.log("user", user);
 
     if (!user) {
+
+      console.log("user not found for walletAddress", sellerWalletAddress);
+
       return NextResponse.json({
         result: null,
       });
@@ -101,6 +107,8 @@ export async function POST(request: NextRequest) {
 
     const queueId = "queueId";
     const transactionHashResult = transactionHash;
+
+
 
 
     const result = await buyOrderConfirmPayment({
@@ -114,6 +122,8 @@ export async function POST(request: NextRequest) {
       transactionHash: transactionHashResult,
 
     });
+
+    console.log("result", result);
   
   
     //console.log("result", JSON.stringify(result));
