@@ -1584,7 +1584,6 @@ export default function Index({ params }: any) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        storecode: params.center,
         walletAddress: walletAddress,
       }),
     });
@@ -2801,7 +2800,7 @@ export default function Index({ params }: any) {
  
  
                                {/* function call button clearanceWalletAddress */}
-                               {/*
+                               
                                <button
                                  onClick={() => {
                                    clearanceWalletAddress(item.walletAddress);
@@ -2815,7 +2814,7 @@ export default function Index({ params }: any) {
                                >
                                  잔액 회수하기
                                </button>
-                                */}
+                                
   
                              
  
