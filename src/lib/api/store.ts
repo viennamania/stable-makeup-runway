@@ -643,9 +643,8 @@ export async function getAllStores(
           settlementWalletAddress: 1,
 
           agentFeePercent: 1,
-      
 
-          
+          escrowAmountUSDT: 1,
 
           totalBuyerCount: 1,
           totalKrwAmount: 1,
