@@ -2401,11 +2401,6 @@ export default function Index({ params }: any) {
                             <span className="text-center">
                               AG 수수료율(%)
                             </span>
-
-                            <span className="text-center">
-                              보유금(USDT)
-                            </span>
-
                           </div>
                         </th>
 
@@ -2465,22 +2460,30 @@ export default function Index({ params }: any) {
                                 <span>수량(USDT)</span>
                               </div>
 
+                              {/*
                               <div className="flex flex-col items-center justify-center gap-2">
                                 <span>보유금액(원)</span>
                                 <span>보유수량(USDT)</span>
                               </div>
+                              */}
 
                             </div>
 
                           </div>
                         </th>
 
-                        {/* USDT통장 잔고 */}
+                        {/* 보유수량(USDT) */}
                         <th className="p-2">
                           <div className="flex flex-col items-center justify-center gap-2">
                             <span className="text-center">
-                              가맹점
+                              보유수량(USDT)
                             </span>
+                          </div>
+                        </th>
+
+                        {/* USDT통장 잔고 */}
+                        <th className="p-2">
+                          <div className="flex flex-col items-center justify-center gap-2">
                             <span className="text-center">
                               USDT통장
                             </span>
@@ -2912,22 +2915,6 @@ export default function Index({ params }: any) {
                                   </span>
                                 </div>
 
-                                {/* escrowAmountUSDT */}
-                                <div className="w-full flex flex-row items-center justify-center gap-1">
-                                  <Image
-                                    src="/icon-tether.png"
-                                    alt="Tether"
-                                    width={20}
-                                    height={20}
-                                    className="w-5 h-5"
-                                  />
-                                  <span className="text-xl text-green-600"
-                                    style={{ fontFamily: 'monospace' }}
-                                  >
-                                    {item?.escrowAmountUSDT ? item?.escrowAmountUSDT.toFixed(2).toLocaleString('us-US') : 0}
-                                  </span>
-                                </div>
-
                               </div>
                               
                             </div>
@@ -3152,7 +3139,7 @@ export default function Index({ params }: any) {
 
                           <td className="p-2">
 
-                            <div className="w-72 h-56
+                            <div className="w-36 h-56
                             flex flex-col items-between justify-between gap-2">
 
 
@@ -3202,7 +3189,7 @@ export default function Index({ params }: any) {
 
                                   </div>
 
-
+                                  {/*}
                                   <div className="w-full flex flex-col items-end justify-center gap-2">
 
                                       <span className="text-sm text-yellow-600"
@@ -3251,6 +3238,7 @@ export default function Index({ params }: any) {
                                       </div>
 
                                   </div>
+                                  */}
 
 
                                 </div>
@@ -3277,12 +3265,37 @@ export default function Index({ params }: any) {
                                 청산관리
                               </button>
 
-
-
                             </div>
 
-
                           </td>
+
+                        
+                          {/* USDT 보유수량 */}
+                          <td className="p-2">
+
+                            <div className="
+                              w-32
+                              flex flex-col items-between justify-between gap-2">
+                              
+                              {/* escrowAmountUSDT */}
+                              <div className="w-full flex flex-row items-center justify-center gap-1">
+                                <Image
+                                  src="/icon-tether.png"
+                                  alt="Tether"
+                                  width={20}
+                                  height={20}
+                                  className="w-5 h-5"
+                                />
+                                <span className="text-xl text-green-600"
+                                  style={{ fontFamily: 'monospace' }}
+                                >
+                                  {item?.escrowAmountUSDT ? item?.escrowAmountUSDT.toFixed(2).toLocaleString('us-US') : 0}
+                                </span>
+                              </div>
+
+                            </div>
+                          </td>
+
 
                           {/* USDT 잔액 */}
                           <td className="p-2">
