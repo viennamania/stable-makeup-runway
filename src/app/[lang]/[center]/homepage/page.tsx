@@ -2899,7 +2899,79 @@ const fetchBuyOrders = async () => {
                   </div>
 
 
-                  <div className="w-full flex flex-row items-center justify-end gap-2">
+
+
+                  <div className="w-full flex flex-col xl:flex-row items-center justify-end gap-2">
+
+                    <div className="bg-gray-900 text-white px-6 py-10 font-sans border border-gray-800 rounded-lg shadow-lg">
+                      {/* 헤더 */}
+                      <h1 className="text-3xl md:text-4xl font-bold text-teal-400 mb-4">
+                        테더 P2P 거래:{" "}
+                        <span className="text-white">안전하고 효율적인 USDT 매매 가이드</span>
+                      </h1>
+                      <p className="text-gray-300 max-w-2xl mb-10">
+                        테더(USDT)는 현재 가장 널리 사용되는 스테이블코인으로, 암호화폐 시장에서 중요한 역할을 하고 있습니다.
+                        특히 P2P 거래 방식은 중개자를 거치지 않고 개인 간 직접 거래할 수 있는 장점이 있어
+                        많은 투자자들에게 인기가 높습니다.
+                      </p>
+
+                      {/* Tether P2P 소개 */}
+                      <div className="bg-blue-950 p-4 rounded-lg border border-blue-800 mb-10">
+                        <h2 className="font-bold text-blue-300 mb-2">⚡ Tether P2P 소개</h2>
+                        <p className="text-gray-200">
+                          <span className="text-blue-400">Tether P2P</span>는 테더 P2P 거래, 테더 매매, 송금, 지갑 사용법, 재정거래,
+                          OTC 거래, 코인 레버리지 등 다양한 정보를 제공하는 플랫폼입니다.
+                        </p>
+                        <p className="text-gray-200 mt-2">
+                          본 가이드를 통해 테더 시세 확인 방법과 Tether P2P에서 P2P 거래를 안전하고 효율적으로
+                          진행하는 방법을 상세히 알아보겠습니다.
+                        </p>
+                      </div>
+
+                      {/* 테더란 무엇인가 */}
+                      <h2 className="text-2xl font-bold mb-4">테더(Tether)란 무엇인가?</h2>
+
+                      <div className="grid md:grid-cols-2 gap-6">
+                        {/* 개념 */}
+                        <div className="bg-gray-800 p-6 rounded-lg">
+                          <h3 className="text-lg font-semibold mb-2 text-teal-300">
+                            테더(USDT)의 개념
+                          </h3>
+                          <p className="text-gray-300 text-sm leading-relaxed">
+                            테더(USDT)는 미국 달러(USD)와 1:1 비율로 연동된 암호화폐입니다.
+                            즉, 1 USDT ≈ 1 USD의 가치를 유지하도록 설계되어 있으며,
+                            일반적인 암호화폐(비트코인, 이더리움 등)와 달리 가격 변동성이 거의 없습니다.
+                            이러한 특성 덕분에, 테더는 암호화폐 시장에서 거래 및 결제의 기본 단위로 사용되며,
+                            법정화폐를 대신하는 주요 디지털 자산으로 자리 잡고 있습니다.
+                          </p>
+                        </div>
+
+                        {/* 주요 특징 */}
+                        <div className="bg-gray-800 p-6 rounded-lg">
+                          <h3 className="text-lg font-semibold mb-2 text-teal-300">
+                            테더의 주요 특징
+                          </h3>
+                          <ul className="list-disc list-inside text-gray-300 text-sm space-y-2">
+                            <li>법정화폐 연동 (1:1 비율) – 미국 달러와 연동되어 안정적인 가치 유지</li>
+                            <li>다양한 블록체인에서 지원 – ERC-20(이더리움), TRC-20(트론), BEP-20 등 사용 가능</li>
+                            <li>빠른 송금 및 결제 가능 – 해외 송금 및 암호화폐 결제 수단으로 활용</li>
+                            <li>스테이블코인 중 가장 높은 유동성 보유 – 모든 주요 거래소에서 거래 가능</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+
+
+
+
+
+
+
+
+                  <div className="w-full flex flex-row items-center justify-end gap-2 mt-4">
 
                     {/*
                     <div className="flex flex-col gap-2 items-center">
@@ -3027,6 +3099,19 @@ const fetchBuyOrders = async () => {
                       </button>
                     </div>
                     */}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5276,10 +5361,18 @@ const fetchBuyOrders = async () => {
 
 
 
-                                  {/* 구매량 */}
-                                  <span className="text-sm text-zinc-800">
-                                    테더 구매를 원합니다.
-                                  </span>
+                                  <div className="mb-2 flex flex-row items-start justify-start gap-2">
+                                    <Image
+                                      src="/icon-buy.webp"
+                                      alt="Buy"
+                                      width={24}
+                                      height={24}
+                                      className="rounded-lg"
+                                    />
+                                    <span className="text-sm text-zinc-800">
+                                      테더 구매를 원합니다.
+                                    </span>
+                                  </div>
 
                                   <div className="mt-2 flex flex-row items-start gap-2">
                                     <div className="flex flex-row items-center gap-1">
