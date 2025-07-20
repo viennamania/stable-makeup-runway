@@ -1624,7 +1624,87 @@ export default function Index({ params }: any) {
 
 
 
+  // update user block (true/false)
+  const [updatingUserBlock, setUpdatingUserBlock] = useState([] as boolean[]);
+  for (let i = 0; i < 100; i++) {
+    updatingUserBlock.push(false);
+  }
 
+  const updateUserBlock = async (
+    index: number,
+    storecode: string,
+    walletAddress: string,
+    block: boolean
+  ) => {
+    if (updatingUserBlock[index]) {
+      return;
+    }
+
+    setUpdatingUserBlock((prev) => {
+      const newUpdating = [...prev];
+      newUpdating[index] = true;
+      return newUpdating;
+    });
+
+    const response = await fetch('/api/user/updateUserBlock', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        storecode: storecode,
+        walletAddress: walletAddress,
+        block: block,
+      }),
+    });
+
+    if (!response.ok) {
+      setUpdatingUserBlock((prev) => {
+        const newUpdating = [...prev];
+        newUpdating[index] = false;
+        return newUpdating;
+      });
+      toast.error(`회원 ${block ? '차단' : '차단 해제'}에 실패했습니다.`);
+      return;
+    }
+
+    const data = await response.json();
+    //console.log('updateUserBlock data', data);
+    
+    if (data.result) {
+      
+      toast.success(`회원이 ${block ? '차단' : '차단 해제'}되었습니다.`);
+
+      //await fetchAllBuyer();
+      //allBuyer[index].blocked = block; // Update the blocked status in the local state
+      /*
+      setAllBuyer((prev) => {
+        const newUsers = [...prev];
+        newUsers[index] = {
+          ...newUsers[index],
+          blocked: block,
+        };
+        return newUsers;
+      });
+      */
+
+
+      await fetchAllBuyer(); // Re-fetch all buyers to update the state
+
+
+
+    } else {
+      toast.error(`회원 ${block ? '차단' : '차단 해제'}에 실패했습니다.`);
+    }
+    
+    setUpdatingUserBlock((prev) => {
+      const newUpdating = [...prev];
+      newUpdating[index] = false;
+      return newUpdating;
+    });
+    
+    return data.result;
+  }
 
 
 
@@ -2474,6 +2554,12 @@ export default function Index({ params }: any) {
                       }}
                     >
                       <tr>
+                        <th className="
+                          p-2">
+                          <div className="flex flex-col items-center justify-center gap-2">
+                            <span>차단</span>
+                          </div>
+                        </th>
 
                         <th className="
                           p-2">
@@ -2526,6 +2612,43 @@ export default function Index({ params }: any) {
                             index % 2 === 0 ? 'bg-zinc-100' : 'bg-zinc-200'
                           }
                         `}>
+                          <td className="
+                            p-2">
+                            <div className="
+                            w-20
+                            flex flex-col items-center justify-center gap-2">
+                              {item?.block ? (
+                                <span className="text-red-500 font-semibold">
+                                  차단됨
+                                </span>
+                              ) : (
+                                <span className="text-green-500 font-semibold">
+                                  정상
+                                </span>
+                              )}
+
+                              <button
+                                onClick={() => {
+                                  if (updatingUserBlock[index]) {
+                                    return;
+                                  }
+                                  updateUserBlock(
+                                    index,
+                                    item.storecode,
+                                    item.walletAddress,
+                                    !item.block
+                                  );
+                                }}
+                                className={`bg-[#3167b4] text-sm text-white px-2 py-1 rounded-lg
+                                  hover:bg-[#3167b4]/80
+                                  ${updatingUserBlock[index] ? 'opacity-50 cursor-not-allowed' : ''}`}
+                              >
+                                {updatingUserBlock[index] ? '처리중...' : item.block ?
+                                  '해제하기' : '차단하기'}
+                              </button>
+
+                            </div>
+                          </td>
 
                           <td className="
                             p-2">

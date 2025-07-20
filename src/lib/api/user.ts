@@ -50,6 +50,8 @@ export interface UserProps {
 
   buyOrderStatus: string,
 
+  block: boolean,
+
 }
 
 export interface ResultProps {
@@ -942,6 +944,8 @@ export async function getAllBuyers(
           totalPaymentConfirmedCount: 1,
           totalPaymentConfirmedKrwAmount: 1,
           totalPaymentConfirmedUsdtAmount: 1,
+
+          block: { $cond: [{ $eq: ['$block', true] }, true, false] }, // add block field  
 
         }
       }
@@ -1967,3 +1971,46 @@ export async function getAllAdmin(
 
 
 
+// updateUserBlock
+export async function updateUserBlock({
+  storecode,
+  walletAddress,
+  block,
+}: {
+  storecode: string;
+  walletAddress: string;
+  block: boolean;
+}): Promise<UserProps | null> {
+
+  const client = await clientPromise;
+  const collection = client.db('runway').collection('users');
+
+  // update and return updated user
+
+  if (!storecode || !walletAddress) {
+    return null;
+  }
+
+  const result = await collection.updateOne(
+    {
+      storecode: storecode,
+      walletAddress: walletAddress
+    },
+    { $set: { block: block } }
+  );
+
+  if (result) {
+    const updated = await collection.findOne<UserProps>(
+      {
+        storecode: storecode,
+        walletAddress: walletAddress
+      },
+      { projection: { _id: 0, emailVerified: 0 } }
+    );
+
+    return updated;
+  } else {
+    return null;
+  }
+
+}
