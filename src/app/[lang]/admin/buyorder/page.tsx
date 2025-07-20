@@ -139,6 +139,9 @@ interface BuyOrder {
 
   userStats: any;
 
+  settlementUpdatedAt: string;
+  settlementUpdatedBy: string; // who updates the settlement
+
 }
 
 
@@ -2254,6 +2257,7 @@ export default function Index({ params }: any) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+          updater: address,
           orderId: orderId,
         })
       });
@@ -5730,6 +5734,29 @@ const fetchBuyOrders = async () => {
                               />
                               <span className="text-sm font-semibold text-zinc-500">
                                 정산완료
+                              </span>
+
+                              {/* updater */}
+                              <span className="text-sm font-semibold text-zinc-500">
+                                {
+                                  item?.settlementUpdatedAt
+                                    ? new Date(item.settlementUpdatedAt).toLocaleDateString('ko-KR', {
+                                      year: 'numeric',
+                                      month: '2-digit',
+                                      day: '2-digit',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                      second: '2-digit',
+                                    })
+                                    : '정산일시 없음'
+                                  }
+                              </span>
+                              <span className="text-sm font-semibold text-zinc-500">
+                                {item?.settlementUpdatedBy
+                                ? item?.settlementUpdatedBy.length > 6
+                                  ? item?.settlementUpdatedBy.slice(0, 6) + '...'
+                                  : item?.settlementUpdatedBy
+                                : 'system'}
                               </span>
 
                             </div>

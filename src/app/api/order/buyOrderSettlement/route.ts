@@ -3,7 +3,6 @@ import { NextResponse, type NextRequest } from "next/server";
 import {
   getOneBuyOrder,
   updateBuyOrderSettlement,
-  buyOrderWebhook,
 } from '@lib/api/order';
 
 
@@ -256,6 +255,7 @@ export async function POST(request: NextRequest) {
 
     // updateBuyOrderSettlement
     const result = await updateBuyOrderSettlement({
+      updater: "system", // who updates the settlement, can be "system" or "admin"
       orderId: orderId,
       settlement: settlement,
       storecode: buyOrder.store.storecode, // Assuming storecode is available in the buyOrder
@@ -275,94 +275,94 @@ export async function POST(request: NextRequest) {
 
 
 
-  // order storecode가 오징어의 storecode인 경우에만 webhook을 보냄
-  if (buyOrder.store.storecode === "fixfstfh") { // 가맹점 이름 오징어
+  // order storecode가 매니의 storecode인 경우에만 webhook을 보냄
+  // 여기서 안보내고 입금처리될때 api 호출하는걸로 변경
+  /*
+    if (buyOrder.store.storecode === "dtwuzgst") { // 가맹점 이름 매니
 
 
-  
-    const userid = buyOrder.nickname; // 매니의 userid는 orderNickname
-    const amount = buyOrder.paymentAmount;
+      // http://3.112.81.28/?userid=test1234&amount=10000
 
+      const userid = buyOrder.nickname; // 매니의 userid는 orderNickname
+      const amount = buyOrder.paymentAmount;
 
-    // https://gogo.casinoapis.xyz/WalletApi/api_callback?userid=test1234&amount=10000
+      // https://my-9999.com/api/deposit?userid=test1234&amount=10000
+      const webhookUrl = "http://3.112.81.28"; // 매니의 웹훅 URL
 
-    const webhookUrl = "https://gogo.casinoapis.xyz/WalletApi/api_callback"; // 오징어 웹훅 URL
+      const fetchUrl = `${webhookUrl}/?userid=${userid}&amount=${amount}`;
 
-    const fetchUrl = `${webhookUrl}/?userid=${userid}&amount=${amount}`;
-
-    try {
-
-      
-      //const response = await fetch(fetchUrl, {
-      //  method: "GET",
-      //  headers: {
-      //    "Content-Type": "application/json",
-      //  },
-      //});
-
-      // GET 요청
-      const response = await fetch(fetchUrl);
-
-      console.log("fetchUrl", fetchUrl);
-      console.log("response", response);
-
-
-
-      if (!response.ok) {
-        console.error("Failed to send webhook for user:", userid, "with status:", response.status);
-      } else {
-
+      try {
 
         
-        //성공: {result: success}, 실패: {result: fail}
-        
+        //const response = await fetch(fetchUrl, {
+        //  method: "GET",
+        //  headers: {
+        //    "Content-Type": "application/json",
+        //  },
+        //});
 
-        try {
+        // GET 요청
+        const response = await fetch(fetchUrl);
+
+        console.log("fetchUrl", fetchUrl);
+        console.log("response", response);
+
+
+
+        if (!response.ok) {
+          console.error("Failed to send webhook for user:", userid, "with status:", response.status);
+        } else {
+
+
           
-          const data = await response.json();
-          console.log("Webhook sent for user:", userid, "with response:", data);
+          //성공: {result: success}, 실패: {result: fail}
+          
 
-          await buyOrderWebhook({
-            orderId: orderId,
-            webhookData: {
-              createdAt: new Date().toISOString(),
-              url: webhookUrl,
-              userid: userid,
-              amount: amount,
-              response: data,
-            }
-          });
+          try {
+            
+            const data = await response.json();
+            console.log("Webhook sent for user:", userid, "with response:", data);
+
+            await buyOrderWebhook({
+              orderId: orderId,
+              webhookData: {
+                createdAt: new Date().toISOString(),
+                url: webhookUrl,
+                userid: userid,
+                amount: amount,
+                response: data,
+              }
+            });
 
 
-        } catch (jsonError) {
+          } catch (jsonError) {
 
 
-          await buyOrderWebhook({
-            orderId: orderId,
-            webhookData: {
-              createdAt: new Date().toISOString(),
-              url: webhookUrl,
-              userid: userid,
-              amount: amount,
-              response: response.text(), // response를 JSON으로 파싱하지 못한 경우
-            }
-          });
+            await buyOrderWebhook({
+              orderId: orderId,
+              webhookData: {
+                createdAt: new Date().toISOString(),
+                url: webhookUrl,
+                userid: userid,
+                amount: amount,
+                response: response.text(), // response를 JSON으로 파싱하지 못한 경우
+              }
+            });
+
+          }
+
+
+
 
         }
-        
 
-
-
-
+      } catch (error) {
+        console.error("Error sending webhook:", error);
       }
 
-    } catch (error) {
-      console.error("Error sending webhook:", error);
     }
 
-  }
-
-
+  */
 
 
 
