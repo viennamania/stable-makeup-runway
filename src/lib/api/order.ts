@@ -6497,14 +6497,14 @@ export async function updateBuyOrderSettlement(
     settlement,
     storecode,
   }: {
-    updater: string; // who updates the settlement
+    updater: string; // who is updating the settlement
     orderId: string;
     settlement: any;
     storecode: string;
   }
 ): Promise<boolean> {
   const client = await clientPromise;
-  const collection = client.db('ultraman').collection('buyorders');
+  const collection = client.db('runway').collection('buyorders');
   // update buyorder
   const result = await collection.updateOne(
     { _id: new ObjectId(orderId) },
@@ -6520,8 +6520,8 @@ export async function updateBuyOrderSettlement(
 
 
 
-    const collectionBuyorders = client.db('ultraman').collection('buyorders');
-    const collectionStore = client.db('ultraman').collection('stores');
+    const collectionBuyorders = client.db('runway').collection('buyorders');
+    const collectionStore = client.db('runway').collection('stores');
 
 
     // totalSettlementCount is count of all buyorders with settlement and storecode
@@ -6551,7 +6551,6 @@ export async function updateBuyOrderSettlement(
             }
         }
     ]).toArray();
-    console.log("totalSettlementAmountResult", totalSettlementAmountResult);
 
     const totalSettlementAmount = totalSettlementAmountResult[0].totalSettlementAmount;
 
