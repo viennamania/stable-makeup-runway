@@ -572,7 +572,7 @@ export default function Index({ params }: any) {
 
     return () => clearInterval(interval);
 
-  } , [address]);
+  } , [address, contract]);
 
 
 
@@ -1845,7 +1845,8 @@ export default function Index({ params }: any) {
               });
 
               toast.success(Payment_has_been_confirmed);
-              playSong();
+              //playSong();
+
             } else {
               toast.error('결제확인이 실패했습니다.');
             }
@@ -1985,7 +1986,7 @@ export default function Index({ params }: any) {
 
         toast.success('Payment has been rollbacked');
 
-        playSong();
+        //playSong();
 
         
         ///fetchBuyOrders();
