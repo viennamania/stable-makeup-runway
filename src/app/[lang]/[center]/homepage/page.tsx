@@ -2422,9 +2422,6 @@ const fetchBuyOrders = async () => {
     const [fetchingStoreTrades, setFetchingStoreTrades] = useState(false);
   
     const fetchStoreSummary = async () => {
-      if (!address) {
-        return;
-      }
 
       if (fetchingStoreTrades) {
         return;
@@ -2470,7 +2467,7 @@ const fetchBuyOrders = async () => {
         fetchStoreSummary();
       } , 10000);
       return () => clearInterval(interval);
-    } , [address]);
+    } , []);
   
 
 
