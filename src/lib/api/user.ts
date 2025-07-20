@@ -2014,3 +2014,31 @@ export async function updateUserBlock({
   }
 
 }
+
+
+
+
+
+
+// getOneByNicknameAndPassword
+export async function getOneByNicknameAndPassword(
+  storecode: string,
+  memberid: string,
+  password: string
+): Promise<UserProps | null> {
+
+  const client = await clientPromise;
+  const collection = client.db('runway').collection('users');
+
+  const user = await collection.findOne<UserProps>(
+    {
+      storecode: storecode,
+      nickname: memberid,
+      
+      //password: password,
+
+    },
+  );
+
+  return user;
+}
