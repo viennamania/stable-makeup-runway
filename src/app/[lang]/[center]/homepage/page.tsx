@@ -5325,8 +5325,21 @@ const fetchBuyOrders = async () => {
 
                         
 
-                                <div className="mb-4 flex flex-col items-start text-sm ">
-                                  {Payment}: {Bank_Transfer}
+                                <div className="mb-4 flex flex-row items-start justify-start gap-2">
+                                  <div className="flex flex-row items-center gap-2">
+                                    <Image
+                                      src="/icon-bank.png"
+                                      alt="Bank Transfer"
+                                      width={20}
+                                      height={20}
+                                      className="rounded-lg"
+                                    />
+                                  </div>
+
+                                  <div className="flex flex-row items-center gap-2">
+                                    {Payment}: {Bank_Transfer}
+                                  </div>
+
                                 </div>
 
 
@@ -5339,13 +5352,7 @@ const fetchBuyOrders = async () => {
                                         alt="Avatar"
                                         width={32}
                                         height={32}
-                                        priority={true} // Added priority property
-                                        className="rounded-full"
-                                        style={{
-                                            objectFit: 'cover',
-                                            width: '32px',
-                                            height: '32px',
-                                        }}
+                                        className="rounded-full w-6 h-6 object-cover"
                                     />
 
                                     <div className="flex flex-col gap-2 items-start">
@@ -5361,6 +5368,14 @@ const fetchBuyOrders = async () => {
                                       </div>
                                     </div>
 
+                                    <Image
+                                      src="/icon-kyc.png"
+                                      alt="KYC"
+                                      width={20}
+                                      height={20}
+                                      className="rounded-lg"
+                                    />
+                                    
                                     <Image
                                       src="/verified.png"
                                       alt="Verified"
