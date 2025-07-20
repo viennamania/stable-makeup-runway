@@ -971,7 +971,7 @@ export default function Index({ params }: any) {
 
             toast.success(Order_accepted_successfully);
 
-            playSong();
+            //playSong();
 
 
 
@@ -1102,7 +1102,7 @@ export default function Index({ params }: any) {
 
         toast.success(Order_has_been_cancelled);
 
-        playSong();
+        //playSong();
 
 
         await fetch('/api/order/getAllBuyOrders', {
@@ -1371,8 +1371,7 @@ export default function Index({ params }: any) {
 
               //toast.success('Payment request has been sent');
 
-              playSong();
-              
+              //playSong();
 
               
               await fetch('/api/order/getAllBuyOrders', {
@@ -1480,8 +1479,8 @@ export default function Index({ params }: any) {
 
             //toast.success('Payment request has been sent');
 
-            playSong();
-            
+            //playSong();
+
             await fetch('/api/order/getAllBuyOrders', {
               method: 'POST',
               headers: {
@@ -1727,7 +1726,7 @@ export default function Index({ params }: any) {
 
           toast.success(Payment_has_been_confirmed);
 
-          playSong();
+          //playSong();
 
 
         } else {
@@ -5802,8 +5801,8 @@ const fetchBuyOrders = async () => {
                 <select
                   value={limit}
                   onChange={(e) =>
-                    
-                    router.push(`/${params.lang}/home?limit=${Number(e.target.value)}&page=${page}`)
+
+                    router.push(`/${params.lang}/${params.center}/homepage?limit=${Number(e.target.value)}&page=${page}`)
 
                   }
 
@@ -5822,11 +5821,10 @@ const fetchBuyOrders = async () => {
                 disabled={Number(page) <= 1}
                 className={`text-sm text-white px-4 py-2 rounded-md ${Number(page) <= 1 ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
                 onClick={() => {
-                  
-                  router.push(`/${params.lang}/home?limit=${Number(limit)}&page=1`);
 
-                }
-              }
+                  router.push(`/${params.lang}/${params.center}/homepage?limit=${Number(limit)}&page=1`);
+
+                }}
               >
                 처음으로
               </button>
@@ -5835,8 +5833,8 @@ const fetchBuyOrders = async () => {
                 disabled={Number(page) <= 1}
                 className={`text-sm text-white px-4 py-2 rounded-md ${Number(page) <= 1 ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
                 onClick={() => {
-                  
-                  router.push(`/${params.lang}/home?limit=${Number(limit)}&page=${Number(page) - 1}`);
+
+                  router.push(`/${params.lang}/${params.center}/homepage?limit=${Number(limit)}&page=${Number(page) - 1}`);
 
                 }}
               >
@@ -5853,8 +5851,8 @@ const fetchBuyOrders = async () => {
                 disabled={Number(page) >= Math.ceil(Number(totalCount) / Number(limit))}
                 className={`text-sm text-white px-4 py-2 rounded-md ${Number(page) >= Math.ceil(Number(totalCount) / Number(limit)) ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
                 onClick={() => {
-                  
-                  router.push(`/${params.lang}/home?limit=${Number(limit)}&page=${Number(page) + 1}`);
+
+                  router.push(`/${params.lang}/${params.center}/homepage?limit=${Number(limit)}&page=${Number(page) + 1}`);
 
                 }}
               >
@@ -5866,8 +5864,8 @@ const fetchBuyOrders = async () => {
                 disabled={Number(page) >= Math.ceil(Number(totalCount) / Number(limit))}
                 className={`text-sm text-white px-4 py-2 rounded-md ${Number(page) >= Math.ceil(Number(totalCount) / Number(limit)) ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
                 onClick={() => {
-                  
-                  router.push(`/${params.lang}/home?limit=${Number(limit)}&page=${Math.ceil(Number(totalCount) / Number(limit))}`);
+
+                  router.push(`/${params.lang}/${params.center}/homepage?limit=${Number(limit)}&page=${Math.ceil(Number(totalCount) / Number(limit))}`);
 
                 }}
               >
