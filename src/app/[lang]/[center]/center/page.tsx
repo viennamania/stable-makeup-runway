@@ -834,7 +834,7 @@ export default function Index({ params }: any) {
 
     }
 
-  } , [address]);
+  } , [address, params.center]);
 
 
 

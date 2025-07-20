@@ -742,12 +742,12 @@ export default function Index({ params }: any) {
     .then(response => response.json())
     .then(data => {
         
-        //console.log('data.result', data.result);
+        console.log('data.result', data.result);
 
 
         setUser(data.result);
 
-        setEscrowWalletAddress(data.result.escrowWalletAddress);
+        //setEscrowWalletAddress(data.result.escrowWalletAddress);
 
         setIsAdmin(data.result?.role === "admin");
 
@@ -2504,7 +2504,7 @@ const fetchBuyOrders = async () => {
               
             <div className="w-full flex flex-row items-center justify-start gap-2">
               <button
-                onClick={() => router.push('/' + params.lang + '/home')}
+                onClick={() => router.push('/' + params.lang + '/' + params.center + '/homepage')}
                 className="flex bg-zinc-100 text-sm text-[#3167b4] px-4 py-2 rounded-lg hover:bg-zinc-200"
               >
                 <Image
