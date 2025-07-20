@@ -2524,7 +2524,7 @@ const fetchBuyOrders = async () => {
               <div className="w-full flex flex-row items-center justify-end gap-2">
                 <button
                   onClick={() => {
-                    router.push('/' + params.lang + '/home/profile-settings');
+                    router.push('/' + params.lang + '/' + params.center + '/profile-settings');
                   }}
                   className="flex bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
                 >
@@ -2722,7 +2722,7 @@ const fetchBuyOrders = async () => {
 
                     <button
                       onClick={() => {
-                        router.push('/' + params.lang + '/home/paymaster');
+                        router.push('/' + params.lang + '/' + params.center + '/paymaster');
                         //window.open(
                         //  '/'+ params.lang + '/home/paymaster',
                         //</div>  '_blank'
@@ -2747,7 +2747,7 @@ const fetchBuyOrders = async () => {
                     {/* 출금하기 버튼 */}
                     <button
                       onClick={() => {
-                        router.push('/' + params.lang + '/admin/withdraw-usdt');
+                        router.push('/' + params.lang + '/' + params.center + '/withdraw-usdt');
                         //window.open(
                         //  '/'+ params.lang + '/home/withdraw',
                         //  '_blank'
@@ -3164,7 +3164,7 @@ const fetchBuyOrders = async () => {
                     {/* 판매자 등록 버튼 */}
                     <button
                       onClick={() => {
-                        router.push('/' + params.lang + '/home/seller-settings');
+                        router.push('/' + params.lang + '/' + params.center + '/seller-settings');
                       }}
                       className="bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
                     >
