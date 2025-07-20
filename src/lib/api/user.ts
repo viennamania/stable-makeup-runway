@@ -2042,3 +2042,149 @@ export async function getOneByNicknameAndPassword(
 
   return user;
 }
+
+
+
+
+
+
+
+export async function updateKycImage1(data: any) {
+
+  console.log('updateKycImage1 data: ' + JSON.stringify(data));
+
+  const client = await clientPromise;
+  const collection = client.db('runway').collection('users');
+  // update and return updated user
+  if (!data.storecode || !data.walletAddress || !data.avatar) {
+    return null;
+  }
+
+  // select one user by walletAddress and update kyc.image1
+
+  const resultOne = await collection.findOne<any>(
+    { storecode: data.storecode, walletAddress: data.walletAddress },
+  );
+
+
+  if (!resultOne) {
+    return null;
+  }
+
+  const result = await collection.updateOne(
+    { storecode: data.storecode, walletAddress: data.walletAddress },
+    { $set: {
+      kyc: {
+        image1: data.avatar,
+        image2: resultOne.kyc?.image2,
+        image3: resultOne.kyc?.image3,
+        realName: resultOne.kyc?.realName,
+        idNumber: resultOne.kyc?.idNumber,
+        status: resultOne.kyc?.status,
+      }
+    } }
+  );
+
+  if (result) {
+    const updated = await collection.findOne<any>(
+      { storecode: data.storecode, walletAddress: data.walletAddress },
+    );
+
+    return updated;
+  } else {
+    return null;
+  }
+}
+
+
+export async function updateKycImage2(data: any) {
+
+  console.log('updateKycImage2 data: ' + JSON.stringify(data));
+
+  const client = await clientPromise;
+  const collection = client.db('runway').collection('users');
+  // update and return updated user
+  if (!data.storecode || !data.walletAddress || !data.avatar) {
+    return null;
+  }
+
+  // select one user by walletAddress and update kyc.image2
+
+  const resultOne = await collection.findOne<any>(
+    { storecode: data.storecode, walletAddress: data.walletAddress },
+  );
+  if (!resultOne) {
+    return null;
+  }
+
+  const result = await collection.updateOne(
+    { storecode: data.storecode, walletAddress: data.walletAddress },
+    { $set: {
+      kyc: {
+        image1: resultOne.kyc?.image1,
+        image2: data.avatar,
+        image3: resultOne.kyc?.image3,
+        realName: resultOne.kyc?.realName,
+        idNumber: resultOne.kyc?.idNumber,
+        status: resultOne.kyc?.status,
+      }
+    } }
+  );
+
+  if (result) {
+    const updated = await collection.findOne<any>(
+      { storecode: data.storecode, walletAddress: data.walletAddress },
+    );
+
+    return updated;
+  } else {
+    return null;
+  }
+}
+
+
+export async function updateKycImage3(data: any) {
+
+  console.log('updateKycImage3 data: ' + JSON.stringify(data));
+
+  const client = await clientPromise;
+  const collection = client.db('runway').collection('users');
+  // update and return updated user
+  if (!data.storecode || !data.walletAddress || !data.avatar) {
+    return null;
+  }
+
+  // select one user by walletAddress and update kyc.image3
+
+  const resultOne = await collection.findOne<any>(
+    { storecode: data.storecode, walletAddress: data.walletAddress },
+  );
+  if (!resultOne) {
+    return null;
+  }
+
+  const result = await collection.updateOne(
+    { storecode: data.storecode, walletAddress: data.walletAddress },
+    { $set: {
+      kyc: {
+        image1: resultOne.kyc?.image1,
+        image2: resultOne.kyc?.image2,
+        image3: data.avatar,
+        realName: resultOne.kyc?.realName,
+        idNumber: resultOne.kyc?.idNumber,
+        status: resultOne.kyc?.status,
+      }
+    } }
+  );
+
+  if (result) {
+    const updated = await collection.findOne<any>(
+      { storecode: data.storecode, walletAddress: data.walletAddress },
+    );
+
+    return updated;
+  } else {
+    return null;
+  }
+}
+
