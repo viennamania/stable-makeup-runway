@@ -130,6 +130,12 @@ interface BuyOrder {
 
   cancelTradeReason: string;
 
+  userStats: {
+    totalPaymentConfirmedCount: number;
+    totalPaymentPendingCount: number;
+    totalPaymentFailedCount: number;
+  };
+
 }
 
 
@@ -2752,20 +2758,7 @@ const fetchBuyOrders = async () => {
               </div>
 
 
-              <div className='flex flex-row items-center space-x-4'>
-                  <Image
-                    src="/icon-buyorder.png"
-                    alt="Trade"
-                    width={35}
-                    height={35}
-                    className="w-6 h-6"
-                  />
 
-                  <div className="text-xl font-semibold">
-                    거래내역
-                  </div>
-
-              </div>
 
 
                   {/* check box for Native Wallet */}
@@ -2799,7 +2792,7 @@ const fetchBuyOrders = async () => {
 
 
                     <div className="flex flex-row items-center justify-center gap-2">
-                      {/* 구매하기 버튼 */}
+                      {/* 구매주문하기 버튼 */}
                       {/* new window */}
 
                       <button
@@ -2821,7 +2814,7 @@ const fetchBuyOrders = async () => {
                             className="w-5 h-5"
                           />
                           <span className="text-sm">
-                            구매하기
+                            구매주문하기
                           </span>
                         </div>
                       </button>
@@ -2967,11 +2960,30 @@ const fetchBuyOrders = async () => {
 
 
 
+                  <div className='flex flex-row items-center gap-2 mt-8'>
+                      <Image
+                        src="/icon-buyorder.png"
+                        alt="Trade"
+                        width={35}
+                        height={35}
+                        className="w-6 h-6"
+                      />
 
+                      <div className="text-2xl font-semibold">
+                        거래내역
+                      </div>
+                  </div>
 
 
 
                   <div className="w-full flex flex-row items-center justify-end gap-2 mt-4">
+
+
+
+
+
+
+
 
                     {/*
                     <div className="flex flex-col gap-2 items-center">
@@ -5447,40 +5459,68 @@ const fetchBuyOrders = async () => {
 
                                     <div className="flex flex-col gap-2 items-start">
                                       <div className="flex items-center space-x-2">
-                                        구매자 지갑주소:{' '}{item.walletAddress.slice(0, 5) + '...' + item.walletAddress.slice(-4)}
+                                        구매자 지갑주소:{' '}
+                                          {item.walletAddress.slice(0, 5) + '...' + item.walletAddress.slice(-4)}
+
                                       </div>
 
+                                      
                                       <div className="text-sm font-semibold">
                                         {item.nickname}
                                       </div>
-                                      <div className="text-lg text-green-600">
-                                        {item.buyer?.depositName?.slice(0, 2) + "*".repeat(item.buyer?.depositName?.length - 2)}
+
+
+                                      <div className="flex flex-row items-center gap-2">
+                                        <div className="text-lg text-green-600">
+                                          {item.buyer?.depositName?.slice(0, 2) + "*".repeat(item.buyer?.depositName?.length - 2)}
+                                        </div>
+
+                                        <Image
+                                          src="/icon-kyc.png"
+                                          alt="KYC"
+                                          width={20}
+                                          height={20}
+                                          className="rounded-lg"
+                                        />
+                                        
+                                        <Image
+                                          src="/verified.png"
+                                          alt="Verified"
+                                          width={20}
+                                          height={20}
+                                          className="rounded-lg"
+                                        />
+
                                       </div>
+
+
+                                      {item?.userStats?.totalPaymentConfirmedCount > 0 && (
+                                        <div className="flex flex-row items-center gap-2">
+                                          <div className="text-sm text-gray-500">
+                                            {item?.userStats?.totalPaymentConfirmedCount}회 구매
+                                          </div>
+
+                                          {item?.userStats?.totalPaymentConfirmedCount > 5 && (
+                                            <div className="flex flex-row items-center gap-2">
+                                              <span className="text-sm text-purple-500 font-semibold">
+                                                베스트 구매자
+                                              </span>
+                                              <Image
+                                                src="/best-buyer.png"
+                                                alt="Best Buyer"
+                                                width={20}
+                                                height={20}
+                                                className="rounded-lg"
+                                              />
+                                            </div>
+                                          )}
+
+                                        </div>
+                                      )}
+
                                     </div>
 
-                                    <Image
-                                      src="/icon-kyc.png"
-                                      alt="KYC"
-                                      width={20}
-                                      height={20}
-                                      className="rounded-lg"
-                                    />
-                                    
-                                    <Image
-                                      src="/verified.png"
-                                      alt="Verified"
-                                      width={20}
-                                      height={20}
-                                      className="rounded-lg"
-                                    />
 
-                                    <Image
-                                      src="/best-buyer.png"
-                                      alt="Best Buyer"
-                                      width={20}
-                                      height={20}
-                                      className="rounded-lg"
-                                    />
 
                                   </p>
 
