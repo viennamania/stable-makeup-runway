@@ -3204,8 +3204,6 @@ const fetchBuyOrders = async () => {
                         <tr>
 
                           <th className="p-2">
-                            가맹점
-                            <br/>
                             {TID}
                           </th>
 
@@ -3390,24 +3388,6 @@ const fetchBuyOrders = async () => {
 
 
                                 <div className=" flex flex-col gap-2 items-center justify-start">
-
-                                  <div className="flex flex-row items-center justify-start gap-2">
-                                    <Image
-                                      src={item?.store?.storeLogo || "/icon-store.png"}
-                                      alt="Store Logo"
-                                      width={35}
-                                      height={35}
-                                      className="
-                                      rounded-lg
-                                      w-8 h-8 object-cover"
-                                    />
-                                    
-                                    <span className="text-sm text-zinc-500 font-semibold">
-                                      {
-                                        item?.store?.storeName
-                                      }
-                                    </span>
-                                  </div>
 
 
                                   <span className="text-sm text-zinc-500 font-semibold">
@@ -3906,23 +3886,6 @@ const fetchBuyOrders = async () => {
                                 {/* if status is accepted, show payment request button */}
                                 {item.status === 'paymentConfirmed' && (
                                   <div className="flex flex-col gap-2 items-start justify-start">
-
-                                    {/*
-                                    <span className="text-lg text-green-600 font-semibold
-                                      border border-green-600 rounded-lg p-2
-                                      bg-green-100
-                                      w-full text-center
-                                      ">
-
-
-                                      {Completed}
-                                    </span>
-                                    */}
-                                    {/*
-                                    <span className="text-sm font-semibold text-white">
-                                      {item.seller?.nickname}
-                                    </span>
-                                    */}
 
 
 
