@@ -1908,6 +1908,7 @@ function AgentPage(
                                         <div className="w-full p-2 bg-zinc-800 rounded text-zinc-100 text-xl font-semibold">
                                             <UploaderKyc1
                                                 lang={params.lang}
+                                                storecode={params.center}
                                                 walletAddress={address as string}
                                             />
                                         </div>
@@ -1925,6 +1926,7 @@ function AgentPage(
                                         <div className="w-full p-2 bg-zinc-800 rounded text-zinc-100 text-xl font-semibold">
                                             <UploaderKyc2
                                                 lang={params.lang}
+                                                storecode={params.center}
                                                 walletAddress={address as string}
                                             />
                                         </div>
@@ -1942,6 +1944,7 @@ function AgentPage(
                                         <div className="w-full p-2 bg-zinc-800 rounded text-zinc-100 text-xl font-semibold">
                                             <UploaderKyc3
                                                 lang={params.lang}
+                                                storecode={params.center}
                                                 walletAddress={address as string}
                                             />
                                         </div>
