@@ -6581,9 +6581,16 @@ export async function updateBuyOrderSettlement(
 
     return true;
   } else {
+
+    console.log('updateBuyOrderSettlement failed for orderId: ' + orderId);
+    console.log('updateBuyOrderSettlement result: ' + JSON.stringify(result));
+
     return false;
   }
 }
+
+
+
 
 
 
