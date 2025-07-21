@@ -981,7 +981,7 @@ export default function Index({ params }: any) {
 
 
 
-            fetch('/api/order/getAllBuyOrdersExcludeCancelled', {
+            fetch('/api/order/getAllBuyOrders', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1117,7 +1117,7 @@ export default function Index({ params }: any) {
         //playSong();
 
 
-        await fetch('/api/order/getAllBuyOrdersExcludeCancelled', {
+        await fetch('/api/order/getAllBuyOrders', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1391,7 +1391,7 @@ export default function Index({ params }: any) {
               //playSong();
 
               
-              await fetch('/api/order/getAllBuyOrdersExcludeCancelled', {
+              await fetch('/api/order/getAllBuyOrders', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
@@ -1502,7 +1502,7 @@ export default function Index({ params }: any) {
 
             //playSong();
 
-            await fetch('/api/order/getAllBuyOrdersExcludeCancelled', {
+            await fetch('/api/order/getAllBuyOrders', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -1718,7 +1718,7 @@ export default function Index({ params }: any) {
           
           ///fetchBuyOrders();
 
-          await fetch('/api/order/getAllBuyOrdersExcludeCancelled', {
+          await fetch('/api/order/getAllBuyOrders', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -1843,7 +1843,7 @@ export default function Index({ params }: any) {
               
               ///fetchBuyOrders();
 
-              await fetch('/api/order/getAllBuyOrdersExcludeCancelled', {
+              await fetch('/api/order/getAllBuyOrders', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
@@ -2024,7 +2024,7 @@ export default function Index({ params }: any) {
         ///fetchBuyOrders();
 
         // fetch Buy Orders
-        await fetch('/api/order/getAllBuyOrdersExcludeCancelled', {
+        await fetch('/api/order/getAllBuyOrders', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -2183,7 +2183,7 @@ export default function Index({ params }: any) {
 
       
 
-      const response = await fetch('/api/order/getAllBuyOrdersExcludeCancelled', {
+      const response = await fetch('/api/order/getAllBuyOrders', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -2283,7 +2283,7 @@ const fetchBuyOrders = async () => {
   }
   setFetchingBuyOrders(true);
 
-  const response = await fetch('/api/order/getAllBuyOrdersExcludeCancelled', {
+  const response = await fetch('/api/order/getAllBuyOrders', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
