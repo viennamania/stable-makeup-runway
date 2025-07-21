@@ -5337,12 +5337,12 @@ const fetchBuyOrders = async () => {
 
 
 
-                                <div className="mb-2 flex flex-row items-start justify-start gap-2">
+                                <div className="mb-2 flex flex-row items-center justify-start gap-2">
                                   <Image
-                                    src="/icon-buy.webp"
+                                    src="/icon-buy-label-color.png"
                                     alt="Buy"
-                                    width={24}
-                                    height={24}
+                                    width={50}
+                                    height={50}   
                                     className="rounded-lg"
                                   />
                                   <span className="text-sm text-zinc-800">
@@ -5414,7 +5414,7 @@ const fetchBuyOrders = async () => {
                                 <p className="mt-2 mb-2 flex items-center gap-2">
 
                                   <Image
-                                      src={item.avatar || '/profile-default.png'}
+                                      src={item.avatar || '/icon-buyer.png'}
                                       alt="Avatar"
                                       width={32}
                                       height={32}
@@ -5460,14 +5460,17 @@ const fetchBuyOrders = async () => {
 
                                     {item?.userStats?.totalPaymentConfirmedCount > 0 && (
                                       <div className="flex flex-row items-center gap-2">
-                                        <div className="text-sm text-gray-500">
-                                          {item?.userStats?.totalPaymentConfirmedCount}회 구매
+                                        <div className="flex flex-row items-center gap-1">
+                                          <div className="text-lg text-green-600 font-semibold">
+                                            {item?.userStats?.totalPaymentConfirmedCount}
+                                          </div>
+                                          <span className="text-sm text-gray-500">회 구매</span>
                                         </div>
 
                                         {item?.userStats?.totalPaymentConfirmedCount > 5 && (
                                           <div className="flex flex-row items-center gap-2">
-                                            <span className="text-sm text-purple-500 font-semibold">
-                                              베스트 구매자
+                                            <span className="text-lg text-green-600 font-semibold">
+                                              Best Buyer
                                             </span>
                                             <Image
                                               src="/best-buyer.png"
