@@ -1006,13 +1006,8 @@ export default function Index({ params }: any) {
             .then(response => response.json())
             .then(data => {
                 ///console.log('data', data);
-                
-                //setBuyOrders(data.result.orders);
-                // exclude status "cancelled"
-                const filteredOrders = data.result.orders.filter((order: BuyOrder) => order.status !== 'cancelled');
-                setBuyOrders(filteredOrders);
 
-
+                setBuyOrders(data.result.orders);
 
                 setTotalCount(data.result.totalCount);
             })
@@ -1142,11 +1137,7 @@ export default function Index({ params }: any) {
           //console.log('data', data);
           if (data.result) {
 
-            //setBuyOrders(data.result.orders);
-            const filteredOrders = data.result.orders.filter((order: BuyOrder) => order.status !== 'cancelled');
-            setBuyOrders(filteredOrders);
-
-
+            setBuyOrders(data.result.orders);
 
             setTotalCount(data.result.totalCount);
           }
@@ -1416,10 +1407,7 @@ export default function Index({ params }: any) {
                 //console.log('data', data);
                 if (data.result) {
 
-                  //setBuyOrders(data.result.orders);
-                  const filteredOrders = data.result.orders.filter((order: BuyOrder) => order.status !== 'cancelled');
-                  setBuyOrders(filteredOrders);
-
+                  setBuyOrders(data.result.orders);
       
                   setTotalCount(data.result.totalCount);
                 }
@@ -1526,12 +1514,8 @@ export default function Index({ params }: any) {
               const data = await response.json();
               //console.log('data', data);
               if (data.result) {
-                
-                //setBuyOrders(data.result.orders);
-                const filteredOrders = data.result.orders.filter((order: BuyOrder) => order.status !== 'cancelled');
-                setBuyOrders(filteredOrders);
 
-    
+                setBuyOrders(data.result.orders);
                 setTotalCount(data.result.totalCount);
               }
             });
@@ -1742,12 +1726,8 @@ export default function Index({ params }: any) {
             const data = await response.json();
             //console.log('data', data);
             if (data.result) {
-              
-              //setBuyOrders(data.result.orders);
-              const filteredOrders = data.result.orders.filter((order: BuyOrder) => order.status !== 'cancelled');
-              setBuyOrders(filteredOrders);
 
-  
+              setBuyOrders(data.result.orders);
               setTotalCount(data.result.totalCount);
             }
           });
@@ -1867,11 +1847,7 @@ export default function Index({ params }: any) {
                 const data = await response.json();
                 //console.log('data', data);
                 if (data.result) {
-                  
-                  //setBuyOrders(data.result.orders);
-                  const filteredOrders = data.result.orders.filter((order: BuyOrder) => order.status !== 'cancelled');
-                  setBuyOrders(filteredOrders);
-      
+                  setBuyOrders(data.result.orders);
                   setTotalCount(data.result.totalCount);
                 }
               });
@@ -2048,11 +2024,7 @@ export default function Index({ params }: any) {
         .then(response => response.json())
         .then(data => {
             ///console.log('data', data);
-            //setBuyOrders(data.result.orders);
-            // exclude status "cancelled"
-            const filteredOrders = data.result.orders.filter((order: BuyOrder) => order.status !== 'cancelled');
-            setBuyOrders(filteredOrders);
-
+            setBuyOrders(data.result.orders);
             setTotalCount(data.result.totalCount);
         })
 
@@ -2216,12 +2188,7 @@ export default function Index({ params }: any) {
       const data = await response.json();
 
 
-      //setBuyOrders(data.result.orders);
-      // exclude status "cancelled"
-      const filteredOrders = data.result.orders.filter((order: BuyOrder) => order.status !== 'cancelled');
-      setBuyOrders(filteredOrders);
-
-
+      setBuyOrders(data.result.orders);
       setTotalCount(data.result.totalCount);
       
 
