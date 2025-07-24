@@ -142,6 +142,8 @@ interface BuyOrder {
   settlementUpdatedAt: string;
   settlementUpdatedBy: string; // who updates the settlement
 
+  transactionHashFail: boolean; // if the transaction failed, set this to true
+
 }
 
 
@@ -1914,9 +1916,6 @@ export default function Index({ params }: any) {
 
 
 
-
-
-
   // send payment
   const sendPayment = async (
 
@@ -1950,15 +1949,23 @@ export default function Index({ params }: any) {
     const storecode = "admin";
 
 
+    
     if (confirmingPayment[index]) {
       return;
     }
 
-    setConfirmingPayment(
+
+    if (!confirm("USDT를 구매자에게 전송하시겠습니까?")) {
+      return;
+    }
+
+
+    
+     setConfirmingPayment(
       confirmingPayment.map((item, idx) =>  idx === index ? true : item)
     );
 
-      try {
+    try {
 
 
         const transaction = transfer({
@@ -2050,14 +2057,16 @@ export default function Index({ params }: any) {
     }
 
 
-
+    
     setConfirmingPayment(
       confirmingPayment.map((item, idx) => idx === index ? false : item)
     );
 
+    /*
     setConfirmPaymentCheck(
       confirmPaymentCheck.map((item, idx) => idx === index ? false : item)
     );
+    */
   
 
   }
@@ -2913,6 +2922,53 @@ const fetchBuyOrders = async () => {
 
 
 
+  // totalNumberOfClearanceOrders
+  const [loadingTotalNumberOfClearanceOrders, setLoadingTotalNumberOfClearanceOrders] = useState(false);
+  const [totalNumberOfClearanceOrders, setTotalNumberOfClearanceOrders] = useState(0);
+  useEffect(() => {
+    if (!address) {
+      setTotalNumberOfClearanceOrders(0);
+      return;
+    }
+
+    const fetchTotalClearanceOrders = async () => {
+      setLoadingTotalNumberOfClearanceOrders(true);
+      const response = await fetch('/api/order/getTotalNumberOfClearanceOrders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        }),
+      });
+      if (!response.ok) {
+        console.error('Failed to fetch total number of clearance orders');
+        return;
+      }
+      const data = await response.json();
+      //console.log('getTotalNumberOfClearanceOrders data', data);
+      setTotalNumberOfClearanceOrders(data.result.totalCount);
+
+      setLoadingTotalNumberOfClearanceOrders(false);
+    };
+
+    fetchTotalClearanceOrders();
+
+    const interval = setInterval(() => {
+      fetchTotalClearanceOrders();
+    }, 5000);
+    return () => clearInterval(interval);
+
+  }, [address]);
+
+  useEffect(() => {
+    if (totalNumberOfClearanceOrders > 0 && loadingTotalNumberOfClearanceOrders === false) {
+      const audio = new Audio('/notification.wav');
+      audio.play();
+    }
+  }, [totalNumberOfClearanceOrders, loadingTotalNumberOfClearanceOrders]);
+
+
 
   return (
 
@@ -3089,30 +3145,31 @@ const fetchBuyOrders = async () => {
 
 
           <div className="w-full flex flex-row items-center justify-end gap-2">
-              
-
-            {loadingTotalNumberOfBuyOrders && (
-              <Image
-                src="/loading.png"
-                alt="Loading"
-                width={20}
-                height={20}
-                className="w-6 h-6 animate-spin"
-              />
-            )}
 
             <div className="flex flex-row items-center justify-center gap-2
             bg-white/80
             p-2 rounded-lg shadow-md
             backdrop-blur-md
             ">
-              <Image
-                src="/icon-buyorder.png"
-                alt="Buy Order"
-                width={35}
-                height={35}
-                className="w-6 h-6"
-              />
+              {loadingTotalNumberOfBuyOrders ? (
+                <Image
+                  src="/loading.png"
+                  alt="Loading"
+                  width={20}
+                  height={20}
+                  className="w-6 h-6 animate-spin"
+                />
+              ) : (
+                <Image
+                  src="/icon-buyorder.png"
+                  alt="Buy Order"
+                  width={35}
+                  height={35}
+                  className="w-6 h-6"
+                />
+              )}
+
+
               <p className="text-lg text-red-500 font-semibold">
                 {
                 totalNumberOfBuyOrders
@@ -3143,6 +3200,64 @@ const fetchBuyOrders = async () => {
                 </div>
               )}
             </div>
+
+
+            {/* Clearance Orders */}
+            <div className="flex flex-row items-center justify-center gap-2
+            bg-white/80
+            p-2 rounded-lg shadow-md
+            backdrop-blur-md
+            ">
+
+              {loadingTotalNumberOfClearanceOrders ? (
+                <Image
+                  src="/loading.png"
+                  alt="Loading"
+                  width={20}
+                  height={20}
+                  className="w-6 h-6 animate-spin"
+                />
+              ) : (
+                <Image
+                  src="/icon-clearance.png"
+                  alt="Clearance"
+                  width={35}
+                  height={35}
+                  className="w-6 h-6"
+                />
+              )}
+
+              <p className="text-lg text-yellow-500 font-semibold">
+                {
+                totalNumberOfClearanceOrders
+                } 건
+              </p>
+
+              {totalNumberOfClearanceOrders > 0 && (
+                <div className="flex flex-row items-center justify-center gap-2">
+                  <Image
+                    src="/icon-notification.gif"
+                    alt="Notification"
+                    width={50}
+                    height={50}
+                    className="w-15 h-15 object-cover"
+                    
+                  />
+                  <button
+                    onClick={() => {
+                      router.push('/' + params.lang + '/admin/clearance-history');
+                    }}
+                    className="flex items-center justify-center gap-2
+                    bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
+                  >
+                    <span className="text-sm">
+                      청산내역관리
+                    </span>
+                  </button>
+                </div>
+              )}
+            </div>
+
         
           </div>
 
@@ -4109,16 +4224,15 @@ const fetchBuyOrders = async () => {
                           />
                           */}
                           
-                          <div className="flex flex-col gap-2 items-center justify-center">
-
+                          <div className="w-full flex flex-col gap-2 items-start justify-center">
 
                             <div className="flex flex-row items-center gap-2">
                               <Image
-                                src={item?.buyer?.avatar || "/profile-default.png"}
+                                src={item?.buyer?.avatar || "/icon-best-buyer.png"}
                                 alt="Avatar"
                                 width={20}
                                 height={20}
-                                className="rounded-full w-5 h-5"
+                                className="rounded-sm w-5 h-5"
                                 style={{
                                   objectFit: 'cover',
                                 }}
@@ -4357,7 +4471,7 @@ const fetchBuyOrders = async () => {
                                   alt="Avatar"
                                   width={20}
                                   height={20}
-                                  className="rounded-full w-5 h-5"
+                                  className="rounded-sm w-5 h-5"
                                 />
                                 <span className="text-lg font-semibold text-zinc-500">
                                   {
@@ -5460,12 +5574,16 @@ const fetchBuyOrders = async () => {
                                   { !item?.settlement &&
 
                                   item?.autoConfirmPayment
-                                  && (item?.transactionHash === '0x' || item?.transactionHash === undefined)
+                                  && (item?.transactionHash === '0x'
+                                    || item?.transactionHash === undefined
+                                  )
                                   && (
 
 
                                     <div className="w-full flex flex-row items-center justify-center gap-2">
 
+
+                                      {/*
                                       <input
                                         disabled={confirmingPayment[index]}
                                         type="checkbox"
@@ -5482,29 +5600,52 @@ const fetchBuyOrders = async () => {
                                         }}
                                         className="w-5 h-5 rounded-md border border-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                       />
+                                      */}
 
                                       <button
                                         disabled={
                                           confirmingPayment[index]
-                                          || !confirmPaymentCheck[index]
+                                          
+                                          //// || !confirmPaymentCheck[index]
                                         
                                         }
 
+                                        /*
                                         className={`
                                           w-full
-                                        flex flex-row gap-1 text-sm text-white px-2 py-1 rounded-md
-                                        border border-green-600
-                                        hover:border-green-700
-                                        hover:shadow-lg
-                                        hover:shadow-green-500/50
-                                        transition-all duration-200 ease-in-out
+                                          flex flex-row gap-1 text-sm text-white px-2 py-1 rounded-md
+                                          border border-green-600
+                                          hover:border-green-700
+                                          hover:shadow-lg
+                                          hover:shadow-green-500/50
+                                          transition-all duration-200 ease-in-out
 
-                                        ${confirmingPayment[index] ? 'bg-red-500' : 'bg-green-500'}
-                                        
+                                          ${confirmingPayment[index] ? 'bg-red-500' : 'bg-green-500'}
 
-                                        ${!confirmPaymentCheck[index] ? 'bg-gray-500' : 'bg-green-500'}
+                                          ${!confirmPaymentCheck[index] ? 'bg-gray-500' : 'bg-green-500'}
                                         
                                         `}
+                                        */
+
+                                        className={`
+                                          w-full
+                                          flex flex-row gap-1 text-sm text-white px-2 py-1 rounded-md
+                                          border border-green-600
+                                          hover:border-green-700
+                                          hover:shadow-lg
+                                          hover:shadow-green-500/50
+                                          transition-all duration-200 ease-in-out
+
+                                          ${confirmingPayment[index] ? 'bg-red-500' : 'bg-green-500'}
+
+                                        
+                                        `}
+
+
+
+
+
+
 
                                         
 
@@ -5566,9 +5707,15 @@ const fetchBuyOrders = async () => {
                                               w-5 h-5
                                             `}
                                           />
-                                          <span className="text-sm">
-                                            USDT 전송
-                                          </span>
+                                          {confirmingPayment[index] ? (
+                                            <span className="text-sm">
+                                              구매자에게 USDT 전송중...
+                                            </span>
+                                          ) : (
+                                            <span className="text-sm">
+                                              구매자에게 USDT 전송하기
+                                            </span>
+                                          )}
                                         </div>
 
                                       </button>
@@ -5583,22 +5730,11 @@ const fetchBuyOrders = async () => {
                                 </div>
                               )}
 
-
-
-
-
-
-
-
                             </div>
-
-
 
                           </div>
 
                         )}
-
-
 
 
                         {/* polygonscan */}
@@ -5638,6 +5774,109 @@ const fetchBuyOrders = async () => {
                             </div>
                           </button>
                         )}
+
+
+
+
+
+
+                        {/* !item?.settlement &&
+
+                        item?.autoConfirmPayment
+                        && (item?.transactionHashFail === true
+                        )
+                        && (
+
+
+                          <div className="w-full flex flex-row items-center justify-center gap-2">
+
+                            <span className="text-sm text-red-600 font-semibold">
+                              전송실패
+                            </span>
+
+                            <input
+                              disabled={confirmingPayment[index]}
+                              type="checkbox"
+                              checked={confirmPaymentCheck[index]}
+                              onChange={(e) => {
+                                setConfirmPaymentCheck(
+                                  confirmPaymentCheck.map((item, idx) => {
+                                    if (idx === index) {
+                                      return e.target.checked;
+                                    }
+                                    return item;
+                                  })
+                                );
+                              }}
+                              className="w-5 h-5 rounded-md border border-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            />
+
+                            <button
+                              disabled={
+                                confirmingPayment[index]
+                                || !confirmPaymentCheck[index]
+                              
+                              }
+
+                              className={`
+                                w-full
+                              flex flex-row gap-1 text-sm text-white px-2 py-1 rounded-md
+                              border border-green-600
+                              hover:border-green-700
+                              hover:shadow-lg
+                              hover:shadow-green-500/50
+                              transition-all duration-200 ease-in-out
+
+                              ${confirmingPayment[index] ? 'bg-red-500' : 'bg-green-500'}
+                              
+
+                              ${!confirmPaymentCheck[index] ? 'bg-gray-500' : 'bg-green-500'}
+                              
+                              `}
+
+                              onClick={() => {
+                                //confirmPayment(
+                                sendPayment(
+
+                                  index,
+                                  item._id,
+                                  
+                                  //paymentAmounts[index],
+                                  item.krwAmount,
+
+                                  //paymentAmountsUsdt[index],
+                                  item.usdtAmount,
+
+
+                                  item.walletAddress,
+                                );
+                              }}
+
+
+                            >
+
+                              <div className="flex flex-row gap-2 items-center justify-center">
+                                <Image
+                                  src="/icon-transfer.png"
+                                  alt="Transfer"
+                                  width={20}
+                                  height={20}
+                                  className={`
+                                  ${confirmingPayment[index] ? 'animate-spin' : 'animate-pulse'}
+                                    w-5 h-5
+                                  `}
+                                />
+                                <span className="text-sm">
+                                  USDT 전송
+                                </span>
+                              </div>
+
+                            </button>
+
+                          </div>
+
+                        )*/}
+
 
 
 
@@ -5902,6 +6141,7 @@ const fetchBuyOrders = async () => {
                               <>
                                 {item.status === 'paymentConfirmed'
                                 && item?.transactionHash !== '0x'
+                                && item?.transactionHashFail !== true
                                 && (
                                   <div className="flex flex-row gap-2 items-center justify-center">
 

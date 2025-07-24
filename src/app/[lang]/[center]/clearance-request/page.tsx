@@ -77,6 +77,7 @@ import useSound from 'use-sound';
 
 
 import { useSearchParams } from 'next/navigation';
+import { it } from "node:test";
 
 
 
@@ -826,7 +827,7 @@ export default function Index({ params }: any) {
     setLoadingUser(false);
 
 
-  } , [address]);
+  } , [address, params.center]);
 
   
 
@@ -1138,16 +1139,11 @@ export default function Index({ params }: any) {
     */
 
 
-
     const cancelTrade = async (orderId: string, index: number) => {
-
-
 
       if (cancellings[index]) {
         return;
       }
-
-
 
       setCancellings(
         cancellings.map((item, i) => i === index ? true : item)
@@ -1160,7 +1156,6 @@ export default function Index({ params }: any) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          lang: params.lang,
           storecode: params.center,
           orderId: orderId,
           walletAddress: address,
@@ -1827,16 +1822,18 @@ export default function Index({ params }: any) {
 
         try {
 
-          /*
+          
           const { transactionHash } = await sendTransaction({
             account: activeAccount as any,
             transaction,
           });
-          */
+          
+          /*
          const { transactionHash } = await sendAndConfirmTransaction({
             account: activeAccount as any,
             transaction,
           });
+          */
 
           console.log("transactionHash===", transactionHash);
 
@@ -1908,12 +1905,7 @@ export default function Index({ params }: any) {
           toast.error('결제확인이 실패했습니다.');
         }
 
-
-
       }
-
-
-
 
 
 
@@ -1927,10 +1919,10 @@ export default function Index({ params }: any) {
       confirmingPayment.map((item, idx) => idx === index ? false : item)
     );
 
+    
     setConfirmPaymentCheck(
       confirmPaymentCheck.map((item, idx) => idx === index ? false : item)
     );
-  
 
   }
 
@@ -2220,43 +2212,6 @@ export default function Index({ params }: any) {
 
       const data = await response.json();
 
-      //console.log('data', data);
-
-
-      // if data.result is different from buyOrders
-      // check neweset order is different from buyOrders
-      // then toasts message
-      //console.log('data.result.orders[0]', data.result.orders?.[0]);
-      //console.log('buyOrders[0]', buyOrders);
-
-
-      //console.log('buyOrders[0]', buyOrders?.[0]);
-
-      if (data.result.orders?.[0]?._id !== latestBuyOrder?._id) {
-
-        setLatestBuyOrder(data.result.orders?.[0] || null);
-
-   
-        
-        //toast.success(Newest_order_has_been_arrived);
-        toast.success('새로운 주문이 도착했습니다');
-
-
-
-
-        // <audio src="/racing.mp3" typeof="audio/mpeg" autoPlay={soundStatus} muted={!soundStatus} />
-        // audio play
-
-        //setSoundStatus(true);
-
-        // audio ding play
-
-        playSong();
-
-        // Uncaught (in promise) NotAllowedError: play() failed because the user didn't interact with the document first.
-
-
-      }
 
       setBuyOrders(data.result.orders);
 
@@ -2274,22 +2229,12 @@ export default function Index({ params }: any) {
 
     fetchBuyOrders();
 
-    
-    
+    // interval to fetch latest buy order every 5 seconds
     const interval = setInterval(() => {
-
       fetchBuyOrders();
+    }, 5000);
 
-
-    }, 3000);
-
-
-    return () => clearInterval(interval);
     
-    
-    
-    
-
 
   } , [
     limit,
@@ -2390,6 +2335,10 @@ export default function Index({ params }: any) {
 
           setStoreAdminWalletAddress(data.result?.adminWalletAddress);
 
+          if (data.result?.adminWalletAddress === address) {
+            setIsAdmin(true);
+          }
+
           setSellerWalletAddress(data.result?.sellerWalletAddress || "");
 
         } else {
@@ -2417,13 +2366,6 @@ export default function Index({ params }: any) {
     }
 
     fetchData();
-
-    // interval to fetch store data every 10 seconds
-    const interval = setInterval(() => {
-      fetchData();
-    }
-    , 5000);
-    return () => clearInterval(interval);
 
   } , [params.center]);
 
@@ -2724,7 +2666,8 @@ const [tradeSummary, setTradeSummary] = useState({
           nickname: buyerNickname,
           depositBankName: buyerDepositBankName,
           depositBankAccountNumber: buyerDepositBankAccountNumber,
-          depositName: buyerDepositName
+          depositName: buyerDepositName,
+          depositCompleted: false,
         },
 
         seller: {
@@ -2805,49 +2748,10 @@ const [tradeSummary, setTradeSummary] = useState({
 
       const data = await response.json();
 
-      //console.log('data', data);
-
-
-      // if data.result is different from buyOrders
-      // check neweset order is different from buyOrders
-      // then toasts message
-      //console.log('data.result.orders[0]', data.result.orders?.[0]);
-      //console.log('buyOrders[0]', buyOrders);
-
-
-      //console.log('buyOrders[0]', buyOrders?.[0]);
-
-      if (data.result.orders?.[0]?._id !== latestBuyOrder?._id) {
-
-        setLatestBuyOrder(data.result.orders?.[0] || null);
-
-   
-        
-        //toast.success(Newest_order_has_been_arrived);
-        toast.success('새로운 주문이 도착했습니다');
-
-
-
-
-        // <audio src="/racing.mp3" typeof="audio/mpeg" autoPlay={soundStatus} muted={!soundStatus} />
-        // audio play
-
-        //setSoundStatus(true);
-
-        // audio ding play
-
-        playSong();
-
-        // Uncaught (in promise) NotAllowedError: play() failed because the user didn't interact with the document first.
-
-
-      }
 
       setBuyOrders(data.result.orders);
 
       setTotalCount(data.result.totalCount);
-
-
 
 
 
@@ -3264,8 +3168,6 @@ const [tradeSummary, setTradeSummary] = useState({
         <div className="py-0 w-full">
 
        
-
-
           <div className={`w-full flex flex-col xl:flex-row items-center justify-between gap-2
             p-2 rounded-lg mb-4
             ${store?.backgroundColor ?
@@ -3294,33 +3196,7 @@ const [tradeSummary, setTradeSummary] = useState({
                       store && store?.storeName + " (" + store?.storecode + ")"
                     }
                   </span>
-                  {address === storeAdminWalletAddress && (
-                    <div className="flex flex-row gap-2 items-center">
-                      <Image
-                        src="/icon-manager.png"
-                        alt="Store Admin"
-                        width={20}
-                        height={20}
-                      />
-                      <span className="text-sm text-zinc-50">
-                        가맹점 관리자
-                      </span>
-                    </div>
-                  )}
-                  {isAdmin && (
-                    <div className="flex flex-row items-center justify-center gap-2">
-                      <Image
-                        src="/icon-admin.png"
-                        alt="Admin"
-                        width={20}
-                        height={20}
-                        className="rounded-lg w-5 h-5"
-                      />
-                      <span className="text-sm text-yellow-500">
-                        전체 관리자
-                      </span>
-                    </div>
-                  )}
+
                 </div>
 
               </button>
@@ -3375,48 +3251,36 @@ const [tradeSummary, setTradeSummary] = useState({
                 {address && !loadingUser && (
                     <div className="w-full flex flex-row items-center justify-end gap-2">
 
-                      <div className="hidden flex-row items-center justify-center gap-2">
-
-                          <button
-                              className="text-lg text-zinc-600 underline"
-                              onClick={() => {
-                                  navigator.clipboard.writeText(address);
-                                  toast.success(Copied_Wallet_Address);
-                              } }
-                          >
-                              {address.substring(0, 6)}...{address.substring(address.length - 4)}
-                          </button>
-                          
-                          <Image
-                              src="/icon-shield.png"
-                              alt="Wallet"
-                              width={100}
-                              height={100}
-                              className="w-6 h-6"
-                          />
-
-                      </div>
-
-                      <div className="hidden flex-row items-center justify-end  gap-2">
-                          <span className="text-2xl xl:text-4xl font-semibold text-green-600">
-                              {Number(balance).toFixed(2)}
-                          </span>
-                          {' '}
-                          <span className="text-sm">USDT</span>
-                      </div>
-
-
                       <button
                         onClick={() => {
                           router.push('/' + params.lang + '/' + params.center + '/profile-settings');
                         }}
                         className="
-                        w-32 h-10 items-center justify-center
-                        flex bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
+                        w-40
+                        items-center justify-center
+                        bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
                       >
-                        {user?.nickname || "프로필"}
-                      </button>
+                        <div className="flex flex-col itmens-center justify-center gap-2">
+                          <span className="text-sm text-zinc-50">
+                            {user?.nickname || "프로필"}
+                          </span>
+                          {isAdmin && (
+                            <div className="flex flex-row items-center justify-center gap-2">
+                              <Image
+                                src="/icon-admin.png"
+                                alt="Admin"
+                                width={20}
+                                height={20}
+                                className="rounded-lg w-5 h-5"
+                              />
+                              <span className="text-sm text-yellow-500">
+                                가맹점 관리자
+                              </span>
+                            </div>
+                          )}
 
+                        </div>
+                      </button>
 
                       {/* logout button */}
                       <button
@@ -4526,6 +4390,7 @@ const [tradeSummary, setTradeSummary] = useState({
                           <th className="p-2">{Seller} / {Status}</th>
                           <th className="p-2">거래취소</th>
                           <th className="p-2">거래완료</th>
+                          <th className="p-2">출금상태</th>
                         </tr>
                       </thead>
 
@@ -4768,7 +4633,7 @@ const [tradeSummary, setTradeSummary] = useState({
                               <div className="flex flex-row items-center gap-2 justify-center">
                                 {/* status */}
                                 {item.status === 'ordered' && (
-                                  <div className="text-sm text-yellow-500 font-semibold">
+                                  <div className="text-lg text-yellow-600 font-semibold">
                                     {Buy_Order_Opened}
                                   </div>
                                 )}
@@ -4800,13 +4665,10 @@ const [tradeSummary, setTradeSummary] = useState({
                                         item.store.sellerWalletAddress.slice(0, 6) + '...' + item.store.sellerWalletAddress.slice(-4)
                                       }
                                     </div>
-                                    
-                                    <div className="text-sm text-green-600">
+                                  
+                                    <div className="text-lg text-green-600 font-semibold">
                                       {/*Waiting_for_seller_to_deposit*/}
-
                                       결제요청
-
-
                                     </div>
 
 
@@ -4821,7 +4683,7 @@ const [tradeSummary, setTradeSummary] = useState({
                                         {item.seller?.nickname}
                                       </span>
 
-                                      <div className="text-sm text-red-600">
+                                      <div className="text-lg text-red-600 font-semibold">
                                         {
                                           Cancelled_at
                                         }
@@ -4843,12 +4705,13 @@ const [tradeSummary, setTradeSummary] = useState({
                                     </div>
 
 
-                                    <span className="text-sm font-semibold text-yellow-500">
+                                    <span className="text-lg font-semibold text-yellow-600">
                                       {Completed}
                                     </span>
 
                                     {/* noew window open */}
                                     {/* polyscan explorer */}
+                                    {/*
                                     <a
                                       href={`https://arbiscan.io/tx/${item.transactionHash}`}
                                       target="_blank"
@@ -4857,8 +4720,45 @@ const [tradeSummary, setTradeSummary] = useState({
                                     >
                                       스캔에서 거래내역 보기
                                     </a>
-                                      
+                                    */}
 
+
+
+
+
+                                    <button
+                                      className="text-sm text-blue-600 font-semibold
+                                        border border-blue-600 rounded-lg p-2
+                                        bg-blue-100
+                                        w-full text-center
+                                        hover:bg-blue-200
+                                        cursor-pointer
+                                        transition-all duration-200 ease-in-out
+                                        hover:scale-105
+                                        hover:shadow-lg
+                                        hover:shadow-blue-500/50
+                                      "
+                                      onClick={() => {
+                                        window.open(
+                                          `https://arbiscan.io/tx/${item.transactionHash}`,
+                                          '_blank'
+                                        );
+                                      }}
+                                    >
+                                      <div className="flex flex-row gap-2 items-center justify-center">
+                                        <Image
+                                          src="/logo-arbitrum.png"
+                                          alt="Polygon"
+                                          width={20}
+                                          height={20}
+                                          className="w-5 h-5"
+                                        />
+                                        <span className="text-sm">
+                                          USDT 전송내역
+                                        </span>
+                                      </div>
+                                    </button>
+                      
 
                                   </div>
                                 )}
@@ -4883,7 +4783,9 @@ const [tradeSummary, setTradeSummary] = useState({
                               <div className="flex flex-row gap-2 items-start justify-start">
 
 
-                                {item.status === 'accepted' && item.seller && item.seller.walletAddress === address && (
+                                {
+                                (item.status === 'accepted' || item.status === 'paymentRequested')
+                                && item.seller && item.seller.walletAddress === address && (
                                   
                                   <div className="flex flex-row items-center gap-2">
                                     <input
@@ -4937,7 +4839,9 @@ const [tradeSummary, setTradeSummary] = useState({
 
                               <div className="flex flex-row gap-2 items-start justify-start">
 
-                                {/*item.status === 'accepted' && item.seller && item.seller.walletAddress === address && (
+                                {/*
+                                (item.status === 'accepted' || item.status === 'paymentRequested')
+                                && item.seller && item.seller.walletAddress === address && (
                                   
                                   <div className="flex flex-row items-center gap-2">
                                     <input
@@ -5224,7 +5128,22 @@ const [tradeSummary, setTradeSummary] = useState({
 
                             </td>
 
+                            {/* 출금상태: buyer.depositCompleted */}
+                            <td className="p-2">
 
+                              
+                              {item?.buyer?.depositCompleted === false
+                               ? (
+                                <div className="text-sm text-red-600">
+                                  출금대기중
+                                </div>
+                              ) : (
+                                <div className="text-sm text-green-600">
+                                  출금완료
+                                </div>
+                              )}
+                            
+                            </td>
 
                           </tr>
 
