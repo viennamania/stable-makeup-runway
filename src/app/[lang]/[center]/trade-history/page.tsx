@@ -838,7 +838,7 @@ export default function Index({ params }: any) {
     setLoadingUser(false);
 
 
-  } , [address]);
+  } , [address, params.center]);
 
   
 
@@ -890,7 +890,7 @@ export default function Index({ params }: any) {
 
 
 
-// search form date to date
+  // search form date to date
   const [searchFromDate, setSearchFormDate] = useState("");
   // set today's date in YYYY-MM-DD format
   useEffect(() => {
@@ -1385,7 +1385,7 @@ export default function Index({ params }: any) {
           /*
           const transactionResult = await waitForReceipt({
             client,
-            arbitrum,
+            chain: arbitrum ,
             maxBlocksWaitTime: 1,
             transactionHash: transactionHash,
           });
@@ -2157,17 +2157,17 @@ export default function Index({ params }: any) {
     fetchBuyOrders();
 
     
-    
+    /*
     const interval = setInterval(() => {
 
       fetchBuyOrders();
 
 
     }, 3000);
-
+  
 
     return () => clearInterval(interval);
-    
+    */
     
     
     
@@ -2333,6 +2333,10 @@ const fetchBuyOrders = async () => {
 
           setStoreAdminWalletAddress(data.result?.adminWalletAddress);
 
+          if (data.result?.adminWalletAddress === address) {
+            setIsAdmin(true);
+          }
+
       } else {
         // get store list
         const response = await fetch("/api/store/getAllStores", {
@@ -2381,6 +2385,8 @@ const fetchBuyOrders = async () => {
     totalSettlementAmountKRW: 0,
     totalFeeAmount: 0,
     totalFeeAmountKRW: 0,
+    totalAgentFeeAmount: 0,
+    totalAgentFeeAmountKRW: 0,
     orders: [] as BuyOrder[],
 
     totalClearanceCount: 0,
@@ -2405,10 +2411,11 @@ const fetchBuyOrders = async () => {
         walletAddress: address,
         searchMyOrders: searchMyOrders,
         searchOrderStatusCompleted: true,
-        //searchBuyer: searchBuyer,
-        //searchDepositName: searchDepositName,
 
-        //searchStoreBankAccountNumber: searchStoreBankAccountNumber,
+        searchBuyer: searchBuyer,
+        searchDepositName: searchDepositName,
+
+        searchStoreBankAccountNumber: searchStoreBankAccountNumber,
 
         fromDate: searchFromDate,
         toDate: searchToDate,
@@ -2444,6 +2451,8 @@ const fetchBuyOrders = async () => {
         totalSettlementAmountKRW: 0,
         totalFeeAmount: 0,
         totalFeeAmountKRW: 0,
+        totalAgentFeeAmount: 0,
+        totalAgentFeeAmountKRW: 0,
         orders: [] as BuyOrder[],
 
         totalClearanceCount: 0,
@@ -2461,7 +2470,8 @@ const fetchBuyOrders = async () => {
     }, 10000);
     return () => clearInterval(interval);
 
-  } , [address, searchMyOrders, params.center, searchFromDate, searchToDate,]);
+  } , [address, searchMyOrders, params.center, searchFromDate, searchToDate,
+    searchBuyer, searchDepositName, searchStoreBankAccountNumber]);
 
 
 
@@ -2899,33 +2909,7 @@ const fetchBuyOrders = async () => {
                       store && store?.storeName + " (" + store?.storecode + ")"
                     }
                   </span>
-                  {address === storeAdminWalletAddress && (
-                    <div className="flex flex-row gap-2 items-center">
-                      <Image
-                        src="/icon-manager.png"
-                        alt="Store Admin"
-                        width={20}
-                        height={20}
-                      />
-                      <span className="text-sm text-zinc-50">
-                        가맹점 관리자
-                      </span>
-                    </div>
-                  )}
-                  {isAdmin && (
-                    <div className="flex flex-row items-center justify-center gap-2">
-                      <Image
-                        src="/icon-admin.png"
-                        alt="Admin"
-                        width={20}
-                        height={20}
-                        className="rounded-lg w-5 h-5"
-                      />
-                      <span className="text-sm text-yellow-500">
-                        전체 관리자
-                      </span>
-                    </div>
-                  )}
+
                 </div>
 
               </button>
@@ -2980,53 +2964,36 @@ const fetchBuyOrders = async () => {
                 {address && !loadingUser && (
                     <div className="w-full flex flex-row items-center justify-end gap-2">
 
-                      <div className="hidden flex-row items-center justify-center gap-2">
-
-                          <button
-                              className="text-lg text-zinc-600 underline"
-                              onClick={() => {
-                                  navigator.clipboard.writeText(address);
-                                  toast.success(Copied_Wallet_Address);
-                              } }
-                          >
-                              {address.substring(0, 6)}...{address.substring(address.length - 4)}
-                          </button>
-                          
-                          <Image
-                              src="/icon-shield.png"
-                              alt="Wallet"
-                              width={100}
-                              height={100}
-                              className="w-6 h-6"
-                          />
-
-                      </div>
-
-                      <div className="hidden flex-row items-center justify-end  gap-2">
-                        <Image
-                            src="/icon-wallet.png"
-                            alt="Wallet"
-                            width={100}
-                            height={100}
-                            className="w-6 h-6"
-                        />
-                        <span className="text-2xl xl:text-4xl font-semibold text-green-600">
-                            {Number(balance).toFixed(2)}
-                        </span>
-                      </div>
-
-
                       <button
                         onClick={() => {
                           router.push('/' + params.lang + '/' + params.center + '/profile-settings');
                         }}
                         className="
-                        w-32 h-10 items-center justify-center
-                        flex bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
+                        w-40
+                        items-center justify-center
+                        bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
                       >
-                        {user?.nickname || "프로필"}
-                      </button>
+                        <div className="flex flex-col itmens-center justify-center gap-2">
+                          <span className="text-sm text-zinc-50">
+                            {user?.nickname || "프로필"}
+                          </span>
+                          {isAdmin && (
+                            <div className="flex flex-row items-center justify-center gap-2">
+                              <Image
+                                src="/icon-admin.png"
+                                alt="Admin"
+                                width={20}
+                                height={20}
+                                className="rounded-lg w-5 h-5"
+                              />
+                              <span className="text-sm text-yellow-500">
+                                가맹점 관리자
+                              </span>
+                            </div>
+                          )}
 
+                        </div>
+                      </button>
 
                       {/* logout button */}
                       <button
@@ -3097,7 +3064,7 @@ const fetchBuyOrders = async () => {
             <div className="w-full flex flex-col items-end justify-end gap-2
             border-b border-zinc-300 pb-2">
 
-              {/* 가맹점 보유 */}
+              {/* 가맹점 보유량 */}
               <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2">
                 <div className="flex flex-row gap-2 items-center">
                   <Image
@@ -3649,7 +3616,12 @@ const fetchBuyOrders = async () => {
                       <span className="text-xl font-semibold text-yellow-600"
                         style={{ fontFamily: 'monospace' }}
                       >
-                        {tradeSummary.totalFeeAmountKRW?.toLocaleString()}
+
+                        {
+                          (tradeSummary.totalFeeAmountKRW + tradeSummary.totalAgentFeeAmountKRW)
+                          .toLocaleString()
+                        }
+
                       </span>
                       <span className="text-sm text-zinc-500">원</span>
                     </div>
@@ -3667,10 +3639,11 @@ const fetchBuyOrders = async () => {
                       <span className="text-xl font-semibold text-green-600"
                         style={{ fontFamily: 'monospace' }}
                       >
-                        {Number(tradeSummary.totalFeeAmount
-                          ? tradeSummary.totalFeeAmount
-                          : 0
-                        ).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                      {
+                        (tradeSummary.totalFeeAmount + tradeSummary.totalAgentFeeAmount)
+                        .toFixed(2)
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      }
                       </span>
                     </div>
                   </div>
@@ -4257,7 +4230,7 @@ const fetchBuyOrders = async () => {
                                         "
                                         onClick={() => {
                                           // new window to complete trade
-                                          // {`https://www.cryptoss-runway.vercel.app/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
+                                          // {`https://www.cryptoss.beauty/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
 
                                           window.open(
                                             `/${params.lang}/${item?.storecode}/pay-usdt-reverse/${item?._id}`,
@@ -4662,7 +4635,9 @@ const fetchBuyOrders = async () => {
 
                                     
                                     <span>
-                                      {item?.settlement?.settlementAmount?.toLocaleString() + ' USDT'}
+                                      {
+                                        item?.settlement?.settlementAmount &&
+                                      item?.settlement?.settlementAmount?.toLocaleString()}
                                       {' '}
                                       {
                                         item?.settlement?.settlementWalletAddress &&

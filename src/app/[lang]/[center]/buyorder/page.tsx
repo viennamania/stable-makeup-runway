@@ -199,8 +199,8 @@ export default function Index({ params }: any) {
 
   // limit, page number params
 
-  const limit = searchParams.get('limit') || 10;
-  const page = searchParams.get('page') || 1;
+  //const limit = searchParams.get('limit') || 10;
+  //const page = searchParams.get('page') || 1;
 
 
 
@@ -841,7 +841,7 @@ export default function Index({ params }: any) {
     setLoadingUser(false);
 
 
-  } , [address]);
+  } , [address, params.center]);
 
   
 
@@ -886,16 +886,33 @@ export default function Index({ params }: any) {
 
 
   // limit number
-  const [limitValue, setLimitValue] = useState(limit || 20);
+  //const [limitValue, setLimitValue] = useState(searchParams.get('limit') || 20);
+  /*
   useEffect(() => {
     setLimitValue(limit || 20);
   }, [limit]);
+  */
+
+  const [limitValue, setLimitValue] = useState(20);
+  useEffect(() => {
+    const limit = searchParams.get('limit') || 20;
+    setLimitValue(Number(limit));
+  }, [searchParams]);
+
 
   // page number
-  const [pageValue, setPageValue] = useState(page || 1);
+  //const [pageValue, setPageValue] = useState(searchParams.get('page') || 1);
+  /*
   useEffect(() => {
     setPageValue(page || 1);
   }, [page]);
+  */
+
+  const [pageValue, setPageValue] = useState(1);
+  useEffect(() => {
+    const page = searchParams.get('page') || 1;
+    setPageValue(Number(page));
+  }, [searchParams]);
 
 
 
@@ -911,13 +928,13 @@ export default function Index({ params }: any) {
 
 
 
-  const [searchBuyer, setSearchBuyer] = useState("");
+  const [searchBuyer, setSearchBuyer] = useState(searchParams.get('searchBuyer') || "");
 
-  const [searchDepositName, setSearchDepositName] = useState("");
+  const [searchDepositName, setSearchDepositName] = useState(searchParams.get('searchDepositName') || "");
 
 
   // search store bank account number
-  const [searchStoreBankAccountNumber, setSearchStoreBankAccountNumber] = useState("");
+  const [searchStoreBankAccountNumber, setSearchStoreBankAccountNumber] = useState(searchParams.get('searchStoreBankAccountNumber') || "");
 
 
 
@@ -1872,7 +1889,10 @@ export default function Index({ params }: any) {
 
         try {
 
-          const { transactionHash } = await sendTransaction({
+          const { transactionHash } = await sendAndConfirmTransaction({
+          
+          //const { transactionHash } = await sendTransaction({
+          
             account: activeAccount as any,
             transaction,
           });
@@ -2373,8 +2393,7 @@ export default function Index({ params }: any) {
 
 
   } , [
-    limit,
-    page,
+
     address,
     searchMyOrders,
     agreementForTrade,
@@ -2397,6 +2416,10 @@ export default function Index({ params }: any) {
 
     searchOrderStatusCancelled,
     searchOrderStatusCompleted,
+
+    searchBuyer,
+    searchDepositName,
+    searchStoreBankAccountNumber,
 
 
 ]);
@@ -2550,6 +2573,10 @@ const fetchBuyOrders = async () => {
             setStore(data.result);
   
             setStoreAdminWalletAddress(data.result?.adminWalletAddress);
+
+            if (data.result?.adminWalletAddress === address) {
+              setIsAdmin(true);
+            }
   
 
         } else {
@@ -2710,10 +2737,11 @@ const fetchBuyOrders = async () => {
            walletAddress: address,
            searchMyOrders: searchMyOrders,
            searchOrderStatusCompleted: true,
-           //searchBuyer: searchBuyer,
-           //searchDepositName: searchDepositName,
+
+           searchBuyer: searchBuyer,
+           searchDepositName: searchDepositName,
  
-           //searchStoreBankAccountNumber: searchStoreBankAccountNumber,
+           searchStoreBankAccountNumber: searchStoreBankAccountNumber,
 
             fromDate: searchFromDate,
             toDate: searchToDate,
@@ -2751,9 +2779,10 @@ const fetchBuyOrders = async () => {
        }, 10000);
        return () => clearInterval(interval);
  
-     } , [address, searchMyOrders, params.storecode, 
-        searchFromDate, searchToDate,]);
- 
+     } , [address, searchMyOrders, 
+        searchFromDate, searchToDate,
+        searchBuyer, searchDepositName, searchStoreBankAccountNumber,
+        params.center]);
 
 
 
@@ -2882,7 +2911,7 @@ const fetchBuyOrders = async () => {
                     alt="logo"
                     width={35}
                     height={35}
-                    className="rounded-lg w-6 h-6"
+                    className="rounded-lg w-6 h-6 object-cover"
                   />
 
 
@@ -3203,33 +3232,7 @@ const fetchBuyOrders = async () => {
                       store && store?.storeName + " (" + store?.storecode + ")"
                     }
                   </span>
-                  {address === storeAdminWalletAddress && (
-                    <div className="flex flex-row gap-2 items-center">
-                      <Image
-                        src="/icon-manager.png"
-                        alt="Store Admin"
-                        width={20}
-                        height={20}
-                      />
-                      <span className="text-sm text-zinc-50">
-                        가맹점 관리자
-                      </span>
-                    </div>
-                  )}
-                  {isAdmin && (
-                    <div className="flex flex-row items-center justify-center gap-2">
-                      <Image
-                        src="/icon-admin.png"
-                        alt="Admin"
-                        width={20}
-                        height={20}
-                        className="rounded-lg w-5 h-5"
-                      />
-                      <span className="text-sm text-yellow-500">
-                        전체 관리자
-                      </span>
-                    </div>
-                  )}
+
                 </div>
 
               </button>
@@ -3284,48 +3287,36 @@ const fetchBuyOrders = async () => {
                 {address && !loadingUser && (
                     <div className="w-full flex flex-row items-center justify-end gap-2">
 
-                      <div className="hidden flex-row items-center justify-center gap-2">
-
-                          <button
-                              className="text-lg text-zinc-600 underline"
-                              onClick={() => {
-                                  navigator.clipboard.writeText(address);
-                                  toast.success(Copied_Wallet_Address);
-                              } }
-                          >
-                              {address.substring(0, 6)}...{address.substring(address.length - 4)}
-                          </button>
-                          
-                          <Image
-                              src="/icon-shield.png"
-                              alt="Wallet"
-                              width={100}
-                              height={100}
-                              className="w-6 h-6"
-                          />
-
-                      </div>
-
-                      <div className="hidden flex-row items-center justify-end  gap-2">
-                          <span className="text-2xl xl:text-4xl font-semibold text-green-600">
-                              {Number(balance).toFixed(2)}
-                          </span>
-                          {' '}
-                          <span className="text-sm">USDT</span>
-                      </div>
-
-
                       <button
                         onClick={() => {
                           router.push('/' + params.lang + '/' + params.center + '/profile-settings');
                         }}
                         className="
-                        w-32 h-10 items-center justify-center
-                        flex bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
+                        w-40
+                        items-center justify-center
+                        bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
                       >
-                        {user?.nickname || "프로필"}
-                      </button>
+                        <div className="flex flex-col itmens-center justify-center gap-2">
+                          <span className="text-sm text-zinc-50">
+                            {user?.nickname || "프로필"}
+                          </span>
+                          {isAdmin && (
+                            <div className="flex flex-row items-center justify-center gap-2">
+                              <Image
+                                src="/icon-admin.png"
+                                alt="Admin"
+                                width={20}
+                                height={20}
+                                className="rounded-lg w-5 h-5"
+                              />
+                              <span className="text-sm text-yellow-500">
+                                가맹점 관리자
+                              </span>
+                            </div>
+                          )}
 
+                        </div>
+                      </button>
 
                       {/* logout button */}
                       <button
@@ -3366,9 +3357,6 @@ const fetchBuyOrders = async () => {
 
 
           </div>
-            
-        
-
 
 
           <div className="flex flex-col items-start justify-center gap-2">
@@ -3396,196 +3384,196 @@ const fetchBuyOrders = async () => {
 
 
 
-            <div className="w-full flex flex-col items-end justify-end gap-2
-            border-b border-zinc-300 pb-2">
+          <div className="w-full flex flex-col items-end justify-end gap-2
+          border-b border-zinc-300 pb-2">
 
-              {/* 가맹점 보유 */}
-              <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2">
-                <div className="flex flex-row gap-2 items-center">
-                  <Image
-                    src="/icon-escrow.png"
-                    alt="Escrow"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                  <span className="text-lg font-semibold text-zinc-500">
-                    가맹점 보유
-                  </span>
-                </div>
-
-                <div className="flex flex-row items-center gap-2">
-                  <Image
-                    src="/icon-tether.png"
-                    alt="Tether"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                  <span className="text-lg text-green-600 font-semibold"
-                    style={{ fontFamily: 'monospace' }}
-                  >
-                    {
-                      store?.escrowAmountUSDT
-                      ? Number(store?.escrowAmountUSDT).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                      : 0
-                    }
-                  </span>
-                </div>
-
+            {/* 가맹점 보유 */}
+            <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2">
+              <div className="flex flex-row gap-2 items-center">
+                <Image
+                  src="/icon-escrow.png"
+                  alt="Escrow"
+                  width={20}
+                  height={20}
+                  className="w-5 h-5"
+                />
+                <span className="text-lg font-semibold text-zinc-500">
+                  가맹점 보유
+                </span>
               </div>
 
-
-              {/* 가맹점 거래 */}
-              <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2">
-                <div className="flex flex-row gap-2 items-center">
-                  <Image
-                    src="/icon-trade.png"
-                    alt="Trade"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                  <span className="text-lg font-semibold text-zinc-500">
-                    가맹점 거래
-                  </span>
-                </div>
-
-                <div className="flex flex-row items-center gap-2">
-                  <Image
-                    src="/icon-tether.png"
-                    alt="Tether"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                  <span className="text-lg text-green-600 font-semibold"
-                    style={{ fontFamily: 'monospace' }}
-                  >
-                    {
-                      Number(store?.totalUsdtAmount ? store?.totalUsdtAmount : 0)
-                      .toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                    }
-                  </span>
-                </div>
-
-                <div className="flex flex-row gap-1 items-center">
-                  <span className="text-lg text-yellow-600 font-semibold"
-                    style={{ fontFamily: 'monospace' }}
-                  >
-                    {
-                      Number(store?.totalKrwAmount ? store?.totalKrwAmount : 0)
-                      .toLocaleString('ko-KR')
-                    }
-                  </span>
-                  <span className="text-sm text-zinc-500">
-                    원
-                  </span>
-                </div>
+              <div className="flex flex-row items-center gap-2">
+                <Image
+                  src="/icon-tether.png"
+                  alt="Tether"
+                  width={20}
+                  height={20}
+                  className="w-5 h-5"
+                />
+                <span className="text-lg text-green-600 font-semibold"
+                  style={{ fontFamily: 'monospace' }}
+                >
+                  {
+                    store?.escrowAmountUSDT
+                    ? Number(store?.escrowAmountUSDT).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                    : 0
+                  }
+                </span>
               </div>
-
-
-
-
-              {/* 가맹점 정산금 */}
-              <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2">
-                <div className="flex flex-row gap-2 items-center">
-                  <Image
-                    src="/icon-settlement.png"
-                    alt="Settlement"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                  <span className="text-lg font-semibold text-zinc-500">
-                    가맹점 정산
-                  </span>
-                </div>
-
-                <div className="flex flex-row items-center gap-2">
-                  <Image
-                    src="/icon-tether.png"
-                    alt="Tether"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                  <span className="text-lg text-green-600 font-semibold"
-                    style={{ fontFamily: 'monospace' }}
-                  >
-                    {
-                      Number(store?.totalSettlementAmount ? store?.totalSettlementAmount : 0)
-                      .toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                    }
-                  </span>
-                </div>
-
-                <div className="flex flex-row gap-1 items-center">
-                  <span className="text-lg text-yellow-600 font-semibold"
-                    style={{ fontFamily: 'monospace' }}
-                  >
-                    {
-                      Number(store?.totalSettlementAmountKRW ? store?.totalSettlementAmountKRW : 0)
-                      .toLocaleString('ko-KR')
-                    }
-                  </span>
-                  <span className="text-sm text-zinc-500">
-                    원
-                  </span>
-                </div>
-              </div>
-
-
-              {/* 가맹점 판매금 */}
-              <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2">
-                <div className="flex flex-row gap-2 items-center">
-                  <Image
-                    src="/icon-clearance.png"
-                    alt="Clearance"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                  <span className="text-lg font-semibold text-zinc-500">
-                    가맹점 판매
-                  </span>
-                </div>
-
-                <div className="flex flex-row items-center gap-2">
-                  <Image
-                    src="/icon-tether.png"
-                    alt="Tether"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                  <span className="text-lg text-green-600 font-semibold"
-                    style={{ fontFamily: 'monospace' }}
-                  >
-                    {
-                      Number(store?.totalUsdtAmountClearance || 0)
-                      .toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                    }
-                  </span>
-                </div>
-
-                <div className="flex flex-row gap-1 items-center">
-                  <span className="text-lg text-yellow-600 font-semibold"
-                    style={{ fontFamily: 'monospace' }}
-                  >
-                    {
-                      Number(store?.totalKrwAmountClearance || 0)
-                      .toLocaleString('ko-KR')
-                    }
-                  </span>
-                  <span className="text-sm text-zinc-500">
-                    원
-                  </span>
-                </div>
-
-                </div> 
 
             </div>
+
+
+            {/* 가맹점 거래 */}
+            <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2">
+              <div className="flex flex-row gap-2 items-center">
+                <Image
+                  src="/icon-trade.png"
+                  alt="Trade"
+                  width={20}
+                  height={20}
+                  className="w-5 h-5"
+                />
+                <span className="text-lg font-semibold text-zinc-500">
+                  가맹점 거래
+                </span>
+              </div>
+
+              <div className="flex flex-row items-center gap-2">
+                <Image
+                  src="/icon-tether.png"
+                  alt="Tether"
+                  width={20}
+                  height={20}
+                  className="w-5 h-5"
+                />
+                <span className="text-lg text-green-600 font-semibold"
+                  style={{ fontFamily: 'monospace' }}
+                >
+                  {
+                    Number(store?.totalUsdtAmount ? store?.totalUsdtAmount : 0)
+                    .toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                  }
+                </span>
+              </div>
+
+              <div className="flex flex-row gap-1 items-center">
+                <span className="text-lg text-yellow-600 font-semibold"
+                  style={{ fontFamily: 'monospace' }}
+                >
+                  {
+                    Number(store?.totalKrwAmount ? store?.totalKrwAmount : 0)
+                    .toLocaleString('ko-KR')
+                  }
+                </span>
+                <span className="text-sm text-zinc-500">
+                  원
+                </span>
+              </div>
+            </div>
+
+
+
+
+            {/* 가맹점 정산금 */}
+            <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2">
+              <div className="flex flex-row gap-2 items-center">
+                <Image
+                  src="/icon-settlement.png"
+                  alt="Settlement"
+                  width={20}
+                  height={20}
+                  className="w-5 h-5"
+                />
+                <span className="text-lg font-semibold text-zinc-500">
+                  가맹점 정산
+                </span>
+              </div>
+
+              <div className="flex flex-row items-center gap-2">
+                <Image
+                  src="/icon-tether.png"
+                  alt="Tether"
+                  width={20}
+                  height={20}
+                  className="w-5 h-5"
+                />
+                <span className="text-lg text-green-600 font-semibold"
+                  style={{ fontFamily: 'monospace' }}
+                >
+                  {
+                    Number(store?.totalSettlementAmount ? store?.totalSettlementAmount : 0)
+                    .toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                  }
+                </span>
+              </div>
+
+              <div className="flex flex-row gap-1 items-center">
+                <span className="text-lg text-yellow-600 font-semibold"
+                  style={{ fontFamily: 'monospace' }}
+                >
+                  {
+                    Number(store?.totalSettlementAmountKRW ? store?.totalSettlementAmountKRW : 0)
+                    .toLocaleString('ko-KR')
+                  }
+                </span>
+                <span className="text-sm text-zinc-500">
+                  원
+                </span>
+              </div>
+            </div>
+
+
+            {/* 가맹점 판매금 */}
+            <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2">
+              <div className="flex flex-row gap-2 items-center">
+                <Image
+                  src="/icon-clearance.png"
+                  alt="Clearance"
+                  width={20}
+                  height={20}
+                  className="w-5 h-5"
+                />
+                <span className="text-lg font-semibold text-zinc-500">
+                  가맹점 판매
+                </span>
+              </div>
+
+              <div className="flex flex-row items-center gap-2">
+                <Image
+                  src="/icon-tether.png"
+                  alt="Tether"
+                  width={20}
+                  height={20}
+                  className="w-5 h-5"
+                />
+                <span className="text-lg text-green-600 font-semibold"
+                  style={{ fontFamily: 'monospace' }}
+                >
+                  {
+                    Number(store?.totalUsdtAmountClearance || 0)
+                    .toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                  }
+                </span>
+              </div>
+
+              <div className="flex flex-row gap-1 items-center">
+                <span className="text-lg text-yellow-600 font-semibold"
+                  style={{ fontFamily: 'monospace' }}
+                >
+                  {
+                    Number(store?.totalKrwAmountClearance || 0)
+                    .toLocaleString('ko-KR')
+                  }
+                </span>
+                <span className="text-sm text-zinc-500">
+                  원
+                </span>
+              </div>
+
+              </div> 
+
+          </div>
 
 
 
@@ -3845,7 +3833,7 @@ const fetchBuyOrders = async () => {
                       checked={searchOrderStatusCancelled}
                       onChange={(e) => {
                         setSearchOrderStatusCancelled(e.target.checked);
-                        setPageValue(1);
+                        setPageValue(1)
                         //fetchBuyOrders();
                       }}
                       className="w-5 h-5"
@@ -4025,11 +4013,23 @@ const fetchBuyOrders = async () => {
                       flex flex-row items-center gap-2">
                       <button
                         onClick={() => {
-                          setPageValue(1);
                           
-                          fetchBuyOrders();
+                          ///setPageValue(1);
 
-                          getTradeSummary();
+                          // router
+                          router.push(
+                            '/' + params.lang + '/' + params.center + '/buyorder?page=1' +
+                            '&limit=' + limitValue +
+                            '&searchBuyer=' + searchBuyer +
+                            '&searchDepositName=' + searchDepositName +
+                            '&searchStoreBankAccountNumber=' + searchStoreBankAccountNumber
+                          );
+                          
+                          //fetchBuyOrders();
+
+                          //getTradeSummary();
+
+
                         }}
                         //className="bg-[#3167b4] text-white px-4 py-2 rounded-lg w-full"
                         className={`${
@@ -7269,10 +7269,14 @@ const fetchBuyOrders = async () => {
 
             <div className="flex flex-row items-center gap-2">
               <select
-                value={limit}
+                value={limitValue}
                 onChange={(e) =>
-                  
-                  router.push(`/${params.lang}/${params.center}/buyorder?limit=${Number(e.target.value)}&page=${page}&wallet=${wallet}&searchMyOrders=${searchMyOrders}`)
+
+                  router.push('/' + params.lang + '/' + params.center + '/buyorder?limit=' + e.target.value + '&page=1' +
+                    '&searchBuyer=' + searchBuyer +
+                    '&searchDepositName=' + searchDepositName +
+                    '&searchStoreBankAccountNumber=' + searchStoreBankAccountNumber
+                  )
 
                 }
 
@@ -7287,25 +7291,32 @@ const fetchBuyOrders = async () => {
 
             {/* 처음 페이지로 이동 */}
             <button
-              disabled={Number(page) <= 1}
-              className={`text-sm text-white px-4 py-2 rounded-md ${Number(page) <= 1 ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
+              disabled={Number(pageValue) <= 1}
+              className={`text-sm text-white px-4 py-2 rounded-md ${Number(pageValue) <= 1 ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
               onClick={() => {
-                
-                router.push(`/${params.lang}/${params.center}/buyorder?limit=${Number(limit)}&page=1`);
 
-              }
-            }
+                router.push('/' + params.lang + '/' + params.center + '/buyorder?limit=' + Number(limitValue) + '&page=1' +
+                  '&searchBuyer=' + searchBuyer +
+                  '&searchDepositName=' + searchDepositName +
+                  '&searchStoreBankAccountNumber=' + searchStoreBankAccountNumber
+                );
+
+              }}
             >
               처음
             </button>
 
 
             <button
-              disabled={Number(page) <= 1}
-              className={`text-sm text-white px-4 py-2 rounded-md ${Number(page) <= 1 ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
+              disabled={Number(pageValue) <= 1}
+              className={`text-sm text-white px-4 py-2 rounded-md ${Number(pageValue) <= 1 ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
               onClick={() => {
-                
-                router.push(`/${params.lang}/${params.center}/buyorder?limit=${Number(limit)}&page=${Number(page) - 1}`);
+
+                router.push('/' + params.lang + '/' + params.center + '/buyorder?limit=' + Number(limitValue) + '&page=' + (Number(pageValue) - 1) +
+                  '&searchBuyer=' + searchBuyer +
+                  '&searchDepositName=' + searchDepositName +
+                  '&searchStoreBankAccountNumber=' + searchStoreBankAccountNumber
+                );
 
               }}
             >
@@ -7314,16 +7325,20 @@ const fetchBuyOrders = async () => {
 
 
             <span className="text-sm text-zinc-500">
-              {page} / {Math.ceil(Number(totalCount) / Number(limit))}
+              {pageValue} / {Math.ceil(Number(totalCount) / Number(limitValue))}
             </span>
 
 
             <button
-              disabled={Number(page) >= Math.ceil(Number(totalCount) / Number(limit))}
-              className={`text-sm text-white px-4 py-2 rounded-md ${Number(page) >= Math.ceil(Number(totalCount) / Number(limit)) ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
+              disabled={Number(pageValue) >= Math.ceil(Number(totalCount) / Number(limitValue))}
+              className={`text-sm text-white px-4 py-2 rounded-md ${Number(pageValue) >= Math.ceil(Number(totalCount) / Number(limitValue)) ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
               onClick={() => {
-                
-                router.push(`/${params.lang}/${params.center}/buyorder?limit=${Number(limit)}&page=${Number(page) + 1}`);
+
+                router.push('/' + params.lang + '/' + params.center + '/buyorder?limit=' + Number(limitValue) + '&page=' + (Number(pageValue) + 1) +
+                  '&searchBuyer=' + searchBuyer +
+                  '&searchDepositName=' + searchDepositName +
+                  '&searchStoreBankAccountNumber=' + searchStoreBankAccountNumber
+                );
 
               }}
             >
@@ -7332,11 +7347,15 @@ const fetchBuyOrders = async () => {
 
             {/* 마지막 페이지로 이동 */}
             <button
-              disabled={Number(page) >= Math.ceil(Number(totalCount) / Number(limit))}
-              className={`text-sm text-white px-4 py-2 rounded-md ${Number(page) >= Math.ceil(Number(totalCount) / Number(limit)) ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
+              disabled={Number(pageValue) >= Math.ceil(Number(totalCount) / Number(limitValue))}
+              className={`text-sm text-white px-4 py-2 rounded-md ${Number(pageValue) >= Math.ceil(Number(totalCount) / Number(limitValue)) ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
               onClick={() => {
-                
-                router.push(`/${params.lang}/${params.center}/buyorder?limit=${Number(limit)}&page=${Math.ceil(Number(totalCount) / Number(limit))}`);
+
+                router.push('/' + params.lang + '/' + params.center + '/buyorder?limit=' + Number(limitValue) + '&page=' + Math.ceil(Number(totalCount) / Number(limitValue)) +
+                  '&searchBuyer=' + searchBuyer +
+                  '&searchDepositName=' + searchDepositName +
+                  '&searchStoreBankAccountNumber=' + searchStoreBankAccountNumber
+                );
 
               }}
             >
