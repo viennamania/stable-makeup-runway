@@ -2470,8 +2470,7 @@ const fetchBuyOrders = async () => {
     }, 10000);
     return () => clearInterval(interval);
 
-  } , [address, searchMyOrders, params.center, searchFromDate, searchToDate,
-    searchBuyer, searchDepositName, searchStoreBankAccountNumber]);
+  } , [address, searchMyOrders, params.center, searchFromDate, searchToDate]);
 
 
 
