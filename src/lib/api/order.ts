@@ -6598,15 +6598,39 @@ export async function updateBuyOrderSettlement(
 
 
 
-
+/*
+  errorLabelSet: Set(0) {},
+  errorResponse: {
+    ok: 0,
+    errmsg: '$regex has to be a string',
+    code: 2,
+    codeName: 'BadValue',
+    '$clusterTime': {
+      clusterTime: new Timestamp({ t: 1753493757, i: 2 }),
+      signature: [Object]
+    },
+    operationTime: new Timestamp({ t: 1753493757, i: 2 })
+  },
+  */
 
 // getTotalNumberOfBuyOrders
-export async function getTotalNumberOfBuyOrders(): Promise<{ totalCount: number }> {
+export async function getTotalNumberOfBuyOrders(
+  {
+    storecode,
+  }: {
+    storecode: string;
+  }
+): Promise<{ totalCount: number }> {
   const client = await clientPromise;
   const collection = client.db('runway').collection('buyorders');
   // get total number of buy orders
   const totalCount = await collection.countDocuments(
     {
+      storecode: {
+        $regex: storecode || '', // if storecode is empty, it will match all
+        
+        $options: 'i',
+      },
       privateSale: { $ne: true },
       //status: 'paymentConfirmed',
       status: { $in: ['ordered', 'accepted', 'paymentRequested'] },
