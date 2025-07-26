@@ -69,6 +69,9 @@ export interface UserProps {
   totalPaymentConfirmedKrwAmount: number,
   totalPaymentConfirmedUsdtAmount: number,
 
+
+  audioOn: boolean, // default true, used for audio notification in trade history page
+
 }
 
 export interface ResultProps {
@@ -1617,6 +1620,10 @@ export async function insertBuyOrder(data: any) {
       buyer: data.buyer,
 
       tradeId: tradeId,
+
+
+      audioOn: true, // default true
+
     }
   );
 
