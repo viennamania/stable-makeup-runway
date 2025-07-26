@@ -21,7 +21,18 @@ export async function POST(request: NextRequest) {
     toDate,
   } = body;
 
-
+  /*
+  console.log("fetchCollectOrdersForUser called with params:", {
+    storecode,
+    limit,
+    page,
+    walletAddress,
+    searchMyOrders,
+    fromDate,
+    toDate,
+  });
+  */
+  
 
   const result = await getCollectOrdersForUser({
     storecode,
@@ -33,6 +44,8 @@ export async function POST(request: NextRequest) {
     fromDate,
     toDate,
   });
+
+  //console.log("fetchCollectOrdersForUser result:", result);
 
  
   return NextResponse.json({
