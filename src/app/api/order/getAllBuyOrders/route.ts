@@ -39,6 +39,10 @@ export async function POST(request: NextRequest) {
   console.log("getAllBuyOrders fromDate", fromDate);
   console.log("getAllBuyOrders toDate", toDate);
 
+  console.log("getAllBuyOrders searchBuyer", searchBuyer);
+  console.log("getAllBuyOrders searchDepositName", searchDepositName);
+  console.log("getAllBuyOrders searchStoreBankAccountNumber", searchStoreBankAccountNumber);
+
 
 
   
