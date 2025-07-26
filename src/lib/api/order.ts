@@ -1687,6 +1687,7 @@ export async function insertBuyOrder(data: any) {
 
 
 // update audioOn to false
+/*
 export async function updateAudioOff(data: any) {
 
   if (!data.orderId) {
@@ -1709,6 +1710,35 @@ export async function updateAudioOff(data: any) {
     return null;
   }
 }
+*/
+// updateAudioNotification
+export async function updateAudioNotification(data: any) {
+
+  if (!data.orderId || data.audioOn === undefined) {
+    return null;
+  }
+
+  const client = await clientPromise;
+  const collection = client.db('runway').collection('buyorders');
+
+  const result = await collection.updateOne(
+    { _id: new ObjectId(data.orderId) },
+    { $set: { audioOn: data.audioOn } }
+  );
+  
+  if (result.modifiedCount === 1) {
+    const updated = await collection.findOne<UserProps>(
+      { _id: new ObjectId(data.orderId) }
+    );
+    return updated;
+  } else {
+    return null;
+  }
+}
+
+
+
+
 
 
 

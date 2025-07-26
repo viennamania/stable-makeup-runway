@@ -2974,9 +2974,23 @@ const fetchBuyOrders = async () => {
 
 
 
-  // handleAudioToggle
-  const handleAudioToggle = (orderId: string) => {
 
+
+  
+
+
+  // audio notification state
+  const [audioNotification, setAudioNotification] = useState<boolean[]>([]);
+  
+  // keep audioNotification in sync with buyOrders
+  useEffect(() => {
+    setAudioNotification(
+      buyOrders.map((item) => !!item.audioOn)
+    );
+  }, [buyOrders]);
+  
+  // handleAudioToggle
+  const handleAudioToggle = (index: number, orderId: string) => {
     // api call
     fetch('/api/order/toggleAudioNotification', {
       method: 'POST',
@@ -2985,6 +2999,7 @@ const fetchBuyOrders = async () => {
       },
       body: JSON.stringify({
         orderId: orderId,
+        audioOn: !audioNotification[index],
         walletAddress: address,
       }),
     })
@@ -2992,6 +3007,10 @@ const fetchBuyOrders = async () => {
     .then(data => {
       //console.log('toggleAudioNotification data', data);
       if (data.result) {
+        // update local state for immediate UI feedback
+        setAudioNotification((prev) =>
+          prev.map((v, i) => (i === index ? !v : v))
+        );
         toast.success('오디오 알림 설정이 변경되었습니다.');
       } else {
         toast.error('오디오 알림 설정 변경에 실패했습니다.');
@@ -3374,6 +3393,18 @@ const fetchBuyOrders = async () => {
                   ">
                   청산내역
               </button>
+
+              <button
+                  onClick={() => router.push('/' + params.lang + '/admin/trade-history-daily')}
+                  className="flex w-32 bg-[#3167b4] text-[#f3f4f6] text-sm rounded-lg p-2 items-center justify-center
+                  hover:bg-[#3167b4]/80
+                  hover:cursor-pointer
+                  hover:scale-105
+                  transition-transform duration-200 ease-in-out
+                  ">
+                  통계(일별)
+              </button>
+
 
           </div>
 
@@ -4251,7 +4282,10 @@ const fetchBuyOrders = async () => {
                                   {/* audioOn off button */}
                                   <button
                                     className="text-sm text-blue-600 font-semibold underline"
-                                    onClick={() => handleAudioToggle(item._id)}
+                                    onClick={() => handleAudioToggle(
+                                      index,
+                                      item._id
+                                    )}
                                   >
                                     {item.audioOn ? '음소거' : '음성켜기'}
                                   </button>
