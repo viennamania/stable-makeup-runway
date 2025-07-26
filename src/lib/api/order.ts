@@ -1686,6 +1686,31 @@ export async function insertBuyOrder(data: any) {
 
 
 
+// update audioOn to false
+export async function updateAudioOff(data: any) {
+
+  if (!data.orderId) {
+    return null;
+  }
+
+  const client = await clientPromise;
+  const collection = client.db('ultraman').collection('buyorders');
+
+  const result = await collection.updateOne(
+    { _id: new ObjectId(data.orderId) },
+    { $set: { audioOn: false } }
+  );
+  if (result.modifiedCount === 1) {
+    const updated = await collection.findOne<UserProps>(
+      { _id: new ObjectId(data.orderId) }
+    );
+    return updated;
+  } else {
+    return null;
+  }
+}
+
+
 
 
 

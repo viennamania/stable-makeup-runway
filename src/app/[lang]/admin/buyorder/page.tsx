@@ -144,6 +144,8 @@ interface BuyOrder {
 
   transactionHashFail: boolean; // if the transaction failed, set this to true
 
+  audioOn: boolean; // default true, used for audio notification in trade history page
+
 }
 
 
@@ -2970,6 +2972,40 @@ const fetchBuyOrders = async () => {
 
 
 
+
+
+  // handleAudioToggle
+  const handleAudioToggle = (orderId: string) => {
+
+    // api call
+    fetch('/api/order/toggleAudioNotification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        orderId: orderId,
+        walletAddress: address,
+      }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      //console.log('toggleAudioNotification data', data);
+      if (data.result) {
+        toast.success('오디오 알림 설정이 변경되었습니다.');
+      } else {
+        toast.error('오디오 알림 설정 변경에 실패했습니다.');
+      }
+    })
+    .catch(error => {
+      console.error('Error toggling audio notification:', error);
+      toast.error('오디오 알림 설정 변경에 실패했습니다.');
+    });
+  };
+    
+
+
+
   return (
 
     <main className="p-4 pb-10 min-h-[100vh] flex items-start justify-center container max-w-screen-2xl mx-auto">
@@ -4124,8 +4160,8 @@ const fetchBuyOrders = async () => {
                           onClick={() => {
 
                             // copy traideId to clipboard
-                            navigator.clipboard.writeText(item.tradeId);
-                            toast.success("거래번호가 복사되었습니다.");
+                            //navigator.clipboard.writeText(item.tradeId);
+                            //toast.success("거래번호가 복사되었습니다.");
 
 
 
@@ -4167,38 +4203,66 @@ const fetchBuyOrders = async () => {
                               </div>
                             </div>
 
-
-                            <span className="text-sm text-zinc-500 font-semibold">
+                            
+                            <span className="text-sm text-zinc-500 font-semibold"
+                            
+                            >
                             {
                               "#" + item.tradeId
                             }
                             </span>
 
-                            <span className="text-sm text-zinc-500 font-semibold">
-                              {params.lang === 'ko' ? (
-                                <p>{
-                                  new Date().getTime() - new Date(item.createdAt).getTime() < 1000 * 60 ? (
-                                    ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000) + ' ' + seconds_ago
-                                  ) :
-                                  new Date().getTime() - new Date(item.createdAt).getTime() < 1000 * 60 * 60 ? (
-                                  ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000 / 60) + ' ' + minutes_ago
-                                  ) : (
-                                    ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000 / 60 / 60) + ' ' + hours_ago
-                                  )
-                                }</p>
-                              ) : (
-                                <p>{
-                                  new Date().getTime() - new Date(item.createdAt).getTime() < 1000 * 60 ? (
-                                    ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000) + ' ' + seconds_ago
-                                  ) :
-                                  new Date().getTime() - new Date(item.createdAt).getTime() < 1000 * 60 * 60 ? (
-                                  ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000 / 60) + ' ' + minutes_ago
-                                  ) : (
-                                    ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000 / 60 / 60) + ' ' + hours_ago
-                                  )
-                                }</p>
+
+                            <div className="flex flex-row items-center justify-start gap-2">
+                              <span className="text-sm text-zinc-500 font-semibold">
+                                {params.lang === 'ko' ? (
+                                  <p>{
+                                    new Date().getTime() - new Date(item.createdAt).getTime() < 1000 * 60 ? (
+                                      ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000) + ' ' + seconds_ago
+                                    ) :
+                                    new Date().getTime() - new Date(item.createdAt).getTime() < 1000 * 60 * 60 ? (
+                                    ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000 / 60) + ' ' + minutes_ago
+                                    ) : (
+                                      ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000 / 60 / 60) + ' ' + hours_ago
+                                    )
+                                  }</p>
+                                ) : (
+                                  <p>{
+                                    new Date().getTime() - new Date(item.createdAt).getTime() < 1000 * 60 ? (
+                                      ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000) + ' ' + seconds_ago
+                                    ) :
+                                    new Date().getTime() - new Date(item.createdAt).getTime() < 1000 * 60 * 60 ? (
+                                    ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000 / 60) + ' ' + minutes_ago
+                                    ) : (
+                                      ' ' + Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000 / 60 / 60) + ' ' + hours_ago
+                                    )
+                                  }</p>
+                                )}
+                              </span>
+
+                              {/* audioOn */}
+                              {item.status === 'ordered' || item.status === 'paymentRequested' && (
+                                <div className="flex flex-row items-center justify-center gap-1">
+                                  <span className="text-xl text-zinc-500 font-semibold">
+                                    {item.audioOn ? (
+                                      '🔊'
+                                    ) : '🔇'}
+                                  </span>
+                                  {/* audioOn off button */}
+                                  <button
+                                    className="text-sm text-blue-600 font-semibold underline"
+                                    onClick={() => handleAudioToggle(item._id)}
+                                  >
+                                    {item.audioOn ? '음소거' : '음성켜기'}
+                                  </button>
+                                </div>
                               )}
-                            </span>
+
+                            </div>
+
+
+
+
 
                           </div>
 
