@@ -93,12 +93,19 @@ import { useSearchParams } from 'next/navigation';
 interface BuyOrder {
 
   date: string,
+
+  totalCount: number, // Count the number of orders
   totalUsdtAmount: number,
   totalKrwAmount: number,
-  totalCount: number, // Count the number of orders
 
+  totalSettlementCount: number, // Count the number of settlements
   totalSettlementAmount: number,
   totalSettlementAmountKRW: number,
+
+  totalAgentFeeAmount: number,
+  totalAgentFeeAmountKRW: number,
+  totalFeeAmount: number,
+  totalFeeAmountKRW: number,
 }
 
 
@@ -2091,15 +2098,23 @@ const fetchBuyOrders = async () => {
                         날짜
                       </th>
                       {/* align right */}
-                      <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">
-                        거래건수(건)
-                      </th>
+                      <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">거래수(건)</th>
                       <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">거래량(USDT)</th>
                       <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">거래금액(원)</th>
+
+                      {/*
+                      <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">정산수(건)/미정산수(건)</th>
+                      */}
+                      
+                      <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">AG수수료량(USDT)</th>
+                      <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">AG수수료금액(원)</th>
+
+                      <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">PG수수료량(USDT)</th>
+                      <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">PG수수료금액(원)</th>
+
                       <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">정산량(USDT)</th>
                       <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">정산금액(원)</th>
-                      <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">수수료량(USDT)</th>
-                      <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">수수료금액(원)</th>
+
                     </tr>
                   </thead>
                   <tbody>
@@ -2112,6 +2127,8 @@ const fetchBuyOrders = async () => {
                         <td className="px-4 py-2 text-sm text-zinc-700 text-right">
                           {order.totalCount ? order.totalCount.toLocaleString() : 0} 건
                         </td>
+
+
                         <td className="px-4 py-2 text-sm text-green-600 font-semibold text-right"
                           style={{ fontFamily: 'monospace' }}
                         >
@@ -2122,6 +2139,37 @@ const fetchBuyOrders = async () => {
                         >
                           {Number(order.totalKrwAmount).toLocaleString('ko-KR')}
                         </td>
+
+                        {/*
+                        <td className="px-4 py-2 text-sm text-zinc-700 text-right">
+                          {order.totalSettlementCount ? order.totalSettlementCount.toLocaleString() : 0} 건
+                          {' / '}
+                          {(order.totalCount || 0) - (order.totalSettlementCount || 0)} 건
+                        </td>
+                        */}
+
+                        <td className="px-4 py-2 text-sm text-green-600 font-semibold text-right"
+                          style={{ fontFamily: 'monospace' }}
+                        >
+                          {Number(order.totalAgentFeeAmount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-yellow-600 font-semibold text-right"
+                          style={{ fontFamily: 'monospace' }}
+                        >
+                          {Number(order.totalAgentFeeAmountKRW).toLocaleString('ko-KR')}
+                        </td>
+
+                        <td className="px-4 py-2 text-sm text-green-600 font-semibold text-right"
+                          style={{ fontFamily: 'monospace' }}
+                        >
+                          {Number(order.totalFeeAmount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-yellow-600 font-semibold text-right"
+                          style={{ fontFamily: 'monospace' }}
+                        >
+                          {Number(order.totalFeeAmountKRW).toLocaleString('ko-KR')}
+                        </td>
+
                         <td className="px-4 py-2 text-sm text-green-600 font-semibold text-right"
                           style={{ fontFamily: 'monospace' }}
                         >
@@ -2132,16 +2180,8 @@ const fetchBuyOrders = async () => {
                         >
                           {Number(order.totalSettlementAmountKRW).toLocaleString('ko-KR')}
                         </td>
-                        <td className="px-4 py-2 text-sm text-green-600 font-semibold text-right"
-                          style={{ fontFamily: 'monospace' }}
-                        >
-                          {Number(order.totalUsdtAmount - order.totalSettlementAmount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        </td>
-                        <td className="px-4 py-2 text-sm text-yellow-600 font-semibold text-right"
-                          style={{ fontFamily: 'monospace' }}
-                        >
-                          {Number(order.totalKrwAmount - order.totalSettlementAmountKRW).toLocaleString('ko-KR')}
-                        </td>
+
+
                       </tr>
                     ))}
                   </tbody>
