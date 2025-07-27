@@ -2495,6 +2495,54 @@ export async function getBuyOrdersGroupByStorecodeDaily(
   //console.log('getBuyOrdersGroupByStorecodeDaily results: ' + JSON.stringify(results));
 
 
+  // aggregate with escrows collection when escrows date is same as buyorders date
+  // escrows date is '2024-01-01'
+
+  const escrowCollection = client.db('runway').collection('escrows');
+  const escrowPipeline = [
+    {
+      $match: {
+        storecode: storecode ? { $regex: storecode, $options: 'i' } : { $ne: null },
+
+        // withdrawAmount > 0,
+        // depositAmount > 0,
+        withdrawAmount: { $gt: 0 },
+
+        date: {
+          $gte: fromDateValue,
+          $lte: toDateValue,
+        }
+      }
+    },
+    {
+      $group: {
+        _id: {
+          date: { 
+            $dateToString: { 
+              format: "%Y-%m-%d", 
+              date: { $dateFromString: { dateString: "$date" } },
+              timezone: "Asia/Seoul"
+            } 
+          },
+        },
+        totalEscrowDepositAmount: { $sum: "$depositAmount" },
+        totalEscrowWithdrawAmount: { $sum: "$withdrawAmount" },
+        totalEscrowCount: { $sum: 1 }, // Count the number of escrows
+      }
+    },
+    {
+      $sort: { "_id.date": -1 } // Sort by date descending
+    }
+  ];
+
+  const escrowResults = await escrowCollection.aggregate(escrowPipeline).toArray();
+
+
+
+
+
+
+
   return {
     storecode: storecode,
     fromDate: fromDate,
@@ -2512,6 +2560,13 @@ export async function getBuyOrdersGroupByStorecodeDaily(
       totalAgentFeeAmountKRW: result.totalAgentFeeAmountKRW,
       totalFeeAmount: result.totalFeeAmount,
       totalFeeAmountKRW: result.totalFeeAmountKRW,
+
+
+      totalEscrowDepositAmount: escrowResults.find(escrow => escrow._id.date === result._id.date)?.totalEscrowDepositAmount || 0,
+      totalEscrowWithdrawAmount: escrowResults.find(escrow => escrow._id.date === result._id.date)?.totalEscrowWithdrawAmount || 0,
+      totalEscrowCount: escrowResults.find(escrow => escrow._id.date === result._id.date)?.totalEscrowCount || 0,
+
+
     }))
   }
 
@@ -6894,6 +6949,167 @@ export async function updateBuyOrderDepositCompleted(
   } else {
     return false;
   }
+}
+
+
+
+
+
+
+
+// escrows collection
+// date: 20240101, depositAmount, withdrawAmount, beforeBalance, afterBalance
+// deposit escrow
+export async function depositEscrow(
+  {
+    storecode,
+    date,
+    depositAmount,
+  }: {
+    storecode: string;
+    date: string;
+    depositAmount: number;
+  }
+): Promise<boolean> {
+
+  // get store.escrowAmountUSDT from storecode
+  const client = await clientPromise;
+  const collection = client.db('runway').collection('stores');
+  const store = await collection.findOne<any>(
+    { storecode: storecode },
+    { projection: { escrowAmountUSDT: 1 } }
+  );
+
+  if (!store) {
+    console.log('store not found for storecode: ' + storecode);
+    return false;
+  }
+
+
+  const storeEscrowAmountUSDT = store.escrowAmountUSDT || 0;
+
+  // insert escrow record
+  const escrowCollection = client.db('runway').collection('escrows');
+  const result = await escrowCollection.insertOne(
+    {
+      storecode: storecode,
+      date: date,
+      depositAmount: depositAmount,
+      beforeBalance: storeEscrowAmountUSDT,
+      afterBalance: storeEscrowAmountUSDT + depositAmount,
+    }
+  );
+  if (result.insertedId) {
+    // update store.escrowAmountUSDT
+    const updateResult = await collection.updateOne(
+      { storecode: storecode },
+      { $inc: { escrowAmountUSDT: depositAmount } }
+    );
+    if (updateResult.modifiedCount === 1) {
+      return true;
+    } else {
+      console.log('update store escrowAmountUSDT failed for storecode: ' + storecode);
+      return false;
+    }
+  } else {
+    console.log('insert escrow record failed for storecode: ' + storecode);
+    return false;
+  }
+}
+
+// withdraw escrow
+export async function withdrawEscrow(
+  {
+    storecode,
+    date,
+    withdrawAmount,
+  }: {
+    storecode: string;
+    date: string;
+    withdrawAmount: number;
+  }
+): Promise<boolean> {
+
+  // get store.escrowAmountUSDT from storecode
+  const client = await clientPromise;
+  const collection = client.db('runway').collection('stores');
+  const store = await collection.findOne<any>(
+    { storecode: storecode },
+    { projection: { escrowAmountUSDT: 1 } }
+  );
+
+  if (!store) {
+    console.log('store not found for storecode: ' + storecode);
+    return false;
+  }
+
+  const storeEscrowAmountUSDT = store.escrowAmountUSDT || 0;
+
+  if (storeEscrowAmountUSDT < withdrawAmount) {
+    console.log('store.escrowAmountUSDT is less than withdrawAmount for storecode: ' + storecode);
+    return false;
+  }
+
+  // insert escrow record
+  const escrowCollection = client.db('runway').collection('escrows');
+  const result = await escrowCollection.insertOne(
+    {
+      storecode: storecode,
+      date: date,
+      withdrawAmount: withdrawAmount,
+      beforeBalance: storeEscrowAmountUSDT,
+      afterBalance: storeEscrowAmountUSDT - withdrawAmount,
+    }
+  );
+  
+  if (result.insertedId) {
+    // update store.escrowAmountUSDT
+    const updateResult = await collection.updateOne(
+      { storecode: storecode },
+      { $inc: { escrowAmountUSDT: -withdrawAmount } }
+    );
+    
+    if (updateResult.modifiedCount === 1) {
+      return true;
+    } else {
+      console.log('update store escrowAmountUSDT failed for storecode: ' + storecode);
+      return false;
+    }
+  } else {
+    console.log('insert escrow record failed for storecode: ' + storecode);
+    return false;
+  }
+}
+
+  
+
+// getEscrowHistory
+export async function getEscrowHistory(
+  {
+    storecode,
+    limit,
+    page,
+  }: {
+    storecode: string;
+    limit: number;
+    page: number;
+  }
+): Promise<any> {
+  const client = await clientPromise;
+  const collection = client.db('runway').collection('escrows');
+  
+  const results = await collection.find<any>(
+    { storecode: storecode },
+  ).sort({ _id: -1 }).limit(limit).skip((page - 1) * limit).toArray();
+
+  const totalCount = await collection.countDocuments(
+    { storecode: storecode }
+  );
+
+  return {
+    totalCount: totalCount,
+    escrows: results,
+  };
 }
 
 
