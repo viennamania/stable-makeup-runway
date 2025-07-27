@@ -2876,33 +2876,33 @@ const fetchBuyOrders = async () => {
   // totalNumberOfBuyOrders
   const [loadingTotalNumberOfBuyOrders, setLoadingTotalNumberOfBuyOrders] = useState(false);
   const [totalNumberOfBuyOrders, setTotalNumberOfBuyOrders] = useState(0);
-  // Move fetchTotalBuyOrders outside of useEffect to avoid self-reference error
-  const fetchTotalBuyOrders = async (): Promise<void> => {
-    setLoadingTotalNumberOfBuyOrders(true);
-    const response = await fetch('/api/order/getTotalNumberOfBuyOrders', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({}),
-    });
-    if (!response.ok) {
-      console.error('Failed to fetch total number of buy orders');
-      setLoadingTotalNumberOfBuyOrders(false);
-      return;
-    }
-    const data = await response.json();
-    //console.log('getTotalNumberOfBuyOrders data', data);
-    setTotalNumberOfBuyOrders(data.result.totalCount);
-
-    setLoadingTotalNumberOfBuyOrders(false);
-  };
-
   useEffect(() => {
-    if (!address) {
-      setTotalNumberOfBuyOrders(0);
-      return;
-    }
+    const fetchTotalBuyOrders = async (): Promise<void> => {
+      if (!address) {
+        setTotalNumberOfBuyOrders(0);
+        return;
+      }
+      
+      setLoadingTotalNumberOfBuyOrders(true);
+      const response = await fetch('/api/order/getTotalNumberOfBuyOrders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        }),
+      });
+      if (!response.ok) {
+        console.error('Failed to fetch total number of buy orders');
+        setLoadingTotalNumberOfBuyOrders(false);
+        return;
+      }
+      const data = await response.json();
+      //console.log('getTotalNumberOfBuyOrders data', data);
+      setTotalNumberOfBuyOrders(data.result.totalCount);
+
+      setLoadingTotalNumberOfBuyOrders(false);
+    };
 
     fetchTotalBuyOrders();
 
@@ -2913,7 +2913,6 @@ const fetchBuyOrders = async () => {
 
   }, [address]);
 
-      
 
   useEffect(() => {
     if (totalNumberOfBuyOrders > 0 && loadingTotalNumberOfBuyOrders === false) {
@@ -2921,6 +2920,8 @@ const fetchBuyOrders = async () => {
       audio.play();
     }
   }, [totalNumberOfBuyOrders, loadingTotalNumberOfBuyOrders]);
+
+
 
 
 
@@ -3005,8 +3006,14 @@ const fetchBuyOrders = async () => {
     })
     .then(response => response.json())
     .then(data => {
+      
       //console.log('toggleAudioNotification data', data);
-      if (data.result) {
+      //alert('toggleAudioNotification data: ' + JSON.stringify(data));
+      /*
+      {"success":true,"message":"Audio notification setting updated successfully"}
+      */
+
+      if (data.success) {
         // update local state for immediate UI feedback
         setAudioNotification((prev) =>
           prev.map((v, i) => (i === index ? !v : v))
@@ -3018,7 +3025,7 @@ const fetchBuyOrders = async () => {
     })
     .catch(error => {
       console.error('Error toggling audio notification:', error);
-      toast.error('오디오 알림 설정 변경에 실패했습니다.');
+      toast.error('오디오 알림 설정 변경에 실패했습니다.' + error.message);
     });
   };
     
