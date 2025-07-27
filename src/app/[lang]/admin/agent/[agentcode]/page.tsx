@@ -1727,10 +1727,14 @@ export default function Index({ params }: any) {
   // if user?.role is not "admin", return "에이전트"
 
   if (
-    (address
-    && agent
-    &&  address !== agent.adminWalletAddress)
     
+
+    address
+    && agent
+    &&  address !== agent.adminWalletAddress
+    && user?.role !== "admin"
+
+  
 
   ) {
     return (
@@ -1773,6 +1777,13 @@ export default function Index({ params }: any) {
 
             {/* 로그아웃 버튼 */}
             <div className="w-full flex flex-row items-center justify-end gap-2">
+
+              {user?.nickname && (
+                <span className="text-sm text-gray-500">
+                  {user.nickname}
+                </span>
+              )}
+
               <button
                 onClick={() => {
                   confirm("로그아웃 하시겠습니까?") && activeWallet?.disconnect()
