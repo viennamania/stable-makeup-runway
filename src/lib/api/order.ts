@@ -6608,12 +6608,8 @@ export async function updateBuyOrderSettlement(
               $group: {
                   _id: null,
                   totalSettlementAmount: { $sum: "$settlement.settlementAmount" },
-
                   totalSettlementAmountKRW: { $sum: { $toDouble: "$settlement.settlementAmountKRW" } },
-
-
                   totalFeeAmount: { $sum: "$settlement.feeAmount" },
-
                   totalFeeAmountKRW: { $sum: { $toDouble: "$settlement.feeAmountKRW" } },
               }
           }
