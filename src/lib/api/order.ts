@@ -3197,7 +3197,7 @@ export async function buyOrderConfirmPayment(data: any) {
     // get count of paymentConfirmed orders by storecode
     // get sum of krwAmount and usdtAmount by storecode
     // get storecode from order
-    const order = await collection.findOne<UserProps>(
+    const order = await collection.findOne<any>(
       { _id: new ObjectId(data.orderId+'') },
       { projection: {
         storecode: 1,
@@ -3209,178 +3209,98 @@ export async function buyOrderConfirmPayment(data: any) {
     if (order && order.storecode) {
 
 
-      const storecode = order.storecode;
-      const walletAddress = order.walletAddress;
+      try {
+        const storecode = order.storecode;
+        const walletAddress = order.walletAddress;
 
-      // update user collection buyOrderStatus to "paymentConfirmed"
-      const userCollection = client.db('runway').collection('users');
+        // update user collection buyOrderStatus to "paymentConfirmed"
+        const userCollection = client.db('runway').collection('users');
 
-      if (userCollection) {
+        if (userCollection) {
 
-        //const toalPaymentConfirmedCount = await collection.countDocuments(
-        //  { walletAddress: order.walletAddress, storecode: order.storecode, status: 'paymentConfirmed' }
-        //);
+          //const toalPaymentConfirmedCount = await collection.countDocuments(
+          //  { walletAddress: order.walletAddress, storecode: order.storecode, status: 'paymentConfirmed' }
+          //);
+          const totalPaymentConfirmed = await collection.aggregate([
+            { $match: { walletAddress: walletAddress, storecode: storecode, status: 'paymentConfirmed' } },
+            { $group: {
+              _id: null,
+              totalPaymentConfirmedCount: { $sum: 1 },
+              totalKrwAmount: { $sum: '$krwAmount' },
+              totalUsdtAmount: { $sum: '$usdtAmount' }
+            }}
+          ]).toArray();
+
+          console.log('confirmPayment totalPaymentConfirmed: ' + JSON.stringify(totalPaymentConfirmed));
+
+
+          await userCollection.updateOne(
+            { walletAddress: walletAddress,
+              storecode: storecode,
+            },
+            { $set: {
+                buyOrderStatus: 'paymentConfirmed',
+                totalPaymentConfirmedCount: totalPaymentConfirmed[0]?.totalPaymentConfirmedCount || 0,
+                totalPaymentConfirmedKrwAmount: totalPaymentConfirmed[0]?.totalKrwAmount || 0,
+                totalPaymentConfirmedUsdtAmount: totalPaymentConfirmed[0]?.totalUsdtAmount || 0,
+              }
+            }
+          );
+
+
+
+        }
+
+
         const totalPaymentConfirmed = await collection.aggregate([
-          { $match: { walletAddress: walletAddress, storecode: storecode, status: 'paymentConfirmed' } },
+          { $match: {
+            storecode: storecode,
+            status: 'paymentConfirmed',
+            privateSale: false, // exclude private sale
+          }},
           { $group: {
             _id: null,
             totalPaymentConfirmedCount: { $sum: 1 },
             totalKrwAmount: { $sum: '$krwAmount' },
             totalUsdtAmount: { $sum: '$usdtAmount' }
-          }}
+          } }
         ]).toArray();
 
-        console.log('confirmPayment totalPaymentConfirmed: ' + JSON.stringify(totalPaymentConfirmed));
 
-
-        await userCollection.updateOne(
-          { walletAddress: walletAddress,
+        //console.log('confirmPayment totalPaymentConfirmed: ' + JSON.stringify(totalPaymentConfirmed));
+        const totalPaymentConfirmedClearance = await collection.aggregate([
+          { $match: {
             storecode: storecode,
-          },
+            status: 'paymentConfirmed',
+            privateSale: true, // include private sale
+          }},
+          { $group: {
+            _id: null,
+            totalPaymentConfirmedClearanceCount: { $sum: 1 },
+            totalKrwAmountClearance: { $sum: '$krwAmount' },
+            totalUsdtAmountClearance: { $sum: '$usdtAmount' }
+          } }
+        ]).toArray();
+
+
+        //console.log('confirmPayment totalPaymentConfirmedClearance: ' + JSON.stringify(totalPaymentConfirmedClearance));
+        // update store collection
+        const storeCollection = client.db('runway').collection('stores');
+        const store = await storeCollection.updateOne(
+          { storecode: storecode },
           { $set: {
-              buyOrderStatus: 'paymentConfirmed',
-              totalPaymentConfirmedCount: totalPaymentConfirmed[0]?.totalPaymentConfirmedCount || 0,
-              totalPaymentConfirmedKrwAmount: totalPaymentConfirmed[0]?.totalKrwAmount || 0,
-              totalPaymentConfirmedUsdtAmount: totalPaymentConfirmed[0]?.totalUsdtAmount || 0,
-            }
-          }
+            totalPaymentConfirmedCount: totalPaymentConfirmed[0]?.totalPaymentConfirmedCount || 0,
+            totalKrwAmount: totalPaymentConfirmed[0]?.totalKrwAmount || 0,
+            totalUsdtAmount: totalPaymentConfirmed[0]?.totalUsdtAmount || 0,
+            totalPaymentConfirmedClearanceCount: totalPaymentConfirmedClearance[0]?.totalPaymentConfirmedClearanceCount || 0,
+            totalKrwAmountClearance: totalPaymentConfirmedClearance[0]?.totalKrwAmountClearance || 0,
+            totalUsdtAmountClearance: totalPaymentConfirmedClearance[0]?.totalUsdtAmountClearance || 0,
+          } }
         );
 
-
-
+      } catch (error) {
+        console.error('Error updating store collection: ', error);
       }
-
-
-      
-      
-      //console.log('confirmPayment storecode: ' + storecode);
-
-      /*
-      const totalPaymentConfirmedCount = await collection.countDocuments(
-        {
-          storecode: storecode,
-          status: 'paymentConfirmed',
-          privateSale: false, // exclude private sale
-        }
-      );
-      //console.log('confirmPayment totalPaymentConfirmedCount: ' + totalPaymentConfirmedCount);
-
-
-      const totalKrwAmount = await collection.aggregate([
-        { $match: {
-          storecode: storecode,
-          status: 'paymentConfirmed',
-          privateSale: false, // exclude private sale
-        }},
-        { $group: { _id: null, totalKrwAmount: { $sum: '$krwAmount' } } }
-      ]).toArray();
-      //console.log('confirmPayment totalKrwAmount: ' + totalKrwAmount[0]?.totalKrwAmount || 0);
-
-
-      const totalUsdtAmount = await collection.aggregate([
-        
-        //{ $match: { storecode: storecode, status: 'paymentConfirmed' } },
-        { $match: {
-          storecode: storecode,
-          status: 'paymentConfirmed',
-          privateSale: false, // exclude private sale
-        }},
-
-        { $group: { _id: null, totalUsdtAmount: { $sum: '$usdtAmount' } } }
-      ]).toArray();
-      //console.log('confirmPayment totalUsdtAmount: ' + totalUsdtAmount[0]?.totalUsdtAmount || 0);
-
-
-      const totalPaymentConfirmedClearanceCount = await collection.countDocuments(
-        {
-          storecode: storecode,
-          status: 'paymentConfirmed',
-          privateSale: true, // include private sale
-        }
-      );
-      //console.log('confirmPayment totalPaymentConfirmedClearanceCount: ' + totalPaymentConfirmedClearanceCount);
-      const totalKrwAmountClearance = await collection.aggregate([
-        { $match: {
-          storecode: storecode,
-          status: 'paymentConfirmed',
-          privateSale: true, // include private sale
-        }},
-        { $group: { _id: null, totalKrwAmount: { $sum: '$krwAmount' } } }
-      ]).toArray();
-      //console.log('confirmPayment totalKrwAmountClearance: ' + totalKrwAmountClearance[0]?.totalKrwAmount || 0);
-      const totalUsdtAmountClearance = await collection.aggregate([
-        { $match: {
-          storecode: storecode,
-          status: 'paymentConfirmed',
-          privateSale: true, // include private sale
-        }},
-        { $group: { _id: null, totalUsdtAmount: { $sum: '$usdtAmount' } } }
-      ]).toArray();
-
-
-
-      // update store collection
-      const storeCollection = client.db('runway').collection('stores');
-      const store = await storeCollection.updateOne(
-        { storecode: storecode },
-        { $set: {
-          totalPaymentConfirmedCount: totalPaymentConfirmedCount,
-          totalKrwAmount: totalKrwAmount[0]?.totalKrwAmount || 0,
-          totalUsdtAmount: totalUsdtAmount[0]?.totalUsdtAmount || 0,
-
-          totalPaymentConfirmedClearanceCount: totalPaymentConfirmedClearanceCount,
-          totalKrwAmountClearance: totalKrwAmountClearance[0]?.totalKrwAmount || 0,
-          totalUsdtAmountClearance: totalUsdtAmountClearance[0]?.totalUsdtAmount || 0,
-        } }
-      );
-      */
-
-      const totalPaymentConfirmed = await collection.aggregate([
-        { $match: {
-          storecode: storecode,
-          status: 'paymentConfirmed',
-          privateSale: false, // exclude private sale
-        }},
-        { $group: {
-          _id: null,
-          totalPaymentConfirmedCount: { $sum: 1 },
-          totalKrwAmount: { $sum: '$krwAmount' },
-          totalUsdtAmount: { $sum: '$usdtAmount' }
-        } }
-      ]).toArray();
-
-
-      //console.log('confirmPayment totalPaymentConfirmed: ' + JSON.stringify(totalPaymentConfirmed));
-      const totalPaymentConfirmedClearance = await collection.aggregate([
-        { $match: {
-          storecode: storecode,
-          status: 'paymentConfirmed',
-          privateSale: true, // include private sale
-        }},
-        { $group: {
-          _id: null,
-          totalPaymentConfirmedClearanceCount: { $sum: 1 },
-          totalKrwAmountClearance: { $sum: '$krwAmount' },
-          totalUsdtAmountClearance: { $sum: '$usdtAmount' }
-        } }
-      ]).toArray();
-
-
-      //console.log('confirmPayment totalPaymentConfirmedClearance: ' + JSON.stringify(totalPaymentConfirmedClearance));
-      // update store collection
-      const storeCollection = client.db('runway').collection('stores');
-      const store = await storeCollection.updateOne(
-        { storecode: storecode },
-        { $set: {
-          totalPaymentConfirmedCount: totalPaymentConfirmed[0]?.totalPaymentConfirmedCount || 0,
-          totalKrwAmount: totalPaymentConfirmed[0]?.totalKrwAmount || 0,
-          totalUsdtAmount: totalPaymentConfirmed[0]?.totalUsdtAmount || 0,
-          totalPaymentConfirmedClearanceCount: totalPaymentConfirmedClearance[0]?.totalPaymentConfirmedClearanceCount || 0,
-          totalKrwAmountClearance: totalPaymentConfirmedClearance[0]?.totalKrwAmountClearance || 0,
-          totalUsdtAmountClearance: totalPaymentConfirmedClearance[0]?.totalUsdtAmountClearance || 0,
-        } }
-      );
-
 
 
     }
@@ -3390,132 +3310,58 @@ export async function buyOrderConfirmPayment(data: any) {
     if (order && order.agentcode) {
       
 
-      const agentcode = order.agentcode;
+      try {
 
-      /*
-      // settlement
-      const totalPaymentConfirmedCount = await collection.countDocuments(
-        {
-          agentcode: agentcode,
-          status: 'paymentConfirmed',
-          privateSale: false, // exclude private sale
-        }
-      );
-
-      //console.log('confirmPayment totalPaymentConfirmedCount: ' + totalPaymentConfirmedCount);
-      const totalKrwAmount = await collection.aggregate([
-        { $match: {
-          agentcode: agentcode,
-          status: 'paymentConfirmed',
-          privateSale: false, // exclude private sale
-        }},
-        { $group: { _id: null, totalKrwAmount: { $sum: '$krwAmount' } } }
-      ]).toArray();
-      //console.log('confirmPayment totalKrwAmount: ' + totalKrwAmount[0]?.totalKrwAmount || 0);
-      const totalUsdtAmount = await collection.aggregate([
-        { $match: {
-          agentcode: agentcode,
-          status: 'paymentConfirmed',
-          privateSale: false, // exclude private sale
-        }},
-        { $group: { _id: null, totalUsdtAmount: { $sum: '$usdtAmount' } } }
-      ]).toArray(); 
-      //console.log('confirmPayment totalUsdtAmount: ' + totalUsdtAmount[0]?.totalUsdtAmount || 0);
+        const agentcode = order.agentcode;
 
 
+        const totalPaymentConfirmed = await collection.aggregate([
+          { $match: {
+            agentcode: agentcode,
+            status: 'paymentConfirmed',
+            privateSale: false, // exclude private sale
+          }},
+          { $group: {
+            _id: null,
+            totalPaymentConfirmedCount: { $sum: 1 },
+            totalKrwAmount: { $sum: '$krwAmount' },
+            totalUsdtAmount: { $sum: '$usdtAmount' }
+          } }
+        ]).toArray();
 
+        //console.log('confirmPayment totalPaymentConfirmed: ' + JSON.stringify(totalPaymentConfirmed));
+        const totalPaymentConfirmedClearance = await collection.aggregate([
+          { $match: {
+            agentcode: agentcode,
+            status: 'paymentConfirmed',
+            privateSale: true, // include private sale
+          }},
+          { $group: {
+            _id: null,
+            totalPaymentConfirmedClearanceCount: { $sum: 1 },
+            totalKrwAmountClearance: { $sum: '$krwAmount' },
+            totalUsdtAmountClearance: { $sum: '$usdtAmount' }
+          } }
+        ]).toArray();
+        
+        //console.log('confirmPayment totalPaymentConfirmedClearance: ' + JSON.stringify(totalPaymentConfirmedClearance));
+        // update agent collection
+        const agentCollection = client.db('runway').collection('agents');
+        const agent = await agentCollection.updateOne(
+          { agentcode: agentcode },
+          { $set: {
+            totalPaymentConfirmedCount: totalPaymentConfirmed[0]?.totalPaymentConfirmedCount || 0,
+            totalKrwAmount: totalPaymentConfirmed[0]?.totalKrwAmount || 0,
+            totalUsdtAmount: totalPaymentConfirmed[0]?.totalUsdtAmount || 0,
+            totalPaymentConfirmedClearanceCount: totalPaymentConfirmedClearance[0]?.totalPaymentConfirmedClearanceCount || 0,
+            totalKrwAmountClearance: totalPaymentConfirmedClearance[0]?.totalKrwAmountClearance || 0,
+            totalUsdtAmountClearance: totalPaymentConfirmedClearance[0]?.totalUsdtAmountClearance || 0,
+          } }
+        );
 
-
-
-      // clearance
-      const totalPaymentConfirmedClearanceCount = await collection.countDocuments(
-        {
-          agentcode: agentcode,
-          status: 'paymentConfirmed',
-          privateSale: true, // include private sale
-        }
-      );
-      //console.log('confirmPayment totalPaymentConfirmedClearanceCount: ' + totalPaymentConfirmedClearanceCount);
-      const totalKrwAmountClearance = await collection.aggregate([
-        { $match: {
-          agentcode: agentcode,
-          status: 'paymentConfirmed',
-          privateSale: true, // include private sale
-        }},
-        { $group: { _id: null, totalKrwAmount: { $sum: '$krwAmount' } } }
-      ]).toArray();
-      //console.log('confirmPayment totalKrwAmountClearance: ' + totalKrwAmountClearance[0]?.totalKrwAmount || 0);
-      const totalUsdtAmountClearance = await collection.aggregate([
-        { $match: {
-          agentcode: agentcode,
-          status: 'paymentConfirmed',
-          privateSale: true, // include private sale
-        }},
-        { $group: { _id: null, totalUsdtAmount: { $sum: '$usdtAmount' } } }
-      ]).toArray();
-      //console.log('confirmPayment totalUsdtAmountClearance: ' + totalUsdtAmountClearance[0]?.totalUsdtAmount || 0);
-      // update agent collection
-      const agentCollection = client.db('runway').collection('agents');
-
-      
-      const agent = await agentCollection.updateOne(
-        { agentcode: agentcode },
-        { $set: {
-          totalPaymentConfirmedCount: totalPaymentConfirmedCount,
-          totalKrwAmount: totalKrwAmount[0]?.totalKrwAmount || 0,
-          totalUsdtAmount: totalUsdtAmount[0]?.totalUsdtAmount || 0,
-
-
-          totalPaymentConfirmedClearanceCount: totalPaymentConfirmedClearanceCount,
-          totalKrwAmountClearance: totalKrwAmountClearance[0]?.totalKrwAmount || 0,
-          totalUsdtAmountClearance: totalUsdtAmountClearance[0]?.totalUsdtAmount || 0,
-        } }
-      );
-      */
-
-      const totalPaymentConfirmed = await collection.aggregate([
-        { $match: {
-          agentcode: agentcode,
-          status: 'paymentConfirmed',
-          privateSale: false, // exclude private sale
-        }},
-        { $group: {
-          _id: null,
-          totalPaymentConfirmedCount: { $sum: 1 },
-          totalKrwAmount: { $sum: '$krwAmount' },
-          totalUsdtAmount: { $sum: '$usdtAmount' }
-        } }
-      ]).toArray();
-
-      //console.log('confirmPayment totalPaymentConfirmed: ' + JSON.stringify(totalPaymentConfirmed));
-      const totalPaymentConfirmedClearance = await collection.aggregate([
-        { $match: {
-          agentcode: agentcode,
-          status: 'paymentConfirmed',
-          privateSale: true, // include private sale
-        }},
-        { $group: {
-          _id: null,
-          totalPaymentConfirmedClearanceCount: { $sum: 1 },
-          totalKrwAmountClearance: { $sum: '$krwAmount' },
-          totalUsdtAmountClearance: { $sum: '$usdtAmount' }
-        } }
-      ]).toArray();
-      
-      //console.log('confirmPayment totalPaymentConfirmedClearance: ' + JSON.stringify(totalPaymentConfirmedClearance));
-      // update agent collection
-      const agentCollection = client.db('runway').collection('agents');
-      const agent = await agentCollection.updateOne(
-        { agentcode: agentcode },
-        { $set: {
-          totalPaymentConfirmedCount: totalPaymentConfirmed[0]?.totalPaymentConfirmedCount || 0,
-          totalKrwAmount: totalPaymentConfirmed[0]?.totalKrwAmount || 0,
-          totalUsdtAmount: totalPaymentConfirmed[0]?.totalUsdtAmount || 0,
-          totalPaymentConfirmedClearanceCount: totalPaymentConfirmedClearance[0]?.totalPaymentConfirmedClearanceCount || 0,
-          totalKrwAmountClearance: totalPaymentConfirmedClearance[0]?.totalKrwAmountClearance || 0,
-          totalUsdtAmountClearance: totalPaymentConfirmedClearance[0]?.totalUsdtAmountClearance || 0,
-        } }
-      );
+      } catch (error) {
+        console.error('Error updating agent collection: ', error);
+      }
 
 
 
