@@ -1706,6 +1706,18 @@ export default function Index({ params }: any) {
                       거래내역
                   </button>
 
+                  <button
+                      onClick={() => router.push('/' + params.lang + '/admin/agent/' + params.agentcode + '/trade-history-daily')}
+                      className="flex w-32 bg-[#3167b4] text-[#f3f4f6] text-sm rounded-lg p-2 items-center justify-center
+                      hover:bg-[#3167b4]/80
+                      hover:cursor-pointer
+                      hover:scale-105
+                      transition-transform duration-200 ease-in-out
+                      ">
+                      통계(AG)
+                  </button>
+
+
               </div>
 
             </div>
@@ -1868,10 +1880,6 @@ export default function Index({ params }: any) {
                       <option value="농협" selected={userBankName === "농협"}>
                         농협
                       </option>
-                      <option value="신협" selected={userBankName === "신협"}>
-                          신협
-                      </option>
-
                       <option value="기업은행" selected={userBankName === "기업은행"}>
                         기업은행
                       </option>
@@ -2322,7 +2330,7 @@ export default function Index({ params }: any) {
                               <button
                                 onClick={() => {
                                   window.open(
-                                    'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
+                                    'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
                                     + 'storeUser=' + item.nickname + '&depositBankName=' + item?.buyer?.depositBankName + '&depositName=' + item?.buyer?.depositName,
                                     '_blank'
                                   );
@@ -2359,7 +2367,7 @@ export default function Index({ params }: any) {
                               <button
                                 onClick={() => {
                                   navigator.clipboard.writeText(
-                                    'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
+                                    'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
                                     + 'storeUser=' + item.nickname
                                     + '&depositBankName=' + item?.buyer?.depositBankName
                                     + '&depositBankAccountNumber=' + item?.buyer?.depositBankAccountNumber
@@ -2540,11 +2548,11 @@ export default function Index({ params }: any) {
 /*
 selectedItem?.buyer?.depositBankName
 selectedItem?.buyer?.depositName
-'https://cryptoss-runway.vercel.app/' + params.lang + '/' + selectedItem.storecode + '/payment?'
+'https://cryptoss.beauty/' + params.lang + '/' + selectedItem.storecode + '/payment?'
 'storeUser=' + selectedItem.nickname + '&depositBankName=' + selectedItem?.buyer?.depositBankName + '&depositName=' + selectedItem?.buyer?.depositName
 
 
-'https://cryptoss-runway.vercel.app/' + params.lang + '/' + item.storecode + '/payment?'
+'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
                                     + 'storeUser=' + item.nickname + '&depositBankName=' + item?.buyer?.depositBankName + '&depositName=' + item?.buyer?.depositName
 */
 
@@ -2565,7 +2573,7 @@ const UserHomePage = (
       
       {/* iframe */}
       <iframe
-        src={`https://cryptoss-runway.vercel.app/kr/${selectedItem?.storecode}/payment?`
+        src={`https://cryptoss.beauty/kr/${selectedItem?.storecode}/payment?`
           + 'storeUser=' + selectedItem?.nickname
           + '&depositBankName=' + selectedItem?.buyer?.depositBankName
           + '&depositBankAccountNumber=' + selectedItem?.buyer?.depositBankAccountNumber

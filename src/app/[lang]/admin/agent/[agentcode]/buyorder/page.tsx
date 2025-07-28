@@ -1328,7 +1328,7 @@ export default function Index({ params }: any) {
         /*
         const transactionResult = await waitForReceipt({
           client,
-          arbitrum,
+          chain: arbitrum ,
           maxBlocksWaitTime: 1,
           transactionHash: transactionHash,
         });
@@ -2843,6 +2843,17 @@ const fetchBuyOrders = async () => {
                     거래내역
                 </button>
 
+                <button
+                    onClick={() => router.push('/' + params.lang + '/admin/agent/' + params.agentcode + '/trade-history-daily')}
+                    className="flex w-32 bg-[#3167b4] text-[#f3f4f6] text-sm rounded-lg p-2 items-center justify-center
+                    hover:bg-[#3167b4]/80
+                    hover:cursor-pointer
+                    hover:scale-105
+                    transition-transform duration-200 ease-in-out
+                    ">
+                    통계(AG)
+                </button>
+
               </div>
             </div>
 
@@ -4072,9 +4083,9 @@ const fetchBuyOrders = async () => {
                                   {Completed}
                                 </button>
                                 {/* new window */}
-                                {/* https://www.cryptoss-runway.vercel.app/ */}
+                                {/* https://www.cryptoss.beauty/ */}
                                 <a
-                                  href={`https://www.cryptoss-runway.vercel.app/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
+                                  href={`https://www.cryptoss.beauty/ko/${item?.storecode}/pay-usdt-reverse/${item?._id}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-sm text-blue-600 font-semibold hover:underline"
@@ -5115,7 +5126,7 @@ const fetchBuyOrders = async () => {
 
                                 
                                 <span>
-                                  {item?.settlement?.settlementAmount?.toLocaleString() + ' USDT'}
+                                  {item?.settlement?.settlementAmount?.toLocaleString()}
                                   {' '}
                                   {
                                     item?.settlement?.settlementWalletAddress &&
@@ -5124,8 +5135,8 @@ const fetchBuyOrders = async () => {
                                 <span>
                                   {
                                     item?.settlement?.agentFeeAmount ?
-                                    item?.settlement?.agentFeeAmount?.toLocaleString() + ' USDT'
-                                    : '0 USDT'
+                                    item?.settlement?.agentFeeAmount?.toLocaleString()
+                                    : '0'
                                   }
                                   {' '}
                                   {
@@ -5133,7 +5144,7 @@ const fetchBuyOrders = async () => {
                                   item?.settlement?.agentFeeWalletAddress?.slice(0, 5) + '...'}
                                 </span>
                                 <span>
-                                  {item?.settlement?.feeAmount?.toLocaleString() + ' USDT'}
+                                  {item?.settlement?.feeAmount?.toLocaleString()}
                                   {' '}
                                   {
                                     item?.settlement?.feeWalletAddress &&
@@ -6268,7 +6279,7 @@ const UserPaymentPage = (
       
       {/* iframe */}
       <iframe
-        src={`https://cryptoss-runway.vercel.app/kr/${selectedItem?.storecode}/pay-usdt-reverse/${selectedItem?._id}`}
+        src={`https://cryptoss.beauty/kr/${selectedItem?.storecode}/pay-usdt-reverse/${selectedItem?._id}`}
 
         
           
