@@ -1684,12 +1684,9 @@ export default function Index({ params }: any) {
 
 
           <div className={`w-full flex flex-col xl:flex-row items-center justify-between gap-2
-            p-2 rounded-lg
+            p-2 rounded-lg mb-4
             ${store?.backgroundColor ?
-              
-            //"bg-[#"+storeBackgroundColor+"]" :
-            "bg-" + store?.backgroundColor + " " :
-
+              "bg-" + store.backgroundColor + " " :
               "bg-black/10"
             }`}>
               
@@ -1707,40 +1704,14 @@ export default function Index({ params }: any) {
                       alt="Store"
                       width={35}
                       height={35}
-                      className="rounded-lg w-5 h-5"
+                      className="rounded-lg w-5 h-5 object-cover"
                   />
                   <span className="text-sm text-zinc-50">
                     {
                       store && store?.storeName + " (" + store?.storecode + ")"
                     }
                   </span>
-                  {address === storeAdminWalletAddress && (
-                    <div className="flex flex-row gap-2 items-center">
-                      <Image
-                        src="/icon-manager.png"
-                        alt="Store Admin"
-                        width={20}
-                        height={20}
-                      />
-                      <span className="text-sm text-zinc-50">
-                        가맹점 관리자
-                      </span>
-                    </div>
-                  )}
-                  {isAdmin && (
-                    <div className="flex flex-row items-center justify-center gap-2">
-                      <Image
-                        src="/icon-admin.png"
-                        alt="Admin"
-                        width={20}
-                        height={20}
-                        className="rounded-lg w-5 h-5"
-                      />
-                      <span className="text-sm text-yellow-500">
-                        전체 관리자
-                      </span>
-                    </div>
-                  )}
+
                 </div>
 
               </button>
@@ -1795,48 +1766,36 @@ export default function Index({ params }: any) {
                 {address && !loadingUser && (
                     <div className="w-full flex flex-row items-center justify-end gap-2">
 
-                      <div className="hidden flex-row items-center justify-center gap-2">
-
-                          <button
-                              className="text-lg text-zinc-600 underline"
-                              onClick={() => {
-                                  navigator.clipboard.writeText(address);
-                                  toast.success(Copied_Wallet_Address);
-                              } }
-                          >
-                              {address.substring(0, 6)}...{address.substring(address.length - 4)}
-                          </button>
-                          
-                          <Image
-                              src="/icon-shield.png"
-                              alt="Wallet"
-                              width={100}
-                              height={100}
-                              className="w-6 h-6"
-                          />
-
-                      </div>
-
-                      <div className="hidden flex-row items-center justify-end  gap-2">
-                          <span className="text-2xl xl:text-4xl font-semibold text-green-600">
-                              {Number(balance).toFixed(2)}
-                          </span>
-                          {' '}
-                          <span className="text-sm">USDT</span>
-                      </div>
-
-
                       <button
                         onClick={() => {
                           router.push('/' + params.lang + '/' + params.center + '/profile-settings');
                         }}
                         className="
-                        w-32 h-10 items-center justify-center
-                        flex bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
+                        w-40
+                        items-center justify-center
+                        bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
                       >
-                        {user?.nickname || "프로필"}
-                      </button>
+                        <div className="flex flex-col itmens-center justify-center gap-2">
+                          <span className="text-sm text-zinc-50">
+                            {user?.nickname || "프로필"}
+                          </span>
+                          {isAdmin && (
+                            <div className="flex flex-row items-center justify-center gap-2">
+                              <Image
+                                src="/icon-admin.png"
+                                alt="Admin"
+                                width={20}
+                                height={20}
+                                className="rounded-lg w-5 h-5"
+                              />
+                              <span className="text-sm text-yellow-500">
+                                가맹점 관리자
+                              </span>
+                            </div>
+                          )}
 
+                        </div>
+                      </button>
 
                       {/* logout button */}
                       <button
@@ -2192,9 +2151,9 @@ export default function Index({ params }: any) {
                 {/* 복사 버튼 */}
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText(`https://cryptoss.beauty/ko/${store?.storecode}/paymaster`);
+                    navigator.clipboard.writeText(`${paymentUrl}/${params.lang}/${store?.storecode}/paymaster`);
                     toast.success('가맹점 홈페이지 링크가 복사되었습니다.');
-                  } }
+                  }}
                   className="bg-[#3167b4] text-sm text-[#f3f4f6] px-2 py-1 rounded-lg hover:bg-[#3167b4]/80"
                 >
                   복사
@@ -3400,172 +3359,5 @@ export default function Index({ params }: any) {
 };
 
 
-
-/*
-selectedItem?.buyer?.depositBankName
-selectedItem?.buyer?.depositName
-'https://cryptoss.beauty/' + params.lang + '/' + selectedItem.storecode + '/payment?'
-'storeUser=' + selectedItem.nickname + '&depositBankName=' + selectedItem?.buyer?.depositBankName + '&depositName=' + selectedItem?.buyer?.depositName
-
-
-'https://cryptoss.beauty/' + params.lang + '/' + item.storecode + '/payment?'
-                                    + 'storeUser=' + item.nickname + '&depositBankName=' + item?.buyer?.depositBankName + '&depositName=' + item?.buyer?.depositName
-*/
-
-const UserHomePage = (
-  {
-      closeModal = () => {},
-      selectedItem = null as { nickname: string; storecode: string; buyer?: {
-        depositBankName?: string; depositName?: string; depositBankAccountNumber?: string;
-      } } | null,
-  }
-) => {
-
-  return (
-    <div className="w-full flex flex-col items-center justify-center gap-4">
-      <h1 className="text-2xl font-semibold">회원 홈페이지</h1>
-      
-      {/* iframe */}
-      <iframe
-        src={`https://cryptoss.beauty/kr/${selectedItem?.storecode}/payment?`
-          + 'storeUser=' + selectedItem?.nickname
-          + '&depositBankName=' + selectedItem?.buyer?.depositBankName
-          + '&depositBankAccountNumber=' + selectedItem?.buyer?.depositBankAccountNumber
-          + '&depositName=' + selectedItem?.buyer?.depositName}
-        width="400px"
-        height="500px"
-        className="border border-zinc-300 rounded-lg"
-        title="User Home Page"
-      ></iframe>
-
-
-      <button
-        onClick={closeModal}
-        className="bg-[#3167b4] text-white px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
-      >
-        닫기
-      </button>
-    </div>
-  );
-
-};
-
-
-
-// close modal
-{/*
-const TradeDetail = (
-    {
-        closeModal = () => {},
-        goChat = () => {},
-        
-    }
-) => {
-
-
-    const [amount, setAmount] = useState(1000);
-    const price = 91.17; // example price
-    const receiveAmount = (amount / price).toFixed(2);
-    const commission = 0.01; // example commission
-  
-    return (
-
-      <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <div className="flex items-center">
-          <span className="inline-block w-4 h-4 rounded-full bg-green-500 mr-2"></span>
-          <h2 className="text-lg font-semibold text-black ">Iskan9</h2>
-          <span className="ml-2 text-blue-500 text-sm">318 trades</span>
-        </div>
-        <p className="text-gray-600 mt-2">The offer is taken from another source. You can only use chat if the trade is open.</p>
-        
-        <div className="mt-4">
-          <div className="flex justify-between text-gray-700">
-            <span>Price</span>
-            <span>{price} KRW</span>
-          </div>
-          <div className="flex justify-between text-gray-700 mt-2">
-            <span>Limit</span>
-            <span>40680.00 KRW - 99002.9 KRW</span>
-          </div>
-          <div className="flex justify-between text-gray-700 mt-2">
-            <span>Available</span>
-            <span>1085.91 USDT</span>
-          </div>
-          <div className="flex justify-between text-gray-700 mt-2">
-            <span>Seller&apos;s payment method</span>
-            <span className="bg-yellow-100 text-yellow-800 px-2 rounded-full">Tinkoff</span>
-          </div>
-          <div className="mt-4 text-gray-700">
-            <p>24/7</p>
-          </div>
-        </div>
-  
-        <div className="mt-6 border-t pt-4 text-gray-700">
-          <div className="flex flex-col space-y-4">
-            <div>
-              <label className="block text-gray-700">I want to pay</label>
-              <input 
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(
-                    e.target.value === '' ? 0 : parseInt(e.target.value)
-                ) }
-
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">I will receive</label>
-              <input 
-                type="text"
-                value={`${receiveAmount} USDT`}
-                readOnly
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Commission</label>
-              <input 
-                type="text"
-                value={`${commission} USDT`}
-                readOnly
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-          </div>
-          
-          <div className="mt-6 flex space-x-4">
-            <button
-                className="bg-green-500 text-white px-4 py-2 rounded-lg"
-                onClick={() => {
-                    console.log('Buy USDT');
-                    // go to chat
-                    // close modal
-                    closeModal();
-                    goChat();
-
-                }}
-            >
-                Buy USDT
-            </button>
-            <button
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg"
-                onClick={() => {
-                    console.log('Cancel');
-                    // close modal
-                    closeModal();
-                }}
-            >
-                Cancel
-            </button>
-          </div>
-
-        </div>
-
-
-      </div>
-    );
-  };
-  */}
 
 
