@@ -146,13 +146,16 @@ export default function Index({ params }: any) {
   const page = searchParams.get('page') || 1;
 
 
-  const searchParamsStorecode = searchParams.get('storecode') || "";
+  // search agent code
+  const searchParamsAgentcode = searchParams.get('agentcode') || "";
 
-
-  const [searchStorecode, setSearchStorecode] = useState("");
+  const [searchAgentcode, setSearchAgentcode] = useState("");
   useEffect(() => {
-    setSearchStorecode(searchParamsStorecode || "");
-  }, [searchParamsStorecode]);
+    setSearchAgentcode(searchParamsAgentcode || "");
+  }, [searchParamsAgentcode]);
+
+
+
 
 
 
@@ -475,26 +478,6 @@ export default function Index({ params }: any) {
       setBalance( Number(result) / 10 ** 6 );
 
 
-      /*
-      await fetch('/api/user/getBalanceByWalletAddress', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chain: searchStorecode,
-          walletAddress: address,
-        }),
-      })
-
-      .then(response => response.json())
-
-      .then(data => {
-          setNativeBalance(data.result?.displayValue);
-      });
-      */
-
-
 
     };
 
@@ -517,76 +500,6 @@ export default function Index({ params }: any) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [loadingUser, setLoadingUser] = useState(false);
-
-
-  useEffect(() => {
-
-    if (address) {
-
-      getUserEmail({ client }).then((email) => {
-        console.log('email', email);
-
-        if (email) {
-          
-
-          fetch('/api/user/setUserVerified', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            // storecode, walletAddress, nickname, mobile, email
-            body: JSON.stringify({
-              storecode: searchStorecode,
-              walletAddress: address,
-              nickname: email,
-              mobile: '+82',
-              email: email,
-            }),
-          })
-          .then(response => response.json())
-          .then(data => {
-              //console.log('data', data);
-
-
-
-              fetch('/api/user/getUser', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  storecode: searchStorecode,
-                  walletAddress: address,
-                }),
-              })
-              .then(response => response.json())
-              .then(data => {
-                  //console.log('data', data);
-                  setUser(data.result);
-              })
-
-          });
-
-
-
-        }
-
-      });
-
-  
-
-      //const phoneNumber = await getUserPhoneNumber({ client });
-      //setPhoneNumber(phoneNumber);
-
-
-      getUserPhoneNumber({ client }).then((phoneNumber) => {
-        setPhoneNumber(phoneNumber || "");
-      });
-
-    }
-
-  } , [address]);
-
 
 
   
@@ -757,9 +670,16 @@ export default function Index({ params }: any) {
     const fetchBuyOrders = async () => {
 
 
+      if (!searchAgentcode || searchAgentcode === "") {
+        setBuyOrders([]);
+        setTotalCount(0);
+        return;
+      }
+
+
       setLoadingBuyOrders(true);
 
-      const response = await fetch('/api/order/getAllBuyOrdersByStorecodeDaily', {
+      const response = await fetch('/api/order/getAllBuyOrdersByAgentcodeDaily', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -767,7 +687,7 @@ export default function Index({ params }: any) {
           body: JSON.stringify(
 
             {
-              storecode: searchStorecode,
+              agentcode: searchAgentcode,
               limit: Number(limit),
               page: Number(page),
               walletAddress: address,
@@ -829,7 +749,7 @@ export default function Index({ params }: any) {
     address,
     searchMyOrders,
 
-    searchStorecode,
+    searchAgentcode,
     searchFromDate,
     searchToDate,
     searchBuyer,
@@ -838,126 +758,30 @@ export default function Index({ params }: any) {
 ]);
 
 
-///console.log('agreementForTrade', agreementForTrade);
 
 
-const [fetchingBuyOrders, setFetchingBuyOrders] = useState(false);
-
-const fetchBuyOrders = async () => {
-
-
-  if (fetchingBuyOrders) {
-    return;
-  }
-  setFetchingBuyOrders(true);
-
-  const response = await fetch('/api/order/getAllBuyOrdersByStorecodeDaily', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(
-      {
-        storecode: searchStorecode,
-        limit: Number(limitValue),
-        page: Number(pageValue),
-        walletAddress: address,
-        searchMyOrders: searchMyOrders,
-
-        searchOrderStatusCompleted: true,
-
-        searchBuyer: searchBuyer,
-        searchDepositName: searchDepositName,
-
-        searchStoreBankAccountNumber: searchStoreBankAccountNumber,
+  // array of agents
+  const [agentList, setAgentList] = useState([] as any[]);
 
 
-        fromDate: searchFromDate,
-        toDate: searchToDate,
+  const [agentAdminWalletAddress, setAgentAdminWalletAddress] = useState("");
 
-      }
-
-    ),
-  });
-
-  if (!response.ok) {
-    setFetchingBuyOrders(false);
-    toast.error('Failed to fetch buy orders');
-    return;
-  }
-  const data = await response.json();
-  //console.log('data', data);
-
-  setBuyOrders(data.result.orders);
-  setTotalCount(data.result.totalCount);
-  setFetchingBuyOrders(false);
-
-  return data.result.orders;
-}
-
-
-
-
-  
-
-
-  // check table view or card view
-  const [tableView, setTableView] = useState(true);
-
-
-
-
-  const [storeCodeNumber, setStoreCodeNumber] = useState('');
-
-  useEffect(() => {
-
-    const fetchStoreCode = async () => {
-
-      const response = await fetch('/api/order/getStoreCodeNumber', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      const data = await response.json();
-
-      //console.log('getStoreCodeNumber data', data);
-
-      setStoreCodeNumber(data?.storeCodeNumber);
-
-    }
-
-    fetchStoreCode();
-
-  } , []);
-    
-
-
-
-      // array of stores
-  const [storeList, setStoreList] = useState([] as any[]);
-
-
-  const [storeAdminWalletAddress, setStoreAdminWalletAddress] = useState("");
-
-  const [fetchingStore, setFetchingStore] = useState(false);
-  const [store, setStore] = useState(null) as any;
+  const [fetchingAgent, setFetchingAgent] = useState(false);
+  const [agent, setAgent] = useState(null) as any;
 
   useEffect(() => {
 
 
-    setFetchingStore(true);
+    setFetchingAgent(true);
 
     const fetchData = async () => {
-        const response = await fetch("/api/store/getOneStore", {
+        const response = await fetch("/api/agent/getOneAgent", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              storecode: searchStorecode,
-              ////walletAddress: address,
+                agentcode: searchAgentcode,
             }),
         });
 
@@ -967,17 +791,17 @@ const fetchBuyOrders = async () => {
 
         if (data.result) {
 
-          setStore(data.result);
+          setAgent(data.result);
 
-          setStoreAdminWalletAddress(data.result?.adminWalletAddress);
+          setAgentAdminWalletAddress(data.result?.adminWalletAddress);
 
           if (data.result?.adminWalletAddress === address) {
             setIsAdmin(true);
           }
 
       } else {
-        // get store list
-        const response = await fetch("/api/store/getAllStores", {
+        // get agent list
+        const response = await fetch("/api/agent/getAllAgents", {
           method: "POST",
           headers: {
               "Content-Type": "application/json",
@@ -986,16 +810,16 @@ const fetchBuyOrders = async () => {
           }),
         });
         const data = await response.json();
-        //console.log("getStoreList data", data);
-        setStoreList(data.result.stores);
-        setStore(null);
-        setStoreAdminWalletAddress("");
+        //console.log("getAgentList data", data);
+        setAgentList(data.result.agents);
+        setAgent(null);
+        setAgentAdminWalletAddress("");
       }
 
-        setFetchingStore(false);
+        setFetchingAgent(false);
     };
 
-    if (!searchStorecode) {
+    if (!searchAgentcode || searchAgentcode === "") {
       return;
     }
 
@@ -1008,7 +832,7 @@ const fetchBuyOrders = async () => {
     , 5000);
     return () => clearInterval(interval);
 
-  } , [searchStorecode]);
+  } , [searchAgentcode, address]);
 
 
 
@@ -1034,7 +858,7 @@ const fetchBuyOrders = async () => {
 
 
   const getTradeSummary = async () => {
-    if (!address) {
+    if (!address || !searchAgentcode) {
       return;
     }
 
@@ -1057,8 +881,9 @@ const fetchBuyOrders = async () => {
 
         */
 
-        agentcode: params.agentcode,
-        storecode: searchStorecode,
+        agentcode: searchAgentcode,
+      
+
         walletAddress: address,
         searchMyOrders: searchMyOrders,
         searchOrderStatusCompleted: true,
@@ -1085,8 +910,8 @@ const fetchBuyOrders = async () => {
       return;
     }
     const data = await response.json();
-    
-    console.log('getTradeSummary data', data);
+
+    //console.log('getTradeSummary data', data);
 
 
     setTradeSummary(data.result);
@@ -1112,7 +937,7 @@ const fetchBuyOrders = async () => {
     return () => clearInterval(interval);
 
 
-  } , [address, searchMyOrders, searchStorecode,
+  } , [address, searchMyOrders, searchAgentcode,
     searchFromDate, searchToDate,
   ]);
 
@@ -1131,20 +956,21 @@ const fetchBuyOrders = async () => {
       // Cleanup the script when the component unmounts
       document.body.removeChild(script);
     };
-  }, [address, store]);
+  }, [address]);
 
 
 
-  // get All stores
-  const [fetchingAllStores, setFetchingAllStores] = useState(false);
-  const [allStores, setAllStores] = useState([] as any[]);
-  const [storeTotalCount, setStoreTotalCount] = useState(0);
-  const fetchAllStores = async () => {
-    if (fetchingAllStores) {
+
+  // get all Agents
+  const [fetchingAllAgents, setFetchingAllAgents] = useState(false);
+  const [allAgents, setAllAgents] = useState([] as any[]);
+  const [agentTotalCount, setAgentTotalCount] = useState(0);
+  const fetchAllAgents = async () => {
+    if (fetchingAllAgents) {
       return;
     }
-    setFetchingAllStores(true);
-    const response = await fetch('/api/store/getAllStores', {
+    setFetchingAllAgents(true);
+    const response = await fetch('/api/agent/getAllAgents', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
@@ -1158,28 +984,23 @@ const fetchBuyOrders = async () => {
     });
 
     if (!response.ok) {
-      setFetchingAllStores(false);
-      toast.error('가맹점 검색에 실패했습니다.');
+      setFetchingAllAgents(false);
+      toast.error('에이전트 검색에 실패했습니다.');
       return;
     }
 
     const data = await response.json();
-    
+
     ///console.log('getAllStores data', data);
 
-
-
-
-    setAllStores(data.result.stores);
-    setStoreTotalCount(data.result.totalCount);
-    setFetchingAllStores(false);
-    return data.result.stores;
+    setAllAgents(data.result.agents);
+    setAgentTotalCount(data.result.totalCount);
+    setFetchingAllAgents(false);
+    return data.result.agents;
   }
   useEffect(() => {
-    fetchAllStores();
-  }, []); 
-
-
+    fetchAllAgents();
+  }, []);
 
 
 
@@ -1656,31 +1477,32 @@ const fetchBuyOrders = async () => {
                   청산내역
               </button>
 
-
-              <div className='flex w-32 items-center justify-center gap-2
-              bg-yellow-500 text-[#3167b4] text-sm rounded-lg p-2'>
-                <Image
-                  src="/icon-buyorder.png"
-                  alt="Trade"
-                  width={35}
-                  height={35}
-                  className="w-4 h-4"
-                />
-                <div className="text-sm font-semibold">
-                  통계(가맹)
-                </div>
-              </div>
-
               <button
-                  onClick={() => router.push('/' + params.lang + '/admin/trade-history-daily-agent')}
+                  onClick={() => router.push('/' + params.lang + '/admin/trade-history-daily')}
                   className="flex w-32 bg-[#3167b4] text-[#f3f4f6] text-sm rounded-lg p-2 items-center justify-center
                   hover:bg-[#3167b4]/80
                   hover:cursor-pointer
                   hover:scale-105
                   transition-transform duration-200 ease-in-out
                   ">
-                  통계(AG)
+                  통계(가맹)
               </button>
+
+              <div className='flex w-32 items-center justify-center gap-2
+                bg-yellow-500 text-[#3167b4] text-sm rounded-lg p-2'>
+                <Image
+                  src="/icon-statistics.png"
+                  alt="Trade"
+                  width={35}
+                  height={35}
+                  className="w-4 h-4"
+                />
+                <div className="text-sm font-semibold">
+                  통계(AG)
+                </div>
+              </div>
+
+
 
           </div>
 
@@ -1692,15 +1514,15 @@ const fetchBuyOrders = async () => {
 
               <div className='flex flex-row items-center space-x-4'>
                   <Image
-                    src="/icon-trade.png"
-                    alt="Trade"
+                    src="/icon-statistics.png"
+                    alt="Statistics"
                     width={35}
                     height={35}
                     className="w-6 h-6"
                   />
 
                   <div className="text-xl font-semibold">
-                    통계(가맹)
+                    통계(AG)
                   </div>
 
                   
@@ -1723,7 +1545,7 @@ const fetchBuyOrders = async () => {
 
 
 
-                {/* select storecode */}
+                {/* select agentcode */}
                 <div className="flex flex-row items-center gap-2">
 
                     <Image
@@ -1737,38 +1559,39 @@ const fetchBuyOrders = async () => {
                     <span className="
                       w-32
                       text-sm font-semibold">
-                      가맹점선택
+                      에이전트 선택
                     </span>
 
 
                     <select
-                      value={searchStorecode}
-                      
+                      value={searchAgentcode}
+
                       //onChange={(e) => setSearchStorecode(e.target.value)}
 
                       // storecode parameter is passed to fetchBuyOrders
                       onChange={(e) => {
-                        router.push('/' + params.lang + '/admin/trade-history-daily?storecode=' + e.target.value);
+                        router.push('/' + params.lang + '/admin/trade-history-daily-agent?agentcode=' + e.target.value);
+                        setSearchAgentcode(e.target.value);
                       }}
 
 
 
                       className="w-full p-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3167b4]"
                     >
-                      <option value="">전체</option>
+                      <option value="">에이전트 선택</option>
 
-                      {fetchingAllStores && (
+                      {fetchingAllAgents && (
                         <option value="" disabled>
-                          가맹점 검색중...
+                          에이전트 검색중...
                         </option>
                       )}
 
-                      {!fetchingAllStores && allStores && allStores.map((item, index) => (
-                        <option key={index} value={item.storecode}
+                      {!fetchingAllAgents && allAgents && allAgents.map((item, index) => (
+                        <option key={index} value={item.agentcode}
                           className="flex flex-row items-center justify-start gap-2"
                         >
-                          
-                          {item.storeName}{' '}({item.storecode})
+
+                          {item.agentName}{' '}({item.agentcode})
 
                         </option>
                       ))}
@@ -1961,6 +1784,8 @@ const fetchBuyOrders = async () => {
 
             <div className="xl:w-1/2
               flex flex-row items-center justify-between gap-2">
+              
+
               <div className="flex flex-col gap-2 items-center">
                 <div className="text-sm">총 정산수(건)</div>
                   <span className="text-xl font-semibold text-zinc-500">
@@ -1968,6 +1793,7 @@ const fetchBuyOrders = async () => {
                   </span>
               </div>
 
+              {/*
               <div className="flex flex-col gap-2 items-center">
                 <div className="text-sm">총 정산금액(원)</div>
                 <div className="flex flex-row items-center justify-center gap-1">
@@ -1977,6 +1803,9 @@ const fetchBuyOrders = async () => {
                   <span className="text-sm text-zinc-500">원</span>
                 </div>
               </div>
+              */}
+
+              {/*
               <div className="flex flex-col gap-2 items-center">
                 <div className="text-sm">총 정산량(USDT)</div>
                 <div className="flex flex-row items-center justify-center gap-1">
@@ -1994,9 +1823,12 @@ const fetchBuyOrders = async () => {
                   </span>
                 </div>
               </div>
+              */}
+
 
               <div className="flex flex-col gap-2 items-center">
 
+                {/*
                 <div className="flex flex-row gap-2 items-center">
                   
                   <div className="flex flex-col gap-2 items-center">
@@ -2029,6 +1861,7 @@ const fetchBuyOrders = async () => {
                     </div>
                   </div>
                 </div>
+                */}
 
                 <div className="flex flex-row gap-2 items-center">
                   <div className="flex flex-col gap-2 items-center">
@@ -2118,11 +1951,14 @@ const fetchBuyOrders = async () => {
                       <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">AG수수료량(USDT)</th>
                       <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">AG수수료금액(원)</th>
 
+                      {/*
                       <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">PG수수료량(USDT)</th>
                       <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">PG수수료금액(원)</th>
 
                       <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">정산량(USDT)</th>
                       <th className="px-4 py-2 text-right text-sm font-semibold text-zinc-600">정산금액(원)</th>
+                      */}
+
 
                     </tr>
                   </thead>
@@ -2168,6 +2004,9 @@ const fetchBuyOrders = async () => {
                           {Number(order.totalAgentFeeAmountKRW).toLocaleString('ko-KR')}
                         </td>
 
+
+
+                        {/*
                         <td className="px-4 py-2 text-sm text-green-600 font-semibold text-right"
                           style={{ fontFamily: 'monospace' }}
                         >
@@ -2189,6 +2028,7 @@ const fetchBuyOrders = async () => {
                         >
                           {Number(order.totalSettlementAmountKRW).toLocaleString('ko-KR')}
                         </td>
+                        */}
 
 
                       </tr>
