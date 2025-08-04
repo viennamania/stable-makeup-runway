@@ -602,105 +602,6 @@ export default function Index({ params }: any) {
 
 
 
-  // get escrow wallet address and balance
-  
-  const [escrowBalance, setEscrowBalance] = useState(0);
-  const [escrowNativeBalance, setEscrowNativeBalance] = useState(0);
-
-  
-  useEffect(() => {
-
-    const getEscrowBalance = async () => {
-
-      if (!address) {
-        setEscrowBalance(0);
-        return;
-      }
-
-      if (!escrowWalletAddress || escrowWalletAddress === '') return;
-
-
-      
-      const result = await balanceOf({
-        contract,
-        address: escrowWalletAddress,
-      });
-
-      //console.log('escrowWalletAddress balance', result);
-
-  
-      setEscrowBalance( Number(result) / 10 ** 6 );
-            
-
-
-      /*
-      await fetch('/api/user/getUSDTBalanceByWalletAddress', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          storecode: params.center,
-          walletAddress: escrowWalletAddress,
-        }),
-      })
-      .then(response => response?.json())
-      .then(data => {
-
-        console.log('getUSDTBalanceByWalletAddress data.result.displayValue', data.result?.displayValue);
-
-        setEscrowBalance(data.result?.displayValue);
-
-      } );
-       */
-
-
-
-
-      await fetch('/api/user/getBalanceByWalletAddress', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          storecode: params.center,
-          walletAddress: escrowWalletAddress,
-        }),
-      })
-      .then(response => response?.json())
-      .then(data => {
-
-
-        ///console.log('getBalanceByWalletAddress data', data);
-
-
-        setEscrowNativeBalance(data.result?.displayValue);
-
-      });
-      
-
-
-
-    };
-
-    getEscrowBalance();
-
-    const interval = setInterval(() => {
-      getEscrowBalance();
-    } , 1000);
-
-    return () => clearInterval(interval);
-
-  } , [address, escrowWalletAddress, contract, params.center]);
-  
-
-  //console.log('escrowBalance', escrowBalance);
-
-
-
-
-
-
 
   
 
@@ -1825,20 +1726,19 @@ export default function Index({ params }: any) {
         //const sellerWalletAddress = buyOrders[index].store.sellerWalletAddress;
         //const sellerWalletAddress = "0x3f1e7D26A2704BE994aF84cEbf19BA9683E23666"; // for test
 
-        const sellerWalletAddress = buyOrders[index].store.sellerWalletAddress;
+        //const sellerWalletAddress = buyOrders[index].store.sellerWalletAddress;
 
+        const buyerWalletAddress = buyOrders[index].walletAddress;
 
         //alert('sellerWalletAddress: ' + sellerWalletAddress);
 
-
-        console.log('sellerWalletAddress', sellerWalletAddress);
-
+        console.log('buyerWalletAddress', buyerWalletAddress);
 
         const usdtAmount = buyOrders[index].usdtAmount;
 
         const transaction = transfer({
           contract,
-          to: sellerWalletAddress,
+          to: buyerWalletAddress,
           amount: usdtAmount,
         });
 
@@ -1925,7 +1825,7 @@ export default function Index({ params }: any) {
 
         } catch (error) {
           console.error('Error:', error);
-          toast.error('결제확인이 실패했습니다.');
+          toast.error('결제확인이 실패했습니다.' + JSON.stringify(error));
         }
 
       }
@@ -2289,6 +2189,65 @@ export default function Index({ params }: any) {
 
 
 
+  const [escrowBalance, setEscrowBalance] = useState(0);
+  const [todayMinusedEscrowAmount, setTodayMinusedEscrowAmount] = useState(0);
+
+  useEffect(() => {
+
+    const fetchEscrowBalance = async () => {
+      if (!params.center) {
+        return;
+      }
+
+      const response = await fetch('/api/store/getEscrowBalance', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(
+            {
+              storecode: params.center,
+            }
+        ),
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+
+
+      const data = await response.json();
+
+      setEscrowBalance(data.result.escrowBalance);
+      setTodayMinusedEscrowAmount(data.result.todayMinusedEscrowAmount);
+
+    }
+
+
+    fetchEscrowBalance();
+
+    
+    
+    const interval = setInterval(() => {
+
+      fetchEscrowBalance();
+
+    }, 5000);
+
+    return () => clearInterval(interval);
+
+  } , [
+    params.center,
+  ]);
+
+
+
+
+
+
+
+
   // check table view or card view
   const [tableView, setTableView] = useState(true);
 
@@ -2595,7 +2554,7 @@ const [tradeSummary, setTradeSummary] = useState({
 
 
 
-
+  const [buyerWalletAddress, setBuyerWalletAddress] = useState('');
   const [buyerNickname, setBuyerNickname] = useState('');
   const [buyerDepositBankName, setBuyerDepositBankName] = useState('');
   const [buyerDepositBankAccountNumber, setBuyerDepositBankAccountNumber] = useState('');
@@ -2640,7 +2599,7 @@ const [tradeSummary, setTradeSummary] = useState({
     let orderUsdtAmount = usdtAmount;
 
     if (checkInputKrwAmount) {
-      orderUsdtAmount = parseFloat(Number(krwAmount / rate).toFixed(2));
+      orderUsdtAmount = parseFloat(Number(krwAmount / rate).toFixed(3));
     }
     
 
@@ -2660,7 +2619,7 @@ const [tradeSummary, setTradeSummary] = useState({
 
 
 
-        walletAddress: address,
+        walletAddress: buyerWalletAddress,
 
 
 
@@ -3377,39 +3336,88 @@ const [tradeSummary, setTradeSummary] = useState({
             <div className="w-full flex flex-col items-end justify-end gap-2
             border-b border-zinc-300 pb-2">
 
-              {/* 가맹점 보유 */}
-              <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2">
-                <div className="flex flex-row gap-2 items-center">
-                  <Image
-                    src="/icon-escrow.png"
-                    alt="Escrow"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                  <span className="text-lg font-semibold text-zinc-500">
-                    가맹점 보유
-                  </span>
+                {/* 가맹점 보유량 */}
+                <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2
+                bg-white/50 backdrop-blur-sm p-2 rounded-lg shadow-md">
+
+                <div className="flex flex-col items-start xl:items-center gap-2 mb-2 xl:mb-0">                
+                  <div className="flex flex-row gap-2 items-center">
+                    <div className="flex flex-row gap-2 items-center">
+                      <Image
+                        src="/icon-escrow.png"
+                        alt="Escrow"
+                        width={20}
+                        height={20}
+                        className="w-5 h-5"
+                      />
+                      <span className="text-lg font-semibold text-zinc-500">
+                        현재 보유량
+                      </span>
+                    </div>
+
+                    <div className="
+                      w-32
+                      flex flex-row gap-2 items-center justify-between
+                    ">
+                      <Image
+                        src="/icon-tether.png"
+                        alt="Tether"
+                        width={20}
+                        height={20}
+                        className="w-5 h-5"
+                      />
+                      <span className="text-lg text-green-600 font-semibold"
+                        style={{ fontFamily: 'monospace' }}
+                      >
+                        {
+                          escrowBalance.toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                        }
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 오늘 수수료 차감량 */}
+                  <div className="flex flex-row gap-2 items-center">
+                    <span className="text-sm text-zinc-500 font-semibold">
+                      오늘 수수료 차감량
+                    </span>
+                    <div className="
+                      w-32
+                      flex flex-row gap-2 items-center justify-between
+                    ">
+                      <Image
+                        src="/icon-tether.png"
+                        alt="Tether"
+                        width={20}
+                        height={20}
+                        className="w-5 h-5"
+                      />
+                      <span className="text-lg text-red-600 font-semibold"
+                        style={{ fontFamily: 'monospace' }}
+                      >
+                        {
+                          todayMinusedEscrowAmount && todayMinusedEscrowAmount > 0 ?
+                          todayMinusedEscrowAmount.toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ',') :
+                          '0.000'
+                        }
+                      </span>
+                    </div>
+                  </div>
+
                 </div>
 
-                <div className="flex flex-row items-center gap-2">
-                  <Image
-                    src="/icon-tether.png"
-                    alt="Tether"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                  <span className="text-lg text-green-600 font-semibold"
-                    style={{ fontFamily: 'monospace' }}
-                  >
-                    {
-                      store?.escrowAmountUSDT
-                      ? Number(store?.escrowAmountUSDT).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                      : 0
-                    }
-                  </span>
-                </div>
+
+                {/* 보유량 내역 */}
+                <button
+                  onClick={() => {
+                    router.push('/' + params.lang + '/' + params.center + '/escrow-history');
+                  }}
+                  className="bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80
+                  flex items-center justify-center gap-2
+                  border border-zinc-300 hover:border-[#3167b4]"
+                >
+                  보유량 내역
+                </button>
 
               </div>
 
@@ -3442,7 +3450,7 @@ const [tradeSummary, setTradeSummary] = useState({
                   >
                     {
                       Number(store?.totalUsdtAmount ? store?.totalUsdtAmount : 0)
-                      .toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                      .toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                     }
                   </span>
                 </div>
@@ -3493,7 +3501,7 @@ const [tradeSummary, setTradeSummary] = useState({
                   >
                     {
                       Number(store?.totalSettlementAmount ? store?.totalSettlementAmount : 0)
-                      .toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                      .toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                     }
                   </span>
                 </div>
@@ -3542,7 +3550,7 @@ const [tradeSummary, setTradeSummary] = useState({
                   >
                     {
                       Number(store?.totalUsdtAmountClearance || 0)
-                      .toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                      .toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                     }
                   </span>
                 </div>
@@ -3628,6 +3636,17 @@ const [tradeSummary, setTradeSummary] = useState({
                     출금(회원)
                   </div>
                 </div>
+
+                <button
+                  onClick={() => router.push('/' + params.lang + '/' + params.center + '/daily-close')}
+                  className="flex w-32 bg-[#3167b4] text-[#f3f4f6] text-sm rounded-lg p-2 items-center justify-center
+                  hover:bg-[#3167b4]/80
+                  hover:cursor-pointer
+                  hover:scale-105
+                  transition-transform duration-200 ease-in-out
+                  ">
+                    통계(일별)
+                </button>
 
 
             </div>
@@ -3807,7 +3826,7 @@ const [tradeSummary, setTradeSummary] = useState({
                               </span>
                               <span className="text-2xl xl:text-4xl font-semibold text-green-600">
                                   {
-                                    Number(balance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                                    Number(balance).toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                                   }
                               </span>
                               {' '}
@@ -3941,8 +3960,10 @@ const [tradeSummary, setTradeSummary] = useState({
                       allBuyer.map((buyer, index) => (
                         <div
                           key={index}
-                          className="flex flex-row items-center justify-between gap-2 p-2 hover:bg-zinc-100 cursor-pointer"
+                          className="flex flex-row items-center justify-between gap-2 p-2 hover:bg-zinc-100 cursor-pointer
+                          border-b border-zinc-200"
                           onClick={() => {
+                            setBuyerWalletAddress(buyer.walletAddress);
                             setBuyerNickname(buyer.nickname);
                             setBuyerDepositName(buyer.buyer.depositName);
                             setBuyerDepositBankName(buyer.buyer.depositBankName);
@@ -3954,6 +3975,18 @@ const [tradeSummary, setTradeSummary] = useState({
                           }}
                         >
                           <div className="flex flex-col">
+                            <div className="flex flex-row items-center gap-2">
+                              <Image
+                                src="/icon-shield.png"
+                                alt="Shield"
+                                width={20}
+                                height={20}
+                                className="w-5 h-5"
+                              />
+                              <span className="text-sm font-semibold text-zinc-800">
+                                {buyer.walletAddress.substring(0, 6) + '...' + buyer.walletAddress.substring(buyer.walletAddress.length - 4)}
+                              </span>
+                            </div>
                             <span className="text-sm text-green-600">
                               {buyer.nickname}
                             </span>
@@ -3993,6 +4026,20 @@ const [tradeSummary, setTradeSummary] = useState({
                         <div className="flex flex-col gap-2 items-start">
 
                           {/* 선택된 회원 정보 */}
+                          {/* USDT 통장 주소 */}
+                          <div className="flex flex-row items-center gap-2">
+                            <Image
+                              src="/icon-shield.png"
+                              alt="Wallet"
+                              width={20}
+                              height={20}
+                              className="w-5 h-5"
+                            />
+                            <span className="text-sm text-zinc-400">
+                              {buyerWalletAddress ? buyerWalletAddress.substring(0, 6) + '...' + buyerWalletAddress.substring(buyerWalletAddress.length - 4) : ''}
+                            </span>
+                          </div>
+
                           <div className="flex flex-row items-center gap-2">
                             <span className="text-lg font-semibold text-zinc-500">
                               {buyerNickname || '출금할 회원을 선택해주세요'}
@@ -4027,12 +4074,21 @@ const [tradeSummary, setTradeSummary] = useState({
                               </span>
 
                               <input 
+                                // disable mouse up down scroll
+                                //onWheel={(e) => e.preventDefault()}
+
+
+
+
                                 type="number"
                                 className="
                                   text-xl text-blue-500 font-bold
                                   w-40 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 "
                                 placeholder={Price}
-                                value={krwAmount}
+                                value={
+                                  //Number(krwAmount).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                                  krwAmount
+                                }
                                 onChange={(e) => {
                                   // check number
                                   e.target.value = e.target.value.replace(/[^0-9.]/g, '');
@@ -4055,12 +4111,14 @@ const [tradeSummary, setTradeSummary] = useState({
 
                                   parseFloat(e.target.value) > 100000000 ? setKrwAmount(1000) : setKrwAmount(parseFloat(e.target.value));
 
-                                  //setUsdtAmount(Number((krwAmount / rate).toFixed(2)));
+                                  //setUsdtAmount(Number((krwAmount / rate).toFixed(3)));
                                 
                                 
                                 } }
                               />
-
+                              <span className="text-xl text-zinc-400 font-bold">
+                                {krwAmount === 0 ? '0' : Number(krwAmount).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                              </span>
                               <span className="text-xl text-zinc-400 font-bold">
                                 원  
                               </span>
@@ -4078,7 +4136,7 @@ const [tradeSummary, setTradeSummary] = useState({
                               = {
                               krwAmount === 0 ? '0' :
                               
-                              (krwAmount / rate).toFixed(2) === 'NaN' ? '0' : (krwAmount / rate).toFixed(2)
+                              (krwAmount / rate).toFixed(3) === 'NaN' ? '0' : (krwAmount / rate).toFixed(3)
 
                               }{' '}USDT
                             </p>
@@ -4527,7 +4585,19 @@ const [tradeSummary, setTradeSummary] = useState({
                                   }}
                                 />
                                 */}
-                                <div className="flex flex-row gap-2 items-center justify-center">
+                                <div className="flex flex-col gap-2 items-center justify-center">
+                                  <div className="flex flex-row items-center gap-2">
+                                    <Image
+                                      src="/icon-shield.png"
+                                      alt="Shield"
+                                      width={20}
+                                      height={20}
+                                      className="w-5 h-5"
+                                    />
+                                    <span className="text-sm font-semibold text-zinc-800">
+                                      {item.walletAddress.slice(0, 6) + '...' + item.walletAddress.slice(-4)}
+                                    </span>
+                                  </div>
 
                                   <div className="text-sm text-zinc-500">
                                     {
@@ -4577,14 +4647,14 @@ const [tradeSummary, setTradeSummary] = useState({
                                   <span className="text-xl text-green-600 font-semibold"
                                     style={{ fontFamily: 'monospace' }}
                                   >
-                                    {item.usdtAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                    {item.usdtAmount.toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                                   </span>
                                 </div>
 
                                 <span className="text-sm text-zinc-500">
                                   {
                                     Number(item.rate)
-                                    //Number(item.krwAmount / item.usdtAmount).toFixed(2)
+                                    //Number(item.krwAmount / item.usdtAmount).toFixed(3)
                                   }
                                 </span>
                               </div>
@@ -4703,7 +4773,8 @@ const [tradeSummary, setTradeSummary] = useState({
                                     
                                     <div className="text-sm text-zinc-500">
                                       {
-                                        item.store.sellerWalletAddress.slice(0, 6) + '...' + item.store.sellerWalletAddress.slice(-4)
+                                        //item.store.sellerWalletAddress.slice(0, 6) + '...' + item.store.sellerWalletAddress.slice(-4)
+                                        item.seller?.walletAddress.slice(0, 6) + '...' + item.seller?.walletAddress.slice(-4)
                                       }
                                     </div>
                                   
@@ -4741,7 +4812,8 @@ const [tradeSummary, setTradeSummary] = useState({
 
                                     <div className="text-sm text-zinc-500">
                                       {
-                                        item.store.sellerWalletAddress.slice(0, 6) + '...' + item.store.sellerWalletAddress.slice(-4)
+                                        ///item.store.sellerWalletAddress.slice(0, 6) + '...' + item.store.sellerWalletAddress.slice(-4)
+                                        item.seller?.walletAddress.slice(0, 6) + '...' + item.seller?.walletAddress.slice(-4)
                                       }
                                     </div>
 
@@ -5172,22 +5244,25 @@ const [tradeSummary, setTradeSummary] = useState({
                             {/* 출금상태: buyer.depositCompleted */}
                             <td className="p-2">
 
-                              
-                              {item?.buyer?.depositCompleted === false
-                               ? (
-                                <div className="text-sm text-red-600
-                                flex flex-row items-center gap-2
-                                border border-red-600
-                                rounded-md px-2 py-1">
-                                  출금대기중
-                                </div>
-                              ) : (
-                                <div className="text-sm text-green-600
-                                flex flex-row items-center gap-2
-                                border border-green-600
-                                rounded-md px-2 py-1">
-                                  출금완료
-                                </div>
+                              {item.status !== 'cancelled' && (
+                                <>   
+                                  {item?.buyer?.depositCompleted === false
+                                  ? (
+                                    <div className="text-sm text-red-600
+                                    flex flex-row items-center gap-2
+                                    border border-red-600
+                                    rounded-md px-2 py-1">
+                                      출금대기중
+                                    </div>
+                                  ) : (
+                                    <div className="text-sm text-green-600
+                                    flex flex-row items-center gap-2
+                                    border border-green-600
+                                    rounded-md px-2 py-1">
+                                      출금완료
+                                    </div>
+                                  )}
+                                </>
                               )}
                             
                             </td>
@@ -5554,7 +5629,7 @@ const [tradeSummary, setTradeSummary] = useState({
                                   </p>
                                   <p className="text-lg font-semibold text-zinc-500">{Rate}: {
 
-                                    Number(item.krwAmount / item.usdtAmount).toFixed(2)
+                                    Number(item.krwAmount / item.usdtAmount).toFixed(3)
 
                                     }</p>
                                 </div>
@@ -6356,7 +6431,7 @@ const TradeDetail = (
 
     const [amount, setAmount] = useState(1000);
     const price = 91.17; // example price
-    const receiveAmount = (amount / price).toFixed(2);
+    const receiveAmount = (amount / price).toFixed(3);
     const commission = 0.01; // example commission
   
     return (
