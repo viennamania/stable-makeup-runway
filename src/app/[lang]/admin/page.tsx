@@ -1100,15 +1100,13 @@ export default function Index({ params }: any) {
 
         {/* total summary */}
         {/* dashboard style */}
+        {/*
 
         <div className="w-full flex flex-col items-start justify-center gap-2 mt-4">
 
 
           <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
 
-
-       
-            {/* total number of trades, total buy amount krw, total usdt amount */}
             <div className="w-full flex flex-col items-start justify-start gap-2  bg-white shadow-md rounded-lg p-4">
 
               <div className="w-full flex flex-col xl:flex-row items-center justify-start gap-2">
@@ -1165,7 +1163,6 @@ export default function Index({ params }: any) {
 
                 <div className="w-full mt-4">
                   <div className="flex flex-row items-center justify-start gap-2">
-                    {/* dot */}
                     <div className="w-2 h-2 bg-[#3167b4] rounded-full"></div>
                     <h2 className="text-lg font-semibold">최근 구매주문</h2>
                   </div>
@@ -1226,7 +1223,6 @@ export default function Index({ params }: any) {
                           </td>
 
                           <td className="px-4 py-2">
-                            {/* "orderded", "accepted", "paymentRequested" */}
 
                             <button
                               onClick={() => {
@@ -1327,7 +1323,6 @@ export default function Index({ params }: any) {
 
                 <div className="w-full mt-4">
                   <div className="flex flex-row items-center justify-start gap-2">
-                    {/* dot */}
                     <div className="w-2 h-2 bg-[#3167b4] rounded-full"></div>
                     <h2 className="text-lg font-semibold">최근 청산주문</h2>
                   </div>
@@ -1388,8 +1383,6 @@ export default function Index({ params }: any) {
                           </td>
 
                           <td className="px-4 py-2">
-                            {/* "orderded", "accepted", "paymentRequested" */}
-
                             <button
                               onClick={() => {
                                 //router.push('/' + params.lang + '/' + trade.storecode + '/pay-usdt-reverse/' + trade.tradeId);
@@ -1443,10 +1436,6 @@ export default function Index({ params }: any) {
 
             </div>
 
-
-
-
-            {/* total number of trades, total buy amount krw, total usdt amount */}
             <div className="w-full flex flex-col items-start justify-start gap-2  bg-white shadow-md rounded-lg p-4">
 
               <div className="w-full flex flex-col xl:flex-row items-center justify-start gap-2">
@@ -1494,7 +1483,6 @@ export default function Index({ params }: any) {
                   </div>
                 </div>
 
-                {/* divider */}
                 <div className="w-0.5 h-10 bg-gray-300 mx-2"></div>
 
                 <div className="flex flex-col xl:flex-row items-center justify-center gap-2">
@@ -1519,10 +1507,8 @@ export default function Index({ params }: any) {
 
               <div className="w-full flex flex-row items-center justify-end gap-2">
 
-                {/* latest trades table */}
                 <div className="w-full mt-4">
                   <div className="flex flex-row items-center justify-start gap-2">
-                    {/* dot */}
                     <div className="w-2 h-2 bg-[#3167b4] rounded-full"></div>
                     <h2 className="text-lg font-semibold">총 거래수</h2>
                     <p className="text-lg text-zinc-500">
@@ -1568,9 +1554,6 @@ export default function Index({ params }: any) {
                     
                         <th className="hidden xl:block
                           px-4 py-2 text-left">판매자</th>
-                        {/*
-                        <th className="px-4 py-2 text-left">거래일시</th>
-                        */}
                       </tr>
                     </thead>
                     <tbody>
@@ -1619,16 +1602,6 @@ export default function Index({ params }: any) {
                             <br/>
                             {trade?.seller?.bankInfo?.accountHolder}
                           </td>
-
-                          {/*}
-                          <td className="px-4 py-2 text-xs">
-                            {
-                              //new Date(trade.createdAt).toLocaleDateString() + " " + new Date(trade.createdAt).toLocaleTimeString()
-                              new Date(trade.createdAt).toLocaleTimeString()
-                            }
-
-                          </td>
-                          */}
                         </tr>
                       ))}
                     </tbody>
@@ -1637,27 +1610,10 @@ export default function Index({ params }: any) {
                 </div>
 
               </div>
-              {/*
-              <div className="w-full flex flex-row items-center justify-end gap-2">
-
-                <button
-                  onClick={() => {
-                    router.push('/' + params.lang + '/admin/trade-history');
-                  }}
-                  className="bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
-                >
-                  거래내역
-                </button>
-              </div>
-              */}
 
             </div>
 
 
-
-
-
-            {/* total number of trades, total buy amount krw, total usdt amount */}
             <div className="w-full flex flex-col items-start justify-start gap-2  bg-white shadow-md rounded-lg p-4">
 
               <div className="w-full flex flex-col xl:flex-row items-center justify-start gap-2">
@@ -1710,10 +1666,8 @@ export default function Index({ params }: any) {
 
               <div className="w-full flex flex-row items-center justify-end gap-2">
 
-                {/* latest trades table */}
                 <div className="w-full mt-4">
                   <div className="flex flex-row items-center justify-start gap-2">
-                    {/* dot */}
                     <div className="w-2 h-2 bg-[#3167b4] rounded-full"></div>
                     <h2 className="text-lg font-semibold">총 거래수</h2>
                     <p className="text-lg text-zinc-500">
@@ -1759,9 +1713,6 @@ export default function Index({ params }: any) {
                     
                         <th className="hidden xl:block
                           px-4 py-2 text-left">판매자</th>
-                        {/*
-                        <th className="px-4 py-2 text-left">거래일시</th>
-                        */}
                       </tr>
                     </thead>
                     <tbody>
@@ -1810,16 +1761,6 @@ export default function Index({ params }: any) {
                             <br/>
                             {trade?.seller?.bankInfo?.accountHolder}
                           </td>
-
-                          {/*}
-                          <td className="px-4 py-2 text-xs">
-                            {
-                              //new Date(trade.createdAt).toLocaleDateString() + " " + new Date(trade.createdAt).toLocaleTimeString()
-                              new Date(trade.createdAt).toLocaleTimeString()
-                            }
-
-                          </td>
-                          */}
                         </tr>
                       ))}
                     </tbody>
@@ -1828,29 +1769,10 @@ export default function Index({ params }: any) {
                 </div>
 
               </div>
-              {/*
-              <div className="w-full flex flex-row items-center justify-end gap-2">
-
-                <button
-                  onClick={() => {
-                    router.push('/' + params.lang + '/admin/trade-history');
-                  }}
-                  className="bg-[#3167b4] text-sm text-[#f3f4f6] px-4 py-2 rounded-lg hover:bg-[#3167b4]/80"
-                >
-                  거래내역
-                </button>
-              </div>
-              */}
 
             </div>
 
 
-
-
-
-
-            
-            {/* store */}
             <div className="w-full flex flex-col items-start justify-start gap-2  bg-white shadow-md rounded-lg p-4">
               
               <div className="w-full flex flex-col xl:flex-row items-center justify-start gap-2">
@@ -1880,12 +1802,9 @@ export default function Index({ params }: any) {
 
               </div>
 
-
-              {/* latest stores talble */}
               <div className="w-full mt-4">
                 
                 <div className="flex flex-row items-center justify-start gap-2">
-                  {/* dot */}
                   <div className="w-2 h-2 bg-[#3167b4] rounded-full"></div>
                   <h2 className="text-lg font-semibold">총 가맹점수</h2>
                   <p className="text-lg text-zinc-500">
@@ -1931,9 +1850,6 @@ export default function Index({ params }: any) {
                       <th className="px-4 py-2 text-left">거래금액(원)<br/>거래량(USDT)</th>
                       <th className="px-4 py-2 text-left">정산금액(원)<br/>정산량(USDT)</th>
 
-                      {/*
-                      <th className="px-4 py-2 text-left">가입일</th>
-                      */}
                     </tr>
                   </thead>
                   <tbody>
@@ -1985,9 +1901,6 @@ export default function Index({ params }: any) {
                           <br/>
                           {store.totalSettlementAmount > 0 ? Number(store.totalSettlementAmount)?.toLocaleString() : 0} USDT
                         </td>
-                        {/*
-                        <td className="px-4 py-2">{new Date(store.createdAt).toLocaleDateString()}</td>
-                        */}
                       </tr>
                     ))}
                   </tbody>
@@ -2028,12 +1941,8 @@ export default function Index({ params }: any) {
               </div>
 
 
-
-
-              {/* latest buyers talble */}
               <div className="w-full mt-4">
                 <div className="flex flex-row items-center justify-start gap-2">
-                  {/* dot */}
                   <div className="w-2 h-2 bg-[#3167b4] rounded-full"></div>
                   <h2 className="text-lg font-semibold">총 회원수</h2>
                   <p className="text-lg text-zinc-500">
@@ -2074,9 +1983,6 @@ export default function Index({ params }: any) {
                       <th className="
                         hidden xl:block
                         px-4 py-2 text-left">은행</th>
-                      {/*
-                      <th className="px-4 py-2 text-left">가입일</th>
-                      */}
                     </tr>
                   </thead>
                   <tbody>
@@ -2100,9 +2006,6 @@ export default function Index({ params }: any) {
                           px-4 py-2">
                           {buyer?.buyer.depositBankName}
                         </td>
-                        {/*
-                        <td className="px-4 py-2">{new Date(buyer.createdAt).toLocaleDateString()}</td>
-                        */}
                       </tr>
                     ))}
                   </tbody>
@@ -2113,14 +2016,11 @@ export default function Index({ params }: any) {
             </div>
 
 
-
-
-
           </div>
 
         </div>
 
-
+        */}
 
 
 
